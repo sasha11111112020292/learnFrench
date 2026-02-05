@@ -1134,6 +1134,49 @@
                 </p>
             </div>
 
+            <!-- Jardin Filters - NEW -->
+            <div class="entrance-card" id="jardin-filters">
+                <div class="entrance-sentence" style="font-size:1.5rem;">Explorer le jardin</div>
+
+                <div class="category-grid">
+                    <div>
+                        <label class="form-label">Année</label>
+                        <select class="form-select" id="filter-year">
+                            <option value="">Toutes</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Trimestre</label>
+                        <select class="form-select" id="filter-quarter">
+                            <option value="">Tous</option>
+                            <option value="Q1">Q1</option>
+                            <option value="Q2">Q2</option>
+                            <option value="Q3">Q3</option>
+                            <option value="Q4">Q4</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Semaine</label>
+                        <select class="form-select" id="filter-week">
+                            <option value="">Toutes</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Thème</label>
+                        <select class="form-select" id="filter-theme">
+                            <option value="">Tous les thèmes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="text-align:right;">
+                    <button class="btn btn-secondary" id="reset-filters">Tout afficher</button>
+                </div>
+            </div>
+
             <!-- Game section -->
             <div class="game-section">
                 <button class="btn btn-primary" id="random-word">
@@ -1713,6 +1756,16 @@
         let currentRecording = null;
 
         // ============================================
+        // FILTER STATE - NEW
+        // ============================================
+        let activeFilters = {
+            year: "",
+            quarter: "",
+            week: "",
+            theme: ""
+        };
+
+        // ============================================
         // IMPORT / EXPORT - FIXED
         // ============================================
         document.getElementById('export-data').addEventListener('click', () => {
@@ -1765,6 +1818,7 @@
                         localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
                         
                         renderGarden();
+                        populateJardinFilters(); // NEW
                         renderReadingList();
                         renderListeningList();
                         renderRecordings();
@@ -1797,7 +1851,9 @@
                     listeningList = [];
                     recordings = [];
                     resourcesList = [];
+                    activeFilters = { year: "", quarter: "", week: "", theme: "" }; // NEW
                     renderGarden();
+                    populateJardinFilters(); // NEW
                     renderReadingList();
                     renderListeningList();
                     renderRecordings();
@@ -2043,12 +2099,23 @@
         }
 
         // ============================================
-        // VOCABULARY GARDEN
+        // VOCABULARY GARDEN - UPDATED WITH FILTERS
         // ============================================
+        function getFilteredVocabulary() {
+            return vocabulary.filter(word => {
+                if (activeFilters.year && word.year !== activeFilters.year) return false;
+                if (activeFilters.quarter && word.quarter !== activeFilters.quarter) return false;
+                if (activeFilters.week && word.week !== activeFilters.week) return false;
+                if (activeFilters.theme && word.theme !== activeFilters.theme) return false;
+                return true;
+            });
+        }
+
         function renderGarden() {
             const grid = document.getElementById('word-grid');
+            const filteredVocabulary = getFilteredVocabulary();
             
-            if (vocabulary.length === 0) {
+            if (filteredVocabulary.length === 0) {
                 grid.innerHTML = `
                     <div class="empty">
                         <div class="empty-icon">
@@ -2057,8 +2124,7 @@
                             </svg>
                         </div>
                         <div class="empty-text">
-                            Rien ici encore...<br>
-                            Plante ton premier mot quand tu es prêt.
+                            ${vocabulary.length === 0 ? 'Rien ici encore...<br>Plante ton premier mot quand tu es prêt.' : 'Aucun mot ne correspond à tes filtres.<br>Essaie avec des critères différents.'}
                         </div>
                     </div>
                 `;
@@ -2067,7 +2133,7 @@
             }
 
             // Sort by most recent first
-            const sortedVocabulary = [...vocabulary].sort((a, b) => b.id - a.id);
+            const sortedVocabulary = [...filteredVocabulary].sort((a, b) => b.id - a.id);
 
             grid.innerHTML = sortedVocabulary.map(word => `
                 <div class="word-card">
@@ -2123,8 +2189,83 @@
             updatePDFButtonVisibility();
         }
 
+        // ============================================
+        // POPULATE JARDIN FILTERS - NEW
+        // ============================================
+        function populateJardinFilters() {
+            const years = [...new Set(vocabulary.map(w => w.year).filter(Boolean))].sort();
+            const weeks = [...new Set(vocabulary.map(w => w.week).filter(Boolean))].sort((a, b) => a - b);
+            const themes = [...new Set(vocabulary.map(w => w.theme).filter(Boolean))].sort();
+
+            const yearSelect = document.getElementById('filter-year');
+            const weekSelect = document.getElementById('filter-week');
+            const themeSelect = document.getElementById('filter-theme');
+
+            // Year options
+            yearSelect.innerHTML = '<option value="">Toutes</option>' +
+                years.map(y => `<option value="${y}">${y}</option>`).join('');
+
+            // Week options
+            weekSelect.innerHTML = '<option value="">Toutes</option>' +
+                weeks.map(w => `<option value="${w}">Semaine ${w}</option>`).join('');
+
+            // Theme options
+            themeSelect.innerHTML = '<option value="">Tous les thèmes</option>' +
+                themes.map(t => `<option value="${t}">${t}</option>`).join('');
+
+            // Set current filter values if they exist
+            if (activeFilters.year) yearSelect.value = activeFilters.year;
+            if (activeFilters.week) weekSelect.value = activeFilters.week;
+            if (activeFilters.theme) themeSelect.value = activeFilters.theme;
+            if (activeFilters.quarter) document.getElementById('filter-quarter').value = activeFilters.quarter;
+        }
+
+        // ============================================
+        // FILTER EVENT LISTENERS - NEW
+        // ============================================
+        function setupFilterListeners() {
+            document.getElementById('filter-year').addEventListener('change', e => {
+                activeFilters.year = e.target.value;
+                renderGarden();
+            });
+
+            document.getElementById('filter-quarter').addEventListener('change', e => {
+                activeFilters.quarter = e.target.value;
+                renderGarden();
+            });
+
+            document.getElementById('filter-week').addEventListener('change', e => {
+                activeFilters.week = e.target.value;
+                renderGarden();
+            });
+
+            document.getElementById('filter-theme').addEventListener('change', e => {
+                activeFilters.theme = e.target.value;
+                renderGarden();
+            });
+
+            document.getElementById('reset-filters').addEventListener('click', () => {
+                activeFilters = { year: "", quarter: "", week: "", theme: "" };
+
+                document.getElementById('filter-year').value = "";
+                document.getElementById('filter-quarter').value = "";
+                document.getElementById('filter-week').value = "";
+                document.getElementById('filter-theme').value = "";
+
+                renderGarden();
+            });
+        }
+
         function openModal(id) {
             document.getElementById(id).classList.add('active');
+            
+            // AUTO-FILL FILTERS WHEN ADDING A WORD - NEW
+            if (id === 'word-modal') {
+                document.getElementById('year-input').value = activeFilters.year || "";
+                document.getElementById('quarter-input').value = activeFilters.quarter || "";
+                document.getElementById('week-input').value = activeFilters.week || "";
+                document.getElementById('theme-input').value = activeFilters.theme || "";
+            }
         }
 
         function closeModal(id) {
@@ -2185,6 +2326,7 @@
                 vocabulary = vocabulary.filter(w => w.id !== id);
                 localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
                 renderGarden();
+                populateJardinFilters(); // Update filters after deletion
             }
         }
 
@@ -2225,6 +2367,7 @@
             vocabulary.push(word);
             localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
             renderGarden();
+            populateJardinFilters(); // Update filters after adding
             closeModal('word-modal');
         });
 
@@ -2268,21 +2411,24 @@
 
             localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
             renderGarden();
+            populateJardinFilters(); // Update filters after editing
             closeModal('edit-word-modal');
         });
 
         // ============================================
-        // RANDOM WORD GAME
+        // RANDOM WORD GAME - UPDATED FOR FILTERS
         // ============================================
         document.getElementById('random-word').addEventListener('click', () => {
-            if (vocabulary.length === 0) {
+            const filteredVocabulary = getFilteredVocabulary();
+            
+            if (filteredVocabulary.length === 0) {
                 document.getElementById('game-result').innerHTML = `
-                    <div class="game-prompt">Plante quelques mots d'abord</div>
+                    <div class="game-prompt">${vocabulary.length === 0 ? 'Plante quelques mots d\'abord' : 'Aucun mot ne correspond à tes filtres'}</div>
                 `;
                 return;
             }
 
-            const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            const word = filteredVocabulary[Math.floor(Math.random() * filteredVocabulary.length)];
             const prompts = [
                 "Utilise ce mot dans une phrase",
                 "Dis-le à voix haute",
@@ -2814,14 +2960,18 @@
             
             doc.setFontSize(10);
             doc.setTextColor(107, 97, 92); // text-soft
-            doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')}`, 20, 28);
+            const filterText = Object.values(activeFilters).filter(Boolean).length > 0 
+                ? `Filtres actifs: ${Object.entries(activeFilters).filter(([k,v]) => v).map(([k,v]) => `${k}:${v}`).join(', ')}` 
+                : '';
+            doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} ${filterText}`, 20, 28);
             
             let y = 40;
             const pageHeight = doc.internal.pageSize.height;
             const margin = 20;
             
             // Sort by most recent first
-            const sortedVocabulary = [...vocabulary].sort((a, b) => b.id - a.id);
+            const filteredVocabulary = getFilteredVocabulary();
+            const sortedVocabulary = [...filteredVocabulary].sort((a, b) => b.id - a.id);
             
             sortedVocabulary.forEach((word, index) => {
                 // Check if we need a new page
@@ -2910,7 +3060,7 @@
         function updatePDFButtonVisibility() {
             const pdfBtn = document.getElementById('save-words-pdf');
             if (pdfBtn) {
-                pdfBtn.style.display = vocabulary.length > 0 ? 'flex' : 'none';
+                pdfBtn.style.display = getFilteredVocabulary().length > 0 ? 'flex' : 'none';
             }
         }
 
@@ -2937,6 +3087,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderEntrance();
             renderGarden();
+            populateJardinFilters(); // NEW
+            setupFilterListeners(); // NEW
             renderReadingList();
             renderListeningList();
             renderRecordings();
