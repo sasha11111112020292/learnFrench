@@ -1,393 +1,2183 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Jardin de Mots – Your French Garden</title>
+    <title>Ma Maison · French Sanctuary</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Outfit:wght@300;400;500;600&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Work+Sans:wght@300;400;500&family=Allura&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FBF9F4;
+            --cream-dark: #F5F1E8;
+            --crimson: #8B2635;
+            --crimson-soft: #A64253;
+            --navy: #1B2B3A;
+            --navy-soft: #2C3E50;
+            --gold: #C9A861;
+            --gold-pale: #E5D4A6;
+            --text: #2A2520;
+            --text-soft: #6B615C;
+            --whisper: rgba(42, 37, 32, 0.04);
+            --shadow: rgba(27, 43, 58, 0.08);
+            --shadow-strong: rgba(27, 43, 58, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.7;
+            font-weight: 300;
+            overflow-x: hidden;
+        }
+
+        /* Affirmation */
+        .affirmation {
+            position: fixed;
+            top: 20%;
+            right: 3rem;
+            max-width: 280px;
+            padding: 1.5rem;
+            background: white;
+            border-left: 2px solid var(--gold);
+            box-shadow: 0 4px 20px var(--shadow);
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+            z-index: 1000;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .affirmation.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .affirmation-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .affirmation-translation {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+        }
+
+        /* Header */
+        .header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid var(--whisper);
+            background: rgba(251, 249, 244, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-main {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            font-weight: 400;
+            color: var(--crimson);
+            letter-spacing: 0.02em;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            color: var(--text-soft);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        .signature {
+            font-family: 'Allura', cursive;
+            font-size: 2rem;
+            color: var(--gold);
+            opacity: 0.7;
+        }
+
+        /* Navigation */
+        .nav {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 2rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--whisper);
+            overflow-x: auto;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-soft);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: var(--crimson);
+        }
+
+        .nav-link.active {
+            color: var(--navy);
+            border-bottom-color: var(--crimson);
+        }
+
+        /* Main */
+        .main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem 5rem;
+        }
+
+        .room {
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .room.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .room-intro {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 3rem;
+        }
+
+        .room-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .room-description {
+            font-size: 1rem;
+            color: var(--text-soft);
+            line-height: 1.8;
+        }
+
+        /* Cards */
+        .entrance-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 2px;
+            box-shadow: 0 4px 24px var(--shadow);
+            margin-bottom: 2rem;
+            border-top: 3px solid var(--gold);
+        }
+
+        .entrance-sentence {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.25rem;
+            font-weight: 400;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .entrance-translation {
+            font-size: 1.1rem;
+            color: var(--text-soft);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .entrance-note {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text);
+            padding: 1.5rem;
+            background: var(--whisper);
+            border-left: 2px solid var(--gold-pale);
+        }
+
+        /* Buttons */
+        .data-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 2px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--navy);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--navy-soft);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--navy);
+            border: 1px solid var(--navy);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cream-dark);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--crimson);
+            border: 1px solid var(--crimson);
+            font-size: 0.8rem;
+        }
+
+        .btn-danger:hover {
+            background: var(--crimson);
+            color: white;
+        }
+
+        /* Word Grid */
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .word-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 12px var(--shadow);
+            border-left: 3px solid var(--gold);
+            position: relative;
+        }
+
+        .word-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .icon-btn {
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            padding: 0.25rem;
+            border-radius: 2px;
+        }
+
+        .icon-btn:hover {
+            opacity: 1;
+        }
+
+        .word-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .word-french {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .word-article {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            margin-bottom: 1rem;
+        }
+
+        .word-contexts {
+            margin: 1rem 0;
+        }
+
+        .context {
+            margin-bottom: 1rem;
+        }
+
+        .context-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 0.25rem;
+        }
+
+        .context-sentence {
+            font-size: 0.95rem;
+            color: var(--text);
+            font-style: italic;
+        }
+
+        .word-note {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--whisper);
+            font-size: 0.9rem;
+            color: var(--text-soft);
+        }
+
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-text {
+            font-size: 1rem;
+            color: var(--text-soft);
+            line-height: 1.8;
+        }
+
+        /* Game section */
+        .game-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 12px var(--shadow);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-top: 3px solid var(--crimson);
+        }
+
+        .game-result {
+            margin-top: 1.5rem;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .game-word {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .game-prompt {
+            font-size: 0.95rem;
+            color: var(--text-soft);
+            font-style: italic;
+        }
+
+        /* Resource cards */
+        .resource-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .resource-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px var(--shadow);
+            border-left: 3px solid var(--crimson);
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-type {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .resource-link {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            word-break: break-all;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-link:hover {
+            color: var(--crimson);
+            text-decoration: underline;
+        }
+
+        .resource-note {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text);
+            font-style: italic;
+        }
+
+        .resource-status {
+            font-size: 0.8rem;
+            color: var(--text-soft);
+            margin-top: 0.5rem;
+        }
+
+        /* Speaking recordings */
+        .recording-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px var(--shadow);
+            border-left: 3px solid var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .recording-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .recording-date {
+            font-size: 0.8rem;
+            color: var(--text-soft);
+        }
+
+        .recording-transcript {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+            font-style: italic;
+        }
+
+        .recording-note {
+            font-size: 0.9rem;
+            color: var(--text);
+            padding: 1rem;
+            background: var(--whisper);
+            border-left: 2px solid var(--gold-pale);
+        }
+
+        /* Writings archive */
+        .writing-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px var(--shadow);
+            border-left: 3px solid var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .writing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--whisper);
+        }
+
+        .writing-date {
+            font-size: 0.8rem;
+            color: var(--text-soft);
+        }
+
+        .writing-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(27, 43, 58, 0.5);
+            z-index: 200;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 2px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px var(--shadow-strong);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--whisper);
+            padding-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            color: var(--navy);
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-soft);
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--crimson);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #DDD;
+            border-radius: 2px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #DDD;
+            border-radius: 2px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--gold);
+            background: var(--whisper);
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 1rem;
+            border-radius: 2px;
+        }
+
+        /* Writing area */
+        .writing-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 2px;
+            box-shadow: 0 4px 24px var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .writing-area {
+            width: 100%;
+            min-height: 400px;
+            padding: 2rem;
+            border: 1px solid #EEE;
+            border-radius: 2px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            line-height: 2;
+            color: var(--text);
+            resize: vertical;
+        }
+
+        .writing-area:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .writing-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+
+        .word-count {
+            font-size: 0.9rem;
+            color: var(--text-soft);
+        }
+
+        /* Speaking section */
+        #spoken-text {
+            margin-top: 1.5rem;
+            min-height: 60px;
+            padding: 1rem;
+            background: var(--whisper);
+            border-left: 2px solid var(--gold);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+        }
+
+        .speaking-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--whisper);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-soft);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--navy);
+        }
+
+        .tab.active {
+            color: var(--navy);
+            border-bottom-color: var(--crimson);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .affirmation {
+                right: 1rem;
+                max-width: 240px;
+            }
+
+            .header {
+                padding: 1.5rem 1rem 0.5rem;
+            }
+
+            .main {
+                padding: 2rem 1rem 3rem;
+            }
+
+            .nav {
+                padding: 1rem;
+            }
+
+            .entrance-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .entrance-sentence {
+                font-size: 1.75rem;
+            }
+
+            .word-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-actions {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .speaking-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Affirmation -->
+    <div class="affirmation" id="affirmation">
+        <div class="affirmation-text"></div>
+        <div class="affirmation-translation"></div>
+    </div>
+
     <!-- Header -->
     <header class="header">
-        <div class="header-content">
+        <div class="header-inner">
             <div class="logo">
-                <span class="logo-icon">🌿</span>
-                <h1 class="logo-text">Le Jardin de Mots</h1>
+                <div class="logo-main">Ma Maison</div>
+                <div class="logo-sub">French Sanctuary</div>
             </div>
-            <div class="quick-links">
-                <a href="https://www.collinsdictionary.com/dictionary/french-english" target="_blank" class="dict-link">Collins</a>
-                <a href="https://context.reverso.net/translation/" target="_blank" class="dict-link">Reverso</a>
-                <a href="https://www.wordreference.com/fr/" target="_blank" class="dict-link">WordReference</a>
-                <a href="https://forvo.com/" target="_blank" class="dict-link">Forvo</a>
-            </div>
+            <div class="signature">apprendre</div>
         </div>
     </header>
 
     <!-- Navigation -->
     <nav class="nav">
-        <button class="nav-btn active" data-view="garden">
-            <span class="nav-icon">🌱</span>
-            <span class="nav-label">Garden</span>
-        </button>
-        <button class="nav-btn" data-view="media">
-            <span class="nav-icon">📚</span>
-            <span class="nav-label">Media</span>
-        </button>
-        <button class="nav-btn" data-view="practice">
-            <span class="nav-icon">📝</span>
-            <span class="nav-label">Practice</span>
-        </button>
-        <button class="nav-btn" data-view="prompts">
-            <span class="nav-icon">💬</span>
-            <span class="nav-label">Prompts</span>
-        </button>
-        <button class="nav-btn" data-view="progress">
-            <span class="nav-icon">📊</span>
-            <span class="nav-label">Progress</span>
-        </button>
+        <button class="nav-link active" data-room="entree">L'Entrée</button>
+        <button class="nav-link" data-room="jardin">Le Jardin</button>
+        <button class="nav-link" data-room="lire">Lire</button>
+        <button class="nav-link" data-room="ecouter">Écouter</button>
+        <button class="nav-link" data-room="parler">Parler</button>
+        <button class="nav-link" data-room="ecrire">Écrire</button>
+        <button class="nav-link" data-room="ressources">Ressources</button>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Garden View -->
-        <section class="view active" id="garden-view">
-            <div class="view-header">
-                <h2 class="view-title">Your Vocabulary Garden</h2>
-                <div class="view-actions">
-                    <select id="theme-filter" class="theme-filter">
-                        <option value="all">All Themes</option>
-                    </select>
-                    <select id="mastery-filter" class="mastery-filter">
-                        <option value="all">All Stages</option>
-                        <option value="seed">🌱 Seeds</option>
-                        <option value="sprout">🌿 Sprouts</option>
-                        <option value="flower">🌸 Flowers</option>
-                    </select>
-                    <button class="btn-primary" id="add-word-btn">+ Add Word</button>
-                </div>
+    <!-- Main -->
+    <main class="main">
+        <!-- L'Entrée -->
+        <section class="room active" id="entree">
+            <div class="room-intro">
+                <h1 class="room-title">L'Entrée</h1>
+                <p class="room-description">
+                    Entre doucement. Prends ton temps. C'est ton espace, ton rythme.
+                </p>
             </div>
 
-            <div class="garden-grid" id="garden-grid">
-                <div class="empty-state">
-                    <span class="empty-icon">🌱</span>
-                    <p class="empty-text">Your garden awaits its first seed...</p>
-                    <button class="btn-secondary" onclick="document.getElementById('add-word-btn').click()">Plant Your First Word</button>
-                </div>
-            </div>
-        </section>
+            <div id="entrance-content"></div>
 
-        <!-- Media Library View -->
-        <section class="view" id="media-view">
-            <div class="view-header">
-                <h2 class="view-title">Media Library</h2>
-                <div class="view-actions">
-                    <select id="media-type-filter" class="media-filter">
-                        <option value="all">All Types</option>
-                        <option value="song">🎵 Songs</option>
-                        <option value="movie">🎬 Movies</option>
-                        <option value="video">📹 Videos</option>
-                        <option value="book">📖 Books</option>
-                        <option value="podcast">🎙️ Podcasts</option>
-                        <option value="article">📰 Articles</option>
-                    </select>
-                    <button class="btn-primary" id="add-media-btn">+ Add Media</button>
+            <!-- Data management -->
+            <div class="entrance-card">
+                <div class="entrance-sentence">Tes données</div>
+                <div class="entrance-translation">
+                    Tout reste sur ton appareil. Tu peux sauvegarder ou recommencer.
                 </div>
-            </div>
-
-            <div class="media-grid" id="media-grid">
-                <div class="empty-state">
-                    <span class="empty-icon">📚</span>
-                    <p class="empty-text">No media yet. Start logging what you watch, read, and listen to!</p>
-                    <button class="btn-secondary" onclick="document.getElementById('add-media-btn').click()">Add Your First Media</button>
+                <div class="data-actions">
+                    <button class="btn btn-secondary" id="export-data">
+                        ⬇ Exporter tout
+                    </button>
+                    <button class="btn btn-secondary" id="import-data">
+                        ⬆ Importer tout
+                    </button>
+                    <button class="btn btn-danger" id="reset-data">
+                        Recommencer à zéro
+                    </button>
                 </div>
             </div>
         </section>
 
-        <!-- Practice Log View -->
-        <section class="view" id="practice-view">
-            <div class="view-header">
-                <h2 class="view-title">Practice Log</h2>
-                <div class="view-actions">
-                    <button class="btn-primary" id="add-journal-btn">+ Journal Entry</button>
-                    <button class="btn-primary" id="add-speaking-btn">+ Speaking Practice</button>
+        <!-- Le Jardin -->
+        <section class="room" id="jardin">
+            <div class="room-intro">
+                <h1 class="room-title">Le Jardin</h1>
+                <p class="room-description">
+                    Plante des mots. Laisse-les grandir dans leur propre temps.
+                </p>
+            </div>
+
+            <!-- Game section -->
+            <div class="game-section">
+                <button class="btn btn-primary" id="random-word">
+                    Donne-moi un mot
+                </button>
+                <div class="game-result" id="game-result">
+                    <div class="game-prompt">Clique pour commencer</div>
                 </div>
             </div>
 
-            <div class="practice-grid" id="practice-grid">
-                <div class="empty-state">
-                    <span class="empty-icon">📝</span>
-                    <p class="empty-text">No practice logged yet. Start journaling or recording yourself!</p>
+            <div style="margin-bottom: 2rem; text-align: center;">
+                <button class="btn btn-primary" id="add-word-btn">+ Planter un nouveau mot</button>
+            </div>
+
+            <div class="word-grid" id="word-grid"></div>
+        </section>
+
+        <!-- Lire -->
+        <section class="room" id="lire">
+            <div class="room-intro">
+                <h1 class="room-title">Lire</h1>
+                <p class="room-description">
+                    Garde une trace de ce que tu lis ou veux lire.
+                </p>
+            </div>
+
+            <div style="margin-bottom: 2rem; text-align: center;">
+                <button class="btn btn-primary" id="add-reading-btn">+ Ajouter un article ou livre</button>
+            </div>
+
+            <div class="resource-grid" id="reading-grid"></div>
+        </section>
+
+        <!-- Écouter -->
+        <section class="room" id="ecouter">
+            <div class="room-intro">
+                <h1 class="room-title">Écouter</h1>
+                <p class="room-description">
+                    Chansons, vidéos, films — tout ce que tu écoutes pour apprendre.
+                </p>
+            </div>
+
+            <div style="margin-bottom: 2rem; text-align: center;">
+                <button class="btn btn-primary" id="add-listening-btn">+ Ajouter une chanson/vidéo/film</button>
+            </div>
+
+            <div class="resource-grid" id="listening-grid"></div>
+        </section>
+
+        <!-- Parler -->
+        <section class="room" id="parler">
+            <div class="room-intro">
+                <h1 class="room-title">Parler</h1>
+                <p class="room-description">
+                    Enregistre ta voix. Garde des notes. Personne ne juge.
+                </p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-tab="practice">Pratiquer</button>
+                <button class="tab" data-tab="recordings-tab">Enregistrements</button>
+            </div>
+
+            <!-- Practice tab -->
+            <div class="tab-content active" id="practice">
+                <div class="entrance-card">
+                    <button class="btn btn-primary" id="start-speaking">
+                        🎤 Parler maintenant
+                    </button>
+                    <div id="spoken-text"></div>
+                    
+                    <div class="speaking-controls">
+                        <input type="text" class="form-input" id="recording-note" placeholder="Ajoute une note sur cette session...">
+                        <button class="btn btn-secondary" id="save-recording">Sauvegarder</button>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Recordings tab -->
+            <div class="tab-content" id="recordings-tab">
+                <div id="recordings-list"></div>
             </div>
         </section>
 
-        <!-- Speaking Prompts View -->
-        <section class="view" id="prompts-view">
-            <div class="view-header">
-                <h2 class="view-title">Speaking Prompts</h2>
-                <button class="btn-primary" id="generate-prompt-btn">✨ Generate Prompt</button>
+        <!-- Écrire -->
+        <section class="room" id="ecrire">
+            <div class="room-intro">
+                <h1 class="room-title">Écrire</h1>
+                <p class="room-description">
+                    Écris ce que tu veux. Tout est sauvegardé.
+                </p>
             </div>
 
-            <div class="prompt-container" id="prompt-container">
-                <div class="empty-state">
-                    <span class="empty-icon">💬</span>
-                    <p class="empty-text">Click "Generate Prompt" to get a speaking challenge using your vocabulary!</p>
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-tab="write">Écrire</button>
+                <button class="tab" data-tab="archive">Archive</button>
+            </div>
+
+            <!-- Write tab -->
+            <div class="tab-content active" id="write">
+                <div class="writing-container">
+                    <textarea 
+                        class="writing-area" 
+                        id="writing-area"
+                        placeholder="Commence à écrire..."></textarea>
+                    
+                    <div class="writing-footer">
+                        <div class="word-count" id="word-count">0 mots</div>
+                        <button class="btn btn-primary" id="save-writing">Sauvegarder</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="sentence-builder" id="sentence-builder">
-                <h3 class="section-title">Sentence Builder Challenge</h3>
-                <button class="btn-secondary" id="random-words-btn">🎲 Get Random Words</button>
-                <div class="random-words" id="random-words"></div>
-                <textarea class="sentence-input" id="sentence-input" placeholder="Build a sentence using these words..."></textarea>
-                <button class="btn-primary" id="save-sentence-btn" style="display: none;">Save Sentence</button>
+            <!-- Archive tab -->
+            <div class="tab-content" id="archive">
+                <div id="writings-archive"></div>
             </div>
         </section>
 
-        <!-- Progress View -->
-        <section class="view" id="progress-view">
-            <div class="view-header">
-                <h2 class="view-title">Your Progress</h2>
+        <!-- Ressources -->
+        <section class="room" id="ressources">
+            <div class="room-intro">
+                <h1 class="room-title">Ressources</h1>
+                <p class="room-description">
+                    Sites web, chaînes YouTube, applications — tous tes outils pour apprendre.
+                </p>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-icon">🌱</span>
-                    <div class="stat-content">
-                        <p class="stat-value" id="total-words">0</p>
-                        <p class="stat-label">Total Words</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-icon">🌸</span>
-                    <div class="stat-content">
-                        <p class="stat-value" id="mastered-words">0</p>
-                        <p class="stat-label">Mastered</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-icon">📚</span>
-                    <div class="stat-content">
-                        <p class="stat-value" id="total-media">0</p>
-                        <p class="stat-label">Media Logged</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-icon">📝</span>
-                    <div class="stat-content">
-                        <p class="stat-value" id="practice-count">0</p>
-                        <p class="stat-label">Practice Sessions</p>
-                    </div>
-                </div>
+            <div style="margin-bottom: 2rem; text-align: center;">
+                <button class="btn btn-primary" id="add-resource-btn">+ Ajouter une ressource</button>
             </div>
 
-            <div class="motivation-box" id="motivation-box">
-                <p class="motivation-text">Welcome to your garden! 🌱</p>
-            </div>
-
-            <div class="mistakes-section">
-                <h3 class="section-title">Words to Review</h3>
-                <div class="mistakes-grid" id="mistakes-grid">
-                    <p class="empty-small">No words marked for review yet.</p>
-                </div>
-            </div>
-
-            <div class="export-section">
-                <h3 class="section-title">Backup & Sync</h3>
-                <div class="export-buttons">
-                    <button class="btn-secondary" id="export-btn">📥 Export Data</button>
-                    <button class="btn-secondary" id="import-btn">📤 Import Data</button>
-                    <input type="file" id="import-file" accept=".json" style="display: none;">
-                </div>
-            </div>
+            <div class="resource-grid" id="resources-grid"></div>
         </section>
     </main>
 
-    <!-- Modals -->
-    <!-- Add Word Modal -->
+    <!-- Word Modal -->
     <div class="modal" id="word-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Add New Word</h3>
-                <button class="modal-close" onclick="closeModal('word-modal')">&times;</button>
+                <h2 class="modal-title">Planter un mot</h2>
+                <button class="close-btn" onclick="closeModal('word-modal')">&times;</button>
             </div>
-            <form id="word-form" class="modal-form">
+            
+            <form id="word-form">
                 <div class="form-group">
-                    <label>Word *</label>
-                    <input type="text" id="word-input" required placeholder="maison">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select id="gender-input">
-                            <option value="">None</option>
-                            <option value="m">♂ Masculine (le)</option>
-                            <option value="f">♀ Feminine (la)</option>
-                            <option value="p">Plural (les)</option>
-                        </select>
+                    <label class="form-label">Image (optionnel)</label>
+                    <div class="image-upload-area" id="word-image-upload">
+                        <p>Clique pour ajouter une image</p>
+                        <img id="word-image-preview" class="image-preview" style="display: none;">
                     </div>
-                    <div class="form-group">
-                        <label>Article</label>
-                        <input type="text" id="article-input" placeholder="la">
-                    </div>
+                    <input type="file" id="word-image-input" accept="image/*" style="display: none;">
                 </div>
-                <div class="form-group">
-                    <label>IPA (Pronunciation)</label>
-                    <input type="text" id="ipa-input" placeholder="mɛ.zɔ̃">
-                </div>
-                <div class="form-group">
-                    <label>Meaning *</label>
-                    <input type="text" id="meaning-input" required placeholder="house, home">
-                </div>
-                <div class="form-group">
-                    <label>Example Sentences</label>
-                    <textarea id="examples-input" rows="3" placeholder="La maison est grande.&#10;J'habite dans une belle maison."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Theme/Topic</label>
-                    <input type="text" id="theme-input" list="theme-list" placeholder="housing, daily-life">
-                    <datalist id="theme-list"></datalist>
-                </div>
-                <div class="form-group">
-                    <label>Image URL (optional)</label>
-                    <input type="url" id="image-input" placeholder="https://...">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="closeModal('word-modal')">Cancel</button>
-                    <button type="submit" class="btn-primary">Add Word</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Add Media Modal -->
-    <div class="modal" id="media-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Add Media</h3>
-                <button class="modal-close" onclick="closeModal('media-modal')">&times;</button>
-            </div>
-            <form id="media-form" class="modal-form">
                 <div class="form-group">
-                    <label>Type *</label>
-                    <select id="media-type-input" required>
-                        <option value="song">🎵 Song</option>
-                        <option value="movie">🎬 Movie</option>
-                        <option value="video">📹 Video</option>
-                        <option value="book">📖 Book</option>
-                        <option value="podcast">🎙️ Podcast</option>
-                        <option value="article">📰 Article</option>
+                    <label class="form-label">Le mot en français</label>
+                    <input type="text" class="form-input" id="word-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Article (optionnel)</label>
+                    <select class="form-select" id="article-input">
+                        <option value="">—</option>
+                        <option value="le">le (masculin)</option>
+                        <option value="la">la (féminin)</option>
+                        <option value="l'">l' (voyelle)</option>
+                        <option value="les">les (pluriel)</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label>Title *</label>
-                    <input type="text" id="media-title-input" required placeholder="La Vie en Rose">
+                    <label class="form-label">Genre (optionnel)</label>
+                    <select class="form-select" id="gender-input">
+                        <option value="">—</option>
+                        <option value="m">masculin</option>
+                        <option value="f">féminin</option>
+                    </select>
                 </div>
-                <div class="form-group" id="artist-group">
-                    <label>Artist</label>
-                    <input type="text" id="artist-input" placeholder="Édith Piaf">
-                </div>
-                <div class="form-group" id="author-group" style="display: none;">
-                    <label>Author</label>
-                    <input type="text" id="author-input" placeholder="Antoine de Saint-Exupéry">
-                </div>
+
                 <div class="form-group">
-                    <label>URL</label>
-                    <input type="url" id="media-url-input" placeholder="https://music.youtube.com/...">
+                    <label class="form-label">Contexte neutre</label>
+                    <input type="text" class="form-input" id="context1" placeholder="Une phrase simple avec ce mot">
                 </div>
+
                 <div class="form-group">
-                    <label>Words from this media (comma-separated)</label>
-                    <input type="text" id="media-words-input" placeholder="rose, amour, yeux">
+                    <label class="form-label">Contexte émotionnel (optionnel)</label>
+                    <input type="text" class="form-input" id="context2" placeholder="Une phrase qui a du sens pour toi">
                 </div>
+
                 <div class="form-group">
-                    <label>Notes</label>
-                    <textarea id="media-notes-input" rows="3" placeholder="Beautiful slow song, good for pronunciation..."></textarea>
+                    <label class="form-label">Contexte idiomatique (optionnel)</label>
+                    <input type="text" class="form-input" id="context3" placeholder="Expression ou phrase naturelle">
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Note personnelle (optionnel)</label>
+                    <textarea class="form-textarea" id="note-input" placeholder="Pourquoi ce mot t'intéresse ? D'où vient-il ?"></textarea>
+                </div>
+
                 <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="closeModal('media-modal')">Cancel</button>
-                    <button type="submit" class="btn-primary">Add Media</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('word-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Planter</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Add Journal Modal -->
-    <div class="modal" id="journal-modal">
+    <!-- Edit Word Modal -->
+    <div class="modal" id="edit-word-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Journal Entry</h3>
-                <button class="modal-close" onclick="closeModal('journal-modal')">&times;</button>
+                <h2 class="modal-title">Modifier le mot</h2>
+                <button class="close-btn" onclick="closeModal('edit-word-modal')">&times;</button>
             </div>
-            <form id="journal-form" class="modal-form">
+            
+            <form id="edit-word-form">
+                <input type="hidden" id="edit-word-id">
+                
                 <div class="form-group">
-                    <label>Write in French</label>
-                    <textarea id="journal-entry-input" rows="8" required placeholder="Aujourd'hui, j'ai regardé..."></textarea>
+                    <label class="form-label">Image (optionnel)</label>
+                    <div class="image-upload-area" id="edit-word-image-upload">
+                        <p>Clique pour changer l'image</p>
+                        <img id="edit-word-image-preview" class="image-preview" style="display: none;">
+                    </div>
+                    <input type="file" id="edit-word-image-input" accept="image/*" style="display: none;">
                 </div>
+
                 <div class="form-group">
-                    <label>Reflection / What you learned</label>
-                    <textarea id="journal-reflection-input" rows="3" placeholder="Struggled with past tense conjugations..."></textarea>
+                    <label class="form-label">Le mot en français</label>
+                    <input type="text" class="form-input" id="edit-word-input" required>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Article (optionnel)</label>
+                    <select class="form-select" id="edit-article-input">
+                        <option value="">—</option>
+                        <option value="le">le (masculin)</option>
+                        <option value="la">la (féminin)</option>
+                        <option value="l'">l' (voyelle)</option>
+                        <option value="les">les (pluriel)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Genre (optionnel)</label>
+                    <select class="form-select" id="edit-gender-input">
+                        <option value="">—</option>
+                        <option value="m">masculin</option>
+                        <option value="f">féminin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contexte neutre</label>
+                    <input type="text" class="form-input" id="edit-context1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contexte émotionnel (optionnel)</label>
+                    <input type="text" class="form-input" id="edit-context2">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contexte idiomatique (optionnel)</label>
+                    <input type="text" class="form-input" id="edit-context3">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Note personnelle (optionnel)</label>
+                    <textarea class="form-textarea" id="edit-note-input"></textarea>
+                </div>
+
                 <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="closeModal('journal-modal')">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Entry</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-word-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Add Speaking Modal -->
-    <div class="modal" id="speaking-modal">
+    <!-- Reading Modal -->
+    <div class="modal" id="reading-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Speaking Practice</h3>
-                <button class="modal-close" onclick="closeModal('speaking-modal')">&times;</button>
+                <h2 class="modal-title">Ajouter à ta bibliothèque</h2>
+                <button class="close-btn" onclick="closeModal('reading-modal')">&times;</button>
             </div>
-            <form id="speaking-form" class="modal-form">
+            
+            <form id="reading-form">
                 <div class="form-group">
-                    <label>Prompt / Question</label>
-                    <input type="text" id="speaking-prompt-input" required placeholder="Décris ta journée">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="reading-type" required>
+                        <option value="article">Article</option>
+                        <option value="book">Livre</option>
+                        <option value="blog">Blog</option>
+                        <option value="other">Autre</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
-                    <label>Duration (minutes)</label>
-                    <input type="number" id="speaking-duration-input" min="0.5" step="0.5" placeholder="2">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-input" id="reading-title" required>
                 </div>
+
                 <div class="form-group">
-                    <label>Notes / What you struggled with</label>
-                    <textarea id="speaking-notes-input" rows="4" placeholder="Got stuck on 'I went'—need to review passé composé..."></textarea>
+                    <label class="form-label">Lien (optionnel)</label>
+                    <input type="url" class="form-input" id="reading-link" placeholder="https://...">
                 </div>
+
                 <div class="form-group">
-                    <label>Words attempted (comma-separated)</label>
-                    <input type="text" id="speaking-words-input" placeholder="aller, manger, dormir">
+                    <label class="form-label">Statut</label>
+                    <select class="form-select" id="reading-status">
+                        <option value="want">Je veux lire</option>
+                        <option value="reading">En train de lire</option>
+                        <option value="done">Lu</option>
+                    </select>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="reading-note" placeholder="Pourquoi tu veux lire ça ? Qu'est-ce que tu en penses ?"></textarea>
+                </div>
+
                 <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="closeModal('speaking-modal')">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Practice</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('reading-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Word Detail Modal -->
-    <div class="modal" id="word-detail-modal">
-        <div class="modal-content word-detail-content">
+    <!-- Listening Modal -->
+    <div class="modal" id="listening-modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="detail-word-title"></h3>
-                <button class="modal-close" onclick="closeModal('word-detail-modal')">&times;</button>
+                <h2 class="modal-title">Ajouter à écouter</h2>
+                <button class="close-btn" onclick="closeModal('listening-modal')">&times;</button>
             </div>
-            <div class="word-detail-body" id="word-detail-body">
-                <!-- Populated dynamically -->
-            </div>
-            <div class="word-detail-actions">
-                <button class="btn-action" id="review-word-btn">✓ Reviewed</button>
-                <button class="btn-action mistake-btn" id="mistake-word-btn">⚠ Need to Review</button>
-                <button class="btn-action delete-btn" id="delete-word-btn">Delete</button>
-            </div>
+            
+            <form id="listening-form">
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="listening-type" required>
+                        <option value="song">Chanson</option>
+                        <option value="video">Vidéo YouTube</option>
+                        <option value="movie">Film</option>
+                        <option value="series">Série</option>
+                        <option value="podcast">Podcast</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-input" id="listening-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien (optionnel)</label>
+                    <input type="url" class="form-input" id="listening-link" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="listening-note" placeholder="Qu'est-ce que tu apprends ? Expressions intéressantes ?"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('listening-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Resources Modal -->
+    <div class="modal" id="resources-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter une ressource</h2>
+                <button class="close-btn" onclick="closeModal('resources-modal')">&times;</button>
+            </div>
+            
+            <form id="resources-form">
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="resources-type" required>
+                        <option value="website">Site Web</option>
+                        <option value="youtube">Chaîne YouTube</option>
+                        <option value="app">Application</option>
+                        <option value="podcast">Podcast</option>
+                        <option value="tool">Outil</option>
+                        <option value="course">Cours</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-input" id="resources-name" required placeholder="Ex: Duolingo, French Today...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-input" id="resources-description" placeholder="À quoi sert cette ressource ?">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien (optionnel mais recommandé)</label>
+                    <input type="url" class="form-input" id="resources-link" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes personnelles</label>
+                    <textarea class="form-textarea" id="resources-note" placeholder="Pourquoi tu aimes cette ressource ? Comment tu l'utilises ?"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('resources-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="import-file-input" accept=".json" style="display: none;">
+
+    <script>
+        // ============================================
+        // DATA MANAGEMENT
+        // ============================================
+        let vocabulary = JSON.parse(localStorage.getItem('vocabulary') || '[]');
+        let writings = JSON.parse(localStorage.getItem('writings') || '[]');
+        let readingList = JSON.parse(localStorage.getItem('readingList') || '[]');
+        let listeningList = JSON.parse(localStorage.getItem('listeningList') || '[]');
+        let recordings = JSON.parse(localStorage.getItem('recordings') || '[]');
+        let resourcesList = JSON.parse(localStorage.getItem('resourcesList') || '[]');
+
+        let currentRecording = null;
+
+        // ============================================
+        // IMPORT / EXPORT
+        // ============================================
+        document.getElementById('export-data').addEventListener('click', () => {
+            const data = {
+                vocabulary,
+                writings,
+                readingList,
+                listeningList,
+                recordings,
+                resourcesList,
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ma-maison-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('import-data').addEventListener('click', () => {
+            document.getElementById('import-file-input').click();
+        });
+
+        document.getElementById('import-file-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    if (confirm('Importer ces données ? Cela remplacera tout ce que tu as actuellement.')) {
+                        vocabulary = data.vocabulary || [];
+                        writings = data.writings || [];
+                        readingList = data.readingList || [];
+                        listeningList = data.listeningList || [];
+                        recordings = data.recordings || [];
+                        resourcesList = data.resourcesList || [];
+                        
+                        localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                        localStorage.setItem('writings', JSON.stringify(writings));
+                        localStorage.setItem('readingList', JSON.stringify(readingList));
+                        localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                        localStorage.setItem('recordings', JSON.stringify(recordings));
+                        localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                        
+                        renderGarden();
+                        renderReadingList();
+                        renderListeningList();
+                        renderRecordings();
+                        renderWritingsArchive();
+                        renderResourcesList();
+                        
+                        alert('Données importées avec succès ✓');
+                    }
+                } catch (err) {
+                    alert('Erreur : fichier invalide');
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+
+        document.getElementById('reset-data').addEventListener('click', () => {
+            if (confirm('Vraiment tout effacer ? Cette action est irréversible.')) {
+                if (confirm('Dernière confirmation — tu es sûr ?')) {
+                    localStorage.clear();
+                    vocabulary = [];
+                    writings = [];
+                    readingList = [];
+                    listeningList = [];
+                    recordings = [];
+                    resourcesList = [];
+                    renderGarden();
+                    renderReadingList();
+                    renderListeningList();
+                    renderRecordings();
+                    renderWritingsArchive();
+                    renderResourcesList();
+                    alert('Tout a été effacé. Tu peux recommencer.');
+                }
+            }
+        });
+
+        // ============================================
+        // AFFIRMATIONS
+        // ============================================
+        const affirmations = [
+            { fr: "Tu es en train d'apprendre.", en: "You are learning." },
+            { fr: "Chaque mot compte.", en: "Every word counts." },
+            { fr: "C'est bien d'aller lentement.", en: "It's good to go slowly." },
+            { fr: "Tu n'as rien à prouver.", en: "You have nothing to prove." },
+            { fr: "La langue t'appartient déjà.", en: "The language already belongs to you." },
+            { fr: "Être débutant, c'est courageux.", en: "Being a beginner is brave." },
+            { fr: "Ce que tu fais compte.", en: "What you do matters." },
+            { fr: "Tu es déjà assez.", en: "You are already enough." },
+            { fr: "La beauté n'est pas une faiblesse.", en: "Beauty is not weakness." },
+            { fr: "Tu apprends plus vite que tu crois.", en: "You learn faster than you think." },
+            { fr: "Prends ton temps.", en: "Take your time." },
+            { fr: "Tu es capable.", en: "You are capable." }
+        ];
+
+        function showAffirmation() {
+            const affEl = document.getElementById('affirmation');
+            const aff = affirmations[Math.floor(Math.random() * affirmations.length)];
+            
+            affEl.querySelector('.affirmation-text').textContent = aff.fr;
+            affEl.querySelector('.affirmation-translation').textContent = aff.en;
+            
+            affEl.classList.add('visible');
+            
+            setTimeout(() => {
+                affEl.classList.remove('visible');
+            }, 8000);
+        }
+
+        setTimeout(() => {
+            showAffirmation();
+            setInterval(showAffirmation, 180000);
+        }, 30000);
+
+        // ============================================
+        // ENTRANCE PHRASES
+        // ============================================
+        const entrancePhrases = [
+            {
+                sentence: "Entre.",
+                translation: "Come in.",
+                note: "The imperative form of 'entrer' (to enter). A simple, direct welcome. Notice how French commands can be gentle—they invite rather than order."
+            },
+            {
+                sentence: "Prends ton temps.",
+                translation: "Take your time.",
+                note: "From 'prendre' (to take). This phrase embodies permission to slow down. The reflexive 'ton temps' (your time) makes it personal."
+            },
+            {
+                sentence: "Reste ici.",
+                translation: "Stay here.",
+                note: "From 'rester' (to stay). An invitation to presence. 'Ici' (here) grounds you in the moment."
+            }
+        ];
+
+        function renderEntrance() {
+            const container = document.getElementById('entrance-content');
+            container.innerHTML = entrancePhrases.map(p => `
+                <div class="entrance-card">
+                    <div class="entrance-sentence">${p.sentence}</div>
+                    <div class="entrance-translation">${p.translation}</div>
+                    <div class="entrance-note">${p.note}</div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // IMAGE HANDLING
+        // ============================================
+        function setupImageUpload(uploadAreaId, inputId, previewId) {
+            const uploadArea = document.getElementById(uploadAreaId);
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+
+            uploadArea.addEventListener('click', () => input.click());
+
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ============================================
+        // VOCABULARY GARDEN
+        // ============================================
+        function renderGarden() {
+            const grid = document.getElementById('word-grid');
+            
+            if (vocabulary.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">🌱</div>
+                        <div class="empty-text">
+                            Ton jardin attend sa première graine.<br>
+                            Plante un mot quand tu es prêt.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = vocabulary.map(word => `
+                <div class="word-card">
+                    <div class="word-actions">
+                        <button class="icon-btn" onclick="editWord(${word.id})" title="Modifier">✏️</button>
+                        <button class="icon-btn" onclick="deleteWord(${word.id})" title="Supprimer">🗑️</button>
+                    </div>
+                    ${word.image ? `<img src="${word.image}" class="word-image" alt="${word.french}">` : ''}
+                    <div class="word-french">${word.french}</div>
+                    ${word.article ? `<div class="word-article">${word.article}</div>` : ''}
+                    <div class="word-contexts">
+                        ${word.contexts[0] ? `
+                            <div class="context">
+                                <div class="context-label">Neutre</div>
+                                <div class="context-sentence">${word.contexts[0]}</div>
+                            </div>
+                        ` : ''}
+                        ${word.contexts[1] ? `
+                            <div class="context">
+                                <div class="context-label">Émotionnel</div>
+                                <div class="context-sentence">${word.contexts[1]}</div>
+                            </div>
+                        ` : ''}
+                        ${word.contexts[2] ? `
+                            <div class="context">
+                                <div class="context-label">Idiomatique</div>
+                                <div class="context-sentence">${word.contexts[2]}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    ${word.note ? `<div class="word-note">${word.note}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            const forms = ['word-form', 'edit-word-form', 'reading-form', 'listening-form', 'resources-form'];
+            forms.forEach(formId => {
+                const form = document.getElementById(formId);
+                if (form) form.reset();
+            });
+            
+            // Reset image previews
+            const previews = ['word-image-preview', 'edit-word-image-preview'];
+            previews.forEach(previewId => {
+                const preview = document.getElementById(previewId);
+                if (preview) {
+                    preview.style.display = 'none';
+                    preview.src = '';
+                }
+            });
+        }
+
+        function editWord(id) {
+            const word = vocabulary.find(w => w.id === id);
+            if (!word) return;
+
+            document.getElementById('edit-word-id').value = id;
+            document.getElementById('edit-word-input').value = word.french;
+            document.getElementById('edit-article-input').value = word.article || '';
+            document.getElementById('edit-gender-input').value = word.gender || '';
+            document.getElementById('edit-context1').value = word.contexts[0] || '';
+            document.getElementById('edit-context2').value = word.contexts[1] || '';
+            document.getElementById('edit-context3').value = word.contexts[2] || '';
+            document.getElementById('edit-note-input').value = word.note || '';
+
+            if (word.image) {
+                const preview = document.getElementById('edit-word-image-preview');
+                preview.src = word.image;
+                preview.style.display = 'block';
+            }
+
+            openModal('edit-word-modal');
+        }
+
+        function deleteWord(id) {
+            if (confirm('Supprimer ce mot ?')) {
+                vocabulary = vocabulary.filter(w => w.id !== id);
+                localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                renderGarden();
+            }
+        }
+
+        // ============================================
+        // ADD WORD
+        // ============================================
+        document.getElementById('word-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const imagePreview = document.getElementById('word-image-preview');
+            
+            const word = {
+                id: Date.now(),
+                french: document.getElementById('word-input').value,
+                article: document.getElementById('article-input').value,
+                gender: document.getElementById('gender-input').value,
+                contexts: [
+                    document.getElementById('context1').value,
+                    document.getElementById('context2').value,
+                    document.getElementById('context3').value
+                ].filter(Boolean),
+                note: document.getElementById('note-input').value,
+                image: imagePreview.style.display !== 'none' ? imagePreview.src : null,
+                created: new Date().toISOString()
+            };
+
+            vocabulary.push(word);
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            renderGarden();
+            closeModal('word-modal');
+        });
+
+        // ============================================
+        // EDIT WORD
+        // ============================================
+        document.getElementById('edit-word-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('edit-word-id').value);
+            const index = vocabulary.findIndex(w => w.id === id);
+            
+            if (index === -1) return;
+
+            const imagePreview = document.getElementById('edit-word-image-preview');
+
+            vocabulary[index] = {
+                ...vocabulary[index],
+                french: document.getElementById('edit-word-input').value,
+                article: document.getElementById('edit-article-input').value,
+                gender: document.getElementById('edit-gender-input').value,
+                contexts: [
+                    document.getElementById('edit-context1').value,
+                    document.getElementById('edit-context2').value,
+                    document.getElementById('edit-context3').value
+                ].filter(Boolean),
+                note: document.getElementById('edit-note-input').value,
+                image: imagePreview.style.display !== 'none' ? imagePreview.src : vocabulary[index].image
+            };
+
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            renderGarden();
+            closeModal('edit-word-modal');
+        });
+
+        // ============================================
+        // RANDOM WORD GAME
+        // ============================================
+        document.getElementById('random-word').addEventListener('click', () => {
+            if (vocabulary.length === 0) {
+                document.getElementById('game-result').innerHTML = `
+                    <div class="game-prompt">Plante quelques mots d'abord</div>
+                `;
+                return;
+            }
+
+            const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            const prompts = [
+                "Utilise ce mot dans une phrase",
+                "Dis-le à voix haute",
+                "Écris une émotion avec ce mot",
+                "Trouve un synonyme",
+                "Conjugue ce verbe (ou invente une phrase)",
+                "Dessine ce que ce mot signifie pour toi"
+            ];
+            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+
+            document.getElementById('game-result').innerHTML = `
+                <div class="game-word">${word.french}</div>
+                <div class="game-prompt">${prompt}</div>
+            `;
+        });
+
+        // ============================================
+        // READING LIST
+        // ============================================
+        function renderReadingList() {
+            const grid = document.getElementById('reading-grid');
+            
+            if (readingList.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">📚</div>
+                        <div class="empty-text">Ta bibliothèque est vide</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const statusLabels = {
+                want: 'Je veux lire',
+                reading: 'En train de lire',
+                done: 'Lu'
+            };
+
+            grid.innerHTML = readingList.map(item => `
+                <div class="resource-card">
+                    <div class="resource-info">
+                        <div class="resource-type">${item.type}</div>
+                        <div class="resource-title">${item.title}</div>
+                        ${item.link ? `<a href="${item.link}" class="resource-link" target="_blank" rel="noopener noreferrer">${item.link}</a>` : ''}
+                        ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
+                        <div class="resource-status">${statusLabels[item.status]}</div>
+                    </div>
+                    <button class="icon-btn" onclick="deleteReading(${item.id})" title="Supprimer">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteReading(id) {
+            if (confirm('Supprimer cet article ?')) {
+                readingList = readingList.filter(r => r.id !== id);
+                localStorage.setItem('readingList', JSON.stringify(readingList));
+                renderReadingList();
+            }
+        }
+
+        document.getElementById('add-reading-btn').addEventListener('click', () => {
+            openModal('reading-modal');
+        });
+
+        document.getElementById('reading-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const item = {
+                id: Date.now(),
+                type: document.getElementById('reading-type').value,
+                title: document.getElementById('reading-title').value,
+                link: document.getElementById('reading-link').value,
+                status: document.getElementById('reading-status').value,
+                note: document.getElementById('reading-note').value,
+                created: new Date().toISOString()
+            };
+
+            readingList.push(item);
+            localStorage.setItem('readingList', JSON.stringify(readingList));
+            renderReadingList();
+            closeModal('reading-modal');
+        });
+
+        // ============================================
+        // LISTENING LIST
+        // ============================================
+        function renderListeningList() {
+            const grid = document.getElementById('listening-grid');
+            
+            if (listeningList.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">🎵</div>
+                        <div class="empty-text">Ta playlist est vide</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = listeningList.map(item => `
+                <div class="resource-card">
+                    <div class="resource-info">
+                        <div class="resource-type">${item.type}</div>
+                        <div class="resource-title">${item.title}</div>
+                        ${item.link ? `<a href="${item.link}" class="resource-link" target="_blank" rel="noopener noreferrer">${item.link}</a>` : ''}
+                        ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
+                    </div>
+                    <button class="icon-btn" onclick="deleteListening(${item.id})" title="Supprimer">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteListening(id) {
+            if (confirm('Supprimer ce média ?')) {
+                listeningList = listeningList.filter(l => l.id !== id);
+                localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                renderListeningList();
+            }
+        }
+
+        document.getElementById('add-listening-btn').addEventListener('click', () => {
+            openModal('listening-modal');
+        });
+
+        document.getElementById('listening-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const item = {
+                id: Date.now(),
+                type: document.getElementById('listening-type').value,
+                title: document.getElementById('listening-title').value,
+                link: document.getElementById('listening-link').value,
+                note: document.getElementById('listening-note').value,
+                created: new Date().toISOString()
+            };
+
+            listeningList.push(item);
+            localStorage.setItem('listeningList', JSON.stringify(listeningList));
+            renderListeningList();
+            closeModal('listening-modal');
+        });
+
+        // ============================================
+        // RESOURCES LIST
+        // ============================================
+        function renderResourcesList() {
+            const grid = document.getElementById('resources-grid');
+            
+            if (resourcesList.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">🔗</div>
+                        <div class="empty-text">
+                            Aucune ressource pour le moment.<br>
+                            Ajoute des sites web, chaînes YouTube ou applications que tu aimes.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const typeLabels = {
+                website: 'Site Web',
+                youtube: 'YouTube',
+                app: 'Application',
+                podcast: 'Podcast',
+                tool: 'Outil',
+                course: 'Cours',
+                other: 'Autre'
+            };
+
+            grid.innerHTML = resourcesList.map(item => `
+                <div class="resource-card">
+                    <div class="resource-info">
+                        <div class="resource-type">${typeLabels[item.type] || item.type}</div>
+                        <div class="resource-title">${item.name}</div>
+                        ${item.description ? `<div class="resource-note" style="margin-bottom: 0.5rem;">${item.description}</div>` : ''}
+                        ${item.link ? `<a href="${item.link}" class="resource-link" target="_blank" rel="noopener noreferrer">${item.link}</a>` : ''}
+                        ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
+                    </div>
+                    <button class="icon-btn" onclick="deleteResource(${item.id})" title="Supprimer">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteResource(id) {
+            if (confirm('Supprimer cette ressource ?')) {
+                resourcesList = resourcesList.filter(r => r.id !== id);
+                localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                renderResourcesList();
+            }
+        }
+
+        document.getElementById('add-resource-btn').addEventListener('click', () => {
+            openModal('resources-modal');
+        });
+
+        document.getElementById('resources-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const item = {
+                id: Date.now(),
+                type: document.getElementById('resources-type').value,
+                name: document.getElementById('resources-name').value,
+                description: document.getElementById('resources-description').value,
+                link: document.getElementById('resources-link').value,
+                note: document.getElementById('resources-note').value,
+                created: new Date().toISOString()
+            };
+
+            resourcesList.push(item);
+            localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+            renderResourcesList();
+            closeModal('resources-modal');
+        });
+
+        // ============================================
+        // SPEAKING - FIXED VERSION
+        // ============================================
+        function initializeSpeechRecognition() {
+            const startSpeakingBtn = document.getElementById('start-speaking');
+            const spokenText = document.getElementById('spoken-text');
+            
+            if (!startSpeakingBtn) return;
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (SpeechRecognition) {
+                let recognition;
+                let isRecognizing = false;
+                
+                try {
+                    recognition = new SpeechRecognition();
+                    recognition.lang = 'fr-FR';
+                    recognition.continuous = false;
+                    recognition.interimResults = false;
+                    
+                    startSpeakingBtn.addEventListener('click', function() {
+                        if (isRecognizing) {
+                            recognition.stop();
+                            isRecognizing = false;
+                            return;
+                        }
+                        
+                        spokenText.textContent = 'Écoute... (parle maintenant)';
+                        try {
+                            recognition.start();
+                            isRecognizing = true;
+                        } catch (error) {
+                            spokenText.textContent = 'Erreur de démarrage. Réessaie.';
+                            isRecognizing = false;
+                        }
+                    });
+                    
+                    recognition.onresult = function(event) {
+                        isRecognizing = false;
+                        const transcript = event.results[0][0].transcript;
+                        spokenText.textContent = transcript;
+                        currentRecording = transcript;
+                    };
+                    
+                    recognition.onerror = function(event) {
+                        isRecognizing = false;
+                        if (event.error === 'no-speech') {
+                            spokenText.textContent = 'Pas de parole détectée. Réessaie.';
+                        } else if (event.error === 'audio-capture') {
+                            spokenText.textContent = 'Microphone non détecté. Vérifie tes paramètres.';
+                        } else if (event.error === 'not-allowed') {
+                            spokenText.textContent = 'Permission microphone refusée. Autorise-le dans les paramètres du navigateur.';
+                        } else {
+                            spokenText.textContent = 'Erreur: ' + event.error;
+                        }
+                    };
+                    
+                    recognition.onend = function() {
+                        isRecognizing = false;
+                    };
+                    
+                } catch (error) {
+                    startSpeakingBtn.disabled = true;
+                    spokenText.textContent = 'La reconnaissance vocale ne fonctionne pas dans ce navigateur. Essaie Chrome ou Edge.';
+                }
+            } else {
+                startSpeakingBtn.disabled = true;
+                spokenText.textContent = 'La reconnaissance vocale n\'est pas supportée par ton navigateur. Utilise Chrome ou Edge.';
+            }
+        }
+
+        document.getElementById('save-recording').addEventListener('click', () => {
+            if (!currentRecording) {
+                alert('Parle d\'abord pour enregistrer quelque chose');
+                return;
+            }
+
+            const recording = {
+                id: Date.now(),
+                transcript: currentRecording,
+                note: document.getElementById('recording-note').value,
+                created: new Date().toISOString()
+            };
+
+            recordings.push(recording);
+            localStorage.setItem('recordings', JSON.stringify(recordings));
+            
+            document.getElementById('spoken-text').textContent = '';
+            document.getElementById('recording-note').value = '';
+            currentRecording = null;
+
+            renderRecordings();
+            alert('Sauvegardé ✓');
+        });
+
+        function renderRecordings() {
+            const list = document.getElementById('recordings-list');
+            
+            if (recordings.length === 0) {
+                list.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">🎤</div>
+                        <div class="empty-text">Pas encore d'enregistrements</div>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = recordings.map(rec => `
+                <div class="recording-card">
+                    <div class="recording-header">
+                        <div class="recording-date">${new Date(rec.created).toLocaleDateString('fr-FR')}</div>
+                        <button class="icon-btn" onclick="deleteRecording(${rec.id})">🗑️</button>
+                    </div>
+                    <div class="recording-transcript">${rec.transcript}</div>
+                    ${rec.note ? `<div class="recording-note">${rec.note}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function deleteRecording(id) {
+            if (confirm('Supprimer cet enregistrement ?')) {
+                recordings = recordings.filter(r => r.id !== id);
+                localStorage.setItem('recordings', JSON.stringify(recordings));
+                renderRecordings();
+            }
+        }
+
+        // ============================================
+        // WRITING
+        // ============================================
+        const writingArea = document.getElementById('writing-area');
+        const wordCountEl = document.getElementById('word-count');
+
+        writingArea.addEventListener('input', () => {
+            const text = writingArea.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            wordCountEl.textContent = `${words} mot${words !== 1 ? 's' : ''}`;
+        });
+
+        document.getElementById('save-writing').addEventListener('click', () => {
+            const text = writingArea.value.trim();
+            if (!text) {
+                alert('Écris quelque chose d\'abord');
+                return;
+            }
+
+            const writing = {
+                id: Date.now(),
+                text: text,
+                created: new Date().toISOString()
+            };
+
+            writings.push(writing);
+            localStorage.setItem('writings', JSON.stringify(writings));
+
+            writingArea.value = '';
+            wordCountEl.textContent = '0 mots';
+            
+            renderWritingsArchive();
+            alert('Sauvegardé ✓');
+        });
+
+        function renderWritingsArchive() {
+            const archive = document.getElementById('writings-archive');
+            
+            if (writings.length === 0) {
+                archive.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">📝</div>
+                        <div class="empty-text">Aucune écriture sauvegardée</div>
+                    </div>
+                `;
+                return;
+            }
+
+            archive.innerHTML = writings.map(writing => `
+                <div class="writing-card">
+                    <div class="writing-header">
+                        <div class="writing-date">${new Date(writing.created).toLocaleDateString('fr-FR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}</div>
+                        <button class="icon-btn" onclick="deleteWriting(${writing.id})">🗑️</button>
+                    </div>
+                    <div class="writing-text">${writing.text}</div>
+                </div>
+            `).join('');
+        }
+
+        function deleteWriting(id) {
+            if (confirm('Supprimer cette écriture ?')) {
+                writings = writings.filter(w => w.id !== id);
+                localStorage.setItem('writings', JSON.stringify(writings));
+                renderWritingsArchive();
+            }
+        }
+
+        // ============================================
+        // TABS
+        // ============================================
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const parent = tab.closest('section');
+                const targetId = tab.dataset.tab;
+                
+                parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                parent.querySelector(`#${targetId}`).classList.add('active');
+            });
+        });
+
+        // ============================================
+        // NAVIGATION
+        // ============================================
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const room = link.dataset.room;
+                
+                document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                document.getElementById(room).classList.add('active');
+                link.classList.add('active');
+            });
+        });
+
+        // ============================================
+        // INITIALIZE - FIXED
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEntrance();
+            renderGarden();
+            renderReadingList();
+            renderListeningList();
+            renderRecordings();
+            renderWritingsArchive();
+            renderResourcesList();
+            
+            // FIX: Properly attach event listener for add word button
+            const addWordBtn = document.getElementById('add-word-btn');
+            if (addWordBtn) {
+                addWordBtn.addEventListener('click', function() {
+                    openModal('word-modal');
+                });
+            }
+
+            setupImageUpload('word-image-upload', 'word-image-input', 'word-image-preview');
+            setupImageUpload('edit-word-image-upload', 'edit-word-image-input', 'edit-word-image-preview');
+            
+            // Initialize speech recognition
+            initializeSpeechRecognition();
+        });
+    </script>
 </body>
 </html>
