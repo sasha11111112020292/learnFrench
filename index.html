@@ -1558,13 +1558,23 @@
 
                 <!-- Recording Interface -->
                 <div class="entrance-card">
-                    <button class="btn-speak" id="start-speaking">
-                        <svg class="mic-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                        </svg>
-                        Commencer à parler
-                    </button>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        <button class="btn-speak" id="start-speaking">
+                            <svg class="mic-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
+                            Commencer à parler
+                        </button>
+                        
+                        <button class="btn-speak" onclick="document.getElementById('audio-upload-input').click()">
+                            <svg class="mic-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                            </svg>
+                            Télécharger un audio
+                        </button>
+                        <input type="file" id="audio-upload-input" accept="audio/*" style="display: none;">
+                    </div>
                     
                     <div id="speaking-indicator" style="display: none; text-align: center; margin: 1rem 0; color: var(--crimson); font-weight: 500;">
                         <span style="display: inline-block; animation: pulse 1.5s ease-in-out infinite;">● En écoute...</span>
@@ -3125,80 +3135,72 @@
             
             if (!startSpeakingBtn) return;
             
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let mediaRecorder;
+            let audioChunks = [];
+            let isRecording = false;
             
-            if (SpeechRecognition) {
-                let recognition;
-                let isRecognizing = false;
-                
-                try {
-                    recognition = new SpeechRecognition();
-                    recognition.lang = 'fr-FR';
-                    recognition.continuous = false;
-                    recognition.interimResults = false;
-                    
-                    startSpeakingBtn.addEventListener('click', function() {
-                        if (isRecognizing) {
-                            recognition.stop();
-                            isRecognizing = false;
-                            indicator.style.display = 'none';
-                            return;
-                        }
+            startSpeakingBtn.addEventListener('click', async function() {
+                if (!isRecording) {
+                    // Start recording
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
                         
-                        spokenText.textContent = 'Écoute... (parle maintenant)';
+                        mediaRecorder.ondataavailable = (event) => {
+                            audioChunks.push(event.data);
+                        };
+                        
+                        mediaRecorder.onstop = () => {
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                            const reader = new FileReader();
+                            reader.readAsDataURL(audioBlob);
+                            reader.onloadend = () => {
+                                currentRecording = reader.result; // Base64 audio
+                                spokenText.innerHTML = `
+                                    <audio controls style="width: 100%; margin-top: 1rem;">
+                                        <source src="${reader.result}" type="audio/webm">
+                                    </audio>
+                                `;
+                                controls.style.display = 'flex';
+                            };
+                            
+                            // Stop all tracks
+                            stream.getTracks().forEach(track => track.stop());
+                        };
+                        
+                        mediaRecorder.start();
+                        isRecording = true;
+                        startSpeakingBtn.textContent = 'Arrêter';
+                        startSpeakingBtn.classList.add('btn-danger');
                         indicator.style.display = 'block';
-                        try {
-                            recognition.start();
-                            isRecognizing = true;
-                        } catch (error) {
-                            spokenText.textContent = 'Erreur de démarrage. Réessaie.';
-                            isRecognizing = false;
-                            indicator.style.display = 'none';
-                        }
-                    });
-                    
-                    recognition.onresult = function(event) {
-                        isRecognizing = false;
-                        indicator.style.display = 'none';
-                        const transcript = event.results[0][0].transcript;
-                        spokenText.textContent = transcript;
-                        currentRecording = transcript;
-                        controls.style.display = 'flex';
-                    };
-                    
-                    recognition.onerror = function(event) {
-                        isRecognizing = false;
-                        indicator.style.display = 'none';
-                        if (event.error === 'no-speech') {
-                            spokenText.textContent = 'Pas de parole détectée. Réessaie.';
-                        } else if (event.error === 'audio-capture') {
-                            spokenText.textContent = 'Microphone non détecté. Vérifie tes paramètres.';
-                        } else if (event.error === 'not-allowed') {
-                            spokenText.textContent = 'Permission microphone refusée. Autorise-le dans les paramètres du navigateur.';
-                        } else {
-                            spokenText.textContent = 'Erreur: ' + event.error;
-                        }
-                    };
-                    
-                    recognition.onend = function() {
-                        isRecognizing = false;
-                        indicator.style.display = 'none';
-                    };
-                    
-                } catch (error) {
-                    startSpeakingBtn.disabled = true;
-                    spokenText.textContent = 'La reconnaissance vocale ne fonctionne pas dans ce navigateur. Essaie Chrome ou Edge.';
+                        spokenText.textContent = 'Enregistrement en cours...';
+                        
+                    } catch (error) {
+                        spokenText.textContent = 'Erreur: Permission microphone refusée. Autorise-le dans les paramètres du navigateur.';
+                        console.error('Microphone error:', error);
+                    }
+                } else {
+                    // Stop recording
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    startSpeakingBtn.innerHTML = `
+                        <svg class="mic-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                        </svg>
+                        Commencer à parler
+                    `;
+                    startSpeakingBtn.classList.remove('btn-danger');
+                    indicator.style.display = 'none';
                 }
-            } else {
-                startSpeakingBtn.disabled = true;
-                spokenText.textContent = 'La reconnaissance vocale n\'est pas supportée par ton navigateur. Utilise Chrome ou Edge.';
-            }
+            });
         }
 
         // Practice prompt selection
         document.getElementById('save-recording').addEventListener('click', () => {
             if (!currentRecording) {
-                alert('Parle d\'abord pour enregistrer quelque chose');
+                alert('Enregistre d\'abord un audio');
                 return;
             }
 
@@ -3207,7 +3209,7 @@
             const recording = {
                 id: Date.now(),
                 question: question || 'Sans question',
-                transcript: currentRecording,
+                audioData: currentRecording, // Base64 audio
                 note: document.getElementById('recording-note').value.trim() || '',
                 created: new Date().toISOString()
             };
@@ -3224,6 +3226,30 @@
 
             renderRecordings();
             alert('Sauvegardé ✓');
+        });
+
+        // Audio upload handler
+        document.getElementById('audio-upload-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                currentRecording = event.target.result;
+                const spokenText = document.getElementById('spoken-text');
+                const controls = document.getElementById('recording-controls');
+                
+                spokenText.innerHTML = `
+                    <audio controls style="width: 100%; margin-top: 1rem;">
+                        <source src="${event.target.result}" type="${file.type}">
+                    </audio>
+                `;
+                controls.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+            
+            // Reset input
+            e.target.value = '';
         });
 
         function renderRecordings() {
@@ -3253,17 +3279,15 @@
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
             const thisWeekRecordings = recordings.filter(r => new Date(r.created) >= oneWeekAgo).length;
-            const totalWords = recordings.reduce((sum, r) => sum + (r.transcript ? r.transcript.split(/\s+/).length : 0), 0);
             
             document.getElementById('total-recordings').textContent = totalRecordings;
             document.getElementById('this-week-recordings').textContent = thisWeekRecordings;
-            document.getElementById('total-words-spoken').textContent = totalWords;
+            document.getElementById('total-words-spoken').textContent = 'N/A';
 
             // Sort by most recent first
             const sortedRecordings = [...recordings].sort((a, b) => b.id - a.id);
 
             list.innerHTML = sortedRecordings.map(rec => {
-                const wordCount = rec.transcript ? rec.transcript.split(/\s+/).length : 0;
                 const date = new Date(rec.created);
                 const dateStr = date.toLocaleDateString('fr-FR', { 
                     weekday: 'long', 
@@ -3278,7 +3302,6 @@
                         <div class="recording-header">
                             <div>
                                 <div class="recording-date">${dateStr} à ${timeStr}</div>
-                                <div style="font-size: 0.75rem; color: var(--gold); margin-top: 0.25rem;">${wordCount} mots prononcés</div>
                             </div>
                             <button class="icon-btn" onclick="deleteRecording(${rec.id})">
                                 <svg class="svg-icon" viewBox="0 0 24 24">
@@ -3287,7 +3310,12 @@
                             </button>
                         </div>
                         ${rec.question ? `<div style="font-weight: 500; color: var(--crimson); margin-bottom: 0.75rem; font-size: 1rem;">Q: ${rec.question}</div>` : ''}
-                        <div class="recording-transcript">${rec.transcript}</div>
+                        ${rec.audioData ? `
+                            <audio controls style="width: 100%; margin: 1rem 0;">
+                                <source src="${rec.audioData}" type="audio/webm">
+                            </audio>
+                        ` : ''}
+                        ${rec.transcript ? `<div class="recording-transcript">${rec.transcript}</div>` : ''}
                         ${rec.note ? `<div class="recording-note">${rec.note}</div>` : ''}
                     </div>
                 `;
