@@ -682,6 +682,80 @@
             border-left: 2px solid var(--gold-pale);
         }
 
+        /* Notes section */
+        #notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .note-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .note-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-strong);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .note-category {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+            border-radius: 2px;
+        }
+
+        .note-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--navy);
+            line-height: 1.3;
+        }
+
+        .note-content {
+            font-size: 0.95rem;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .note-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.85rem;
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .note-link:hover {
+            color: var(--crimson);
+        }
+
+        .note-date {
+            font-size: 0.75rem;
+            color: var(--text-soft);
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--whisper);
+        }
+
         /* Writings archive */
         .writing-card {
             background: white;
@@ -899,6 +973,48 @@
             margin-top: 1rem;
         }
 
+        /* Practice Stats */
+        .practice-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 2px;
+            border-left: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: var(--crimson);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .speaking-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
         /* Tabs */
         .tabs {
             display: flex;
@@ -930,6 +1046,181 @@
 
         .tab-content {
             display: none;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 1.75rem;
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px var(--shadow);
+            border: 1px solid rgba(201, 168, 97, 0.2);
+        }
+
+        .filter-tag {
+            padding: 0.65rem 1.5rem;
+            border: 2px solid var(--whisper);
+            background: var(--cream);
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            border-radius: 24px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .filter-tag:hover {
+            transform: translateY(-2px);
+            border-color: var(--gold);
+            background: var(--gold-pale);
+            box-shadow: 0 4px 12px rgba(201, 168, 97, 0.2);
+        }
+
+        .filter-tag.active {
+            background: var(--crimson);
+            color: white;
+            border-color: var(--crimson);
+            box-shadow: 0 4px 16px rgba(139, 38, 53, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .filter-tag.active::after {
+            content: '✓';
+            margin-left: 0.5rem;
+            font-weight: 700;
+        }
+
+        /* Question Section (Parler) */
+        .question-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(201, 168, 97, 0.2);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--whisper);
+        }
+
+        .question-title {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin: 0;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            background: var(--whisper);
+            color: var(--navy);
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .doc-link:hover {
+            background: var(--gold-pale);
+            border-color: var(--gold);
+            color: var(--crimson);
+        }
+
+        .doc-link svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.7;
+        }
+
+        .question-input {
+            font-size: 1.15rem !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            font-weight: 400;
+            color: var(--navy) !important;
+            padding: 1rem 1.25rem !important;
+            border-radius: 12px !important;
+            border: 2px solid var(--whisper) !important;
+            background: var(--cream) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .question-input:focus {
+            border-color: var(--gold) !important;
+            background: white !important;
+            box-shadow: 0 0 0 4px rgba(201, 168, 97, 0.1) !important;
+            outline: none !important;
+        }
+
+        .question-input::placeholder {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.95rem;
+            font-style: italic;
+            color: var(--text-soft);
+            opacity: 0.6;
+        }
+
+        /* Beautiful Speak Button */
+        .btn-speak {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.85rem 1.75rem;
+            background: white;
+            color: var(--crimson);
+            border: 2px solid var(--gold-pale);
+            border-radius: 24px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .mic-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .btn-speak:hover {
+            background: var(--gold-pale);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 168, 97, 0.3);
+        }
+
+        .btn-speak:active {
+            transform: translateY(0);
+        }
+
+        .btn-speak.btn-danger {
+            background: var(--crimson);
+            color: white;
+            border-color: var(--crimson);
         }
 
         .tab-content.active {
@@ -1084,6 +1375,7 @@
         <button class="nav-link" data-room="ecouter">Écouter</button>
         <button class="nav-link" data-room="parler">Parler</button>
         <button class="nav-link" data-room="ecrire">Écrire</button>
+        <button class="nav-link" data-room="notes">Notes</button>
         <button class="nav-link" data-room="ressources">Ressources</button>
     </nav>
 
@@ -1238,7 +1530,7 @@
             <div class="room-intro">
                 <h1 class="room-title">Parler</h1>
                 <p class="room-description">
-                    Enregistre ta voix. Garde des notes. Personne ne juge.
+                    Réponds aux questions. Enregistre ta voix. Personne ne juge.
                 </p>
             </div>
 
@@ -1250,14 +1542,38 @@
 
             <!-- Practice tab -->
             <div class="tab-content active" id="practice">
+                <!-- Question Input with Google Doc Link -->
+                <div class="question-section">
+                    <div class="question-header">
+                        <h3 class="question-title">Question à répondre</h3>
+                        <a href="https://docs.google.com/document/d/1VRRqrIv1ZbgeH5rBHolE_v-FRdrPXLIg9n7lz-DTX6g/edit?usp=drivesdk" target="_blank" class="doc-link">
+                            <svg class="svg-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                            </svg>
+                            <span>Voir les questions</span>
+                        </a>
+                    </div>
+                    <input type="text" class="form-input question-input" id="parler-question" placeholder="Colle ou écris ta question ici...">
+                </div>
+
+                <!-- Recording Interface -->
                 <div class="entrance-card">
-                    <button class="btn btn-primary" id="start-speaking">
-                        🎤 Parler maintenant
+                    <button class="btn-speak" id="start-speaking">
+                        <svg class="mic-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                        </svg>
+                        Commencer à parler
                     </button>
-                    <div id="spoken-text"></div>
                     
-                    <div class="speaking-controls">
-                        <input type="text" class="form-input" id="recording-note" placeholder="Ajoute une note sur cette session...">
+                    <div id="speaking-indicator" style="display: none; text-align: center; margin: 1rem 0; color: var(--crimson); font-weight: 500;">
+                        <span style="display: inline-block; animation: pulse 1.5s ease-in-out infinite;">● En écoute...</span>
+                    </div>
+                    
+                    <div id="spoken-text" style="min-height: 60px;"></div>
+                    
+                    <div class="speaking-controls" id="recording-controls" style="display: none;">
+                        <input type="text" class="form-input" id="recording-note" placeholder="Ajoute une note supplémentaire (optionnel)...">
                         <button class="btn btn-secondary" id="save-recording">Sauvegarder</button>
                     </div>
                 </div>
@@ -1265,6 +1581,22 @@
 
             <!-- Recordings tab -->
             <div class="tab-content" id="recordings-tab">
+                <!-- Stats Summary -->
+                <div class="practice-stats" id="practice-stats" style="display: none;">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-recordings">0</div>
+                        <div class="stat-label">Sessions totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="this-week-recordings">0</div>
+                        <div class="stat-label">Cette semaine</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-words-spoken">0</div>
+                        <div class="stat-label">Mots prononcés</div>
+                    </div>
+                </div>
+
                 <div id="recordings-list"></div>
             </div>
         </section>
@@ -1303,6 +1635,35 @@
             <div class="tab-content" id="archive">
                 <div id="writings-archive"></div>
             </div>
+        </section>
+
+        <!-- Notes -->
+        <section class="room" id="notes">
+            <div class="room-intro">
+                <h1 class="room-title">Notes</h1>
+                <p class="room-description">
+                    Ta base de connaissances personnelle. Grammaire, prononciation, phrases — tout organisé.
+                </p>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-bar">
+                <button class="filter-tag active" data-note-filter="all">Tout</button>
+                <button class="filter-tag" data-note-filter="grammaire">Grammaire</button>
+                <button class="filter-tag" data-note-filter="prononciation">Prononciation</button>
+                <button class="filter-tag" data-note-filter="phrases">Phrases</button>
+                <button class="filter-tag" data-note-filter="vocabulaire">Vocabulaire</button>
+                <button class="filter-tag" data-note-filter="culture">Culture</button>
+                <button class="filter-tag" data-note-filter="autre">Autre</button>
+            </div>
+
+            <!-- Add Note Button -->
+            <div style="margin-bottom: 2rem; text-align: center;">
+                <button class="btn btn-primary" onclick="openModal('note-modal')">+ Ajouter une note</button>
+            </div>
+
+            <!-- Notes Grid -->
+            <div id="notes-grid"></div>
         </section>
 
         <!-- Ressources -->
@@ -1734,6 +2095,51 @@
         </div>
     </div>
 
+    <!-- Note Modal -->
+    <div class="modal" id="note-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter une note</h2>
+                <button class="close-btn" onclick="closeModal('note-modal')">&times;</button>
+            </div>
+            
+            <form id="note-form">
+                <div class="form-group">
+                    <label class="form-label">Catégorie</label>
+                    <select class="form-select" id="note-category" required>
+                        <option value="">Choisir...</option>
+                        <option value="grammaire">Grammaire</option>
+                        <option value="prononciation">Prononciation</option>
+                        <option value="phrases">Phrases</option>
+                        <option value="vocabulaire">Vocabulaire</option>
+                        <option value="culture">Culture</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Titre / Question</label>
+                    <input type="text" class="form-input" id="note-title" placeholder="ex: Comment utiliser le subjonctif ?" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contenu / Réponse</label>
+                    <textarea class="form-textarea" id="note-content" rows="6" placeholder="Écris ta note ici..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien (optionnel)</label>
+                    <input type="url" class="form-input" id="note-link" placeholder="https://...">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('note-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Hidden file input for import -->
     <input type="file" id="import-file-input" accept=".json" style="display: none;">
 
@@ -1752,6 +2158,7 @@
         let listeningList = JSON.parse(localStorage.getItem('listeningList') || '[]');
         let recordings = JSON.parse(localStorage.getItem('recordings') || '[]');
         let resourcesList = JSON.parse(localStorage.getItem('resourcesList') || '[]');
+        let notes = JSON.parse(localStorage.getItem('notes') || '[]');
 
         let currentRecording = null;
 
@@ -1776,6 +2183,7 @@
                 listeningList,
                 recordings,
                 resourcesList,
+                notes,
                 exportDate: new Date().toISOString()
             };
 
@@ -1809,6 +2217,7 @@
                         listeningList = data.listeningList || [];
                         recordings = data.recordings || [];
                         resourcesList = data.resourcesList || [];
+                        notes = data.notes || [];
                         
                         localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
                         localStorage.setItem('writings', JSON.stringify(writings));
@@ -1816,6 +2225,7 @@
                         localStorage.setItem('listeningList', JSON.stringify(listeningList));
                         localStorage.setItem('recordings', JSON.stringify(recordings));
                         localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                        localStorage.setItem('notes', JSON.stringify(notes));
                         
                         renderGarden();
                         populateJardinFilters(); // NEW
@@ -1824,6 +2234,7 @@
                         renderRecordings();
                         renderWritingsArchive();
                         renderResourcesList();
+                        renderNotes();
                         
                         alert('Données importées avec succès ✓');
                     }
@@ -2709,6 +3120,8 @@
         function initializeSpeechRecognition() {
             const startSpeakingBtn = document.getElementById('start-speaking');
             const spokenText = document.getElementById('spoken-text');
+            const indicator = document.getElementById('speaking-indicator');
+            const controls = document.getElementById('recording-controls');
             
             if (!startSpeakingBtn) return;
             
@@ -2728,28 +3141,34 @@
                         if (isRecognizing) {
                             recognition.stop();
                             isRecognizing = false;
+                            indicator.style.display = 'none';
                             return;
                         }
                         
                         spokenText.textContent = 'Écoute... (parle maintenant)';
+                        indicator.style.display = 'block';
                         try {
                             recognition.start();
                             isRecognizing = true;
                         } catch (error) {
                             spokenText.textContent = 'Erreur de démarrage. Réessaie.';
                             isRecognizing = false;
+                            indicator.style.display = 'none';
                         }
                     });
                     
                     recognition.onresult = function(event) {
                         isRecognizing = false;
+                        indicator.style.display = 'none';
                         const transcript = event.results[0][0].transcript;
                         spokenText.textContent = transcript;
                         currentRecording = transcript;
+                        controls.style.display = 'flex';
                     };
                     
                     recognition.onerror = function(event) {
                         isRecognizing = false;
+                        indicator.style.display = 'none';
                         if (event.error === 'no-speech') {
                             spokenText.textContent = 'Pas de parole détectée. Réessaie.';
                         } else if (event.error === 'audio-capture') {
@@ -2763,6 +3182,7 @@
                     
                     recognition.onend = function() {
                         isRecognizing = false;
+                        indicator.style.display = 'none';
                     };
                     
                 } catch (error) {
@@ -2775,14 +3195,18 @@
             }
         }
 
+        // Practice prompt selection
         document.getElementById('save-recording').addEventListener('click', () => {
             if (!currentRecording) {
                 alert('Parle d\'abord pour enregistrer quelque chose');
                 return;
             }
 
+            const question = document.getElementById('parler-question').value.trim();
+
             const recording = {
                 id: Date.now(),
+                question: question || 'Sans question',
                 transcript: currentRecording,
                 note: document.getElementById('recording-note').value.trim() || '',
                 created: new Date().toISOString()
@@ -2791,8 +3215,11 @@
             recordings.push(recording);
             localStorage.setItem('recordings', JSON.stringify(recordings));
             
+            // Clear UI
             document.getElementById('spoken-text').textContent = '';
             document.getElementById('recording-note').value = '';
+            document.getElementById('parler-question').value = '';
+            document.getElementById('recording-controls').style.display = 'none';
             currentRecording = null;
 
             renderRecordings();
@@ -2801,8 +3228,10 @@
 
         function renderRecordings() {
             const list = document.getElementById('recordings-list');
+            const statsDiv = document.getElementById('practice-stats');
             
             if (recordings.length === 0) {
+                statsDiv.style.display = 'none';
                 list.innerHTML = `
                     <div class="empty">
                         <div class="empty-icon">
@@ -2816,23 +3245,53 @@
                 return;
             }
 
+            // Show stats
+            statsDiv.style.display = 'grid';
+            
+            // Calculate stats
+            const totalRecordings = recordings.length;
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const thisWeekRecordings = recordings.filter(r => new Date(r.created) >= oneWeekAgo).length;
+            const totalWords = recordings.reduce((sum, r) => sum + (r.transcript ? r.transcript.split(/\s+/).length : 0), 0);
+            
+            document.getElementById('total-recordings').textContent = totalRecordings;
+            document.getElementById('this-week-recordings').textContent = thisWeekRecordings;
+            document.getElementById('total-words-spoken').textContent = totalWords;
+
             // Sort by most recent first
             const sortedRecordings = [...recordings].sort((a, b) => b.id - a.id);
 
-            list.innerHTML = sortedRecordings.map(rec => `
-                <div class="recording-card">
-                    <div class="recording-header">
-                        <div class="recording-date">${new Date(rec.created).toLocaleDateString('fr-FR')}</div>
-                        <button class="icon-btn" onclick="deleteRecording(${rec.id})">
-                            <svg class="svg-icon" viewBox="0 0 24 24">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
-                        </button>
+            list.innerHTML = sortedRecordings.map(rec => {
+                const wordCount = rec.transcript ? rec.transcript.split(/\s+/).length : 0;
+                const date = new Date(rec.created);
+                const dateStr = date.toLocaleDateString('fr-FR', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                
+                return `
+                    <div class="recording-card">
+                        <div class="recording-header">
+                            <div>
+                                <div class="recording-date">${dateStr} à ${timeStr}</div>
+                                <div style="font-size: 0.75rem; color: var(--gold); margin-top: 0.25rem;">${wordCount} mots prononcés</div>
+                            </div>
+                            <button class="icon-btn" onclick="deleteRecording(${rec.id})">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        ${rec.question ? `<div style="font-weight: 500; color: var(--crimson); margin-bottom: 0.75rem; font-size: 1rem;">Q: ${rec.question}</div>` : ''}
+                        <div class="recording-transcript">${rec.transcript}</div>
+                        ${rec.note ? `<div class="recording-note">${rec.note}</div>` : ''}
                     </div>
-                    <div class="recording-transcript">${rec.transcript}</div>
-                    ${rec.note ? `<div class="recording-note">${rec.note}</div>` : ''}
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function deleteRecording(id) {
@@ -3082,6 +3541,122 @@
         });
 
         // ============================================
+        // NOTES SECTION
+        // ============================================
+        let activeNoteFilter = 'all';
+
+        function renderNotes() {
+            const grid = document.getElementById('notes-grid');
+            
+            const filteredNotes = activeNoteFilter === 'all' 
+                ? notes 
+                : notes.filter(n => n.category === activeNoteFilter);
+            
+            if (filteredNotes.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">
+                            <svg class="svg-icon-lg" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.3;">
+                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                            </svg>
+                        </div>
+                        <div class="empty-text">Rien ici encore...</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by most recent first
+            const sortedNotes = [...filteredNotes].sort((a, b) => b.id - a.id);
+
+            grid.innerHTML = sortedNotes.map(note => {
+                const categoryColors = {
+                    grammaire: 'var(--crimson)',
+                    prononciation: 'var(--gold)',
+                    phrases: 'var(--navy)',
+                    vocabulaire: 'var(--rosy)',
+                    culture: 'var(--sage)',
+                    autre: 'var(--text-soft)'
+                };
+                
+                const categoryColor = categoryColors[note.category] || 'var(--text-soft)';
+                
+                return `
+                    <div class="note-card">
+                        <div class="note-header">
+                            <span class="note-category" style="background: ${categoryColor}20; color: ${categoryColor}; border-left: 3px solid ${categoryColor};">
+                                ${note.category}
+                            </span>
+                            <button class="icon-btn" onclick="deleteNote(${note.id})">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <h3 class="note-title">${note.title}</h3>
+                        <div class="note-content">${note.content.replace(/\n/g, '<br>')}</div>
+                        ${note.link ? `
+                            <a href="${note.link}" target="_blank" class="note-link">
+                                <svg class="svg-icon" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                                    <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+                                </svg>
+                                Voir la ressource
+                            </a>
+                        ` : ''}
+                        <div class="note-date">${new Date(note.created).toLocaleDateString('fr-FR', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteNote(id) {
+            if (confirm('Supprimer cette note ?')) {
+                notes = notes.filter(n => n.id !== id);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                renderNotes();
+            }
+        }
+
+        // Note filter listeners
+        document.querySelectorAll('[data-note-filter]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                activeNoteFilter = btn.dataset.noteFilter;
+                
+                document.querySelectorAll('[data-note-filter]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                renderNotes();
+            });
+        });
+
+        // Note form submission
+        document.getElementById('note-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const note = {
+                id: Date.now(),
+                category: document.getElementById('note-category').value,
+                title: document.getElementById('note-title').value.trim(),
+                content: document.getElementById('note-content').value.trim(),
+                link: document.getElementById('note-link').value.trim(),
+                created: new Date().toISOString()
+            };
+
+            notes.push(note);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            
+            renderNotes();
+            closeModal('note-modal');
+            
+            // Reset form
+            document.getElementById('note-form').reset();
+        });
+
+        // ============================================
         // INITIALIZE - FIXED
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
@@ -3094,6 +3669,7 @@
             renderRecordings();
             renderWritingsArchive();
             renderResourcesList();
+            renderNotes();
             
             // Fix: Properly attach event listener for add word button
             const addWordBtn = document.getElementById('add-word-btn');
