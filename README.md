@@ -2006,6 +2006,58 @@
         </div>
     </div>
 
+    <!-- Edit Reading Modal -->
+    <div class="modal" id="edit-reading-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Modifier la lecture</h2>
+                <button class="close-btn" onclick="closeModal('edit-reading-modal')">&times;</button>
+            </div>
+            
+            <form id="edit-reading-form">
+                <input type="hidden" id="edit-reading-id">
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="edit-reading-type" required>
+                        <option value="article">Article</option>
+                        <option value="book">Livre</option>
+                        <option value="blog">Blog</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-input" id="edit-reading-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien (optionnel)</label>
+                    <input type="url" class="form-input" id="edit-reading-link" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Statut</label>
+                    <select class="form-select" id="edit-reading-status">
+                        <option value="want">Je veux lire</option>
+                        <option value="reading">En train de lire</option>
+                        <option value="done">Lu</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="edit-reading-note" placeholder="Pourquoi tu veux lire ça ? Qu'est-ce que tu en penses ?"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-reading-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Listening Modal -->
     <div class="modal" id="listening-modal">
         <div class="modal-content">
@@ -2050,6 +2102,56 @@
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('listening-modal')">Annuler</button>
                     <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Listening Modal -->
+    <div class="modal" id="edit-listening-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Modifier l'écoute</h2>
+                <button class="close-btn" onclick="closeModal('edit-listening-modal')">&times;</button>
+            </div>
+            
+            <form id="edit-listening-form">
+                <input type="hidden" id="edit-listening-id">
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="edit-listening-type" required>
+                        <option value="song">Chanson</option>
+                        <option value="video">Vidéo YouTube</option>
+                        <option value="movie">Film</option>
+                        <option value="series">Série</option>
+                        <option value="podcast">Podcast</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-input" id="edit-listening-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien (optionnel)</label>
+                    <input type="url" class="form-input" id="edit-listening-link" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien paroles/transcription (optionnel)</label>
+                    <input type="url" class="form-input" id="edit-listening-transcript" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="edit-listening-note" placeholder="Qu'est-ce que tu apprends ? Expressions intéressantes ?"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-listening-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
                 </div>
             </form>
         </div>
@@ -2105,6 +2207,57 @@
         </div>
     </div>
 
+    <!-- Edit Resources Modal -->
+    <div class="modal" id="edit-resources-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Modifier la ressource</h2>
+                <button class="close-btn" onclick="closeModal('edit-resources-modal')">&times;</button>
+            </div>
+            
+            <form id="edit-resources-form">
+                <input type="hidden" id="edit-resources-id">
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="edit-resources-type" required>
+                        <option value="website">Site Web</option>
+                        <option value="youtube">Chaîne YouTube</option>
+                        <option value="app">Application</option>
+                        <option value="podcast">Podcast</option>
+                        <option value="tool">Outil</option>
+                        <option value="course">Cours</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-input" id="edit-resources-name" required placeholder="Ex: Duolingo, French Today...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-input" id="edit-resources-description" placeholder="À quoi sert cette ressource ?">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien (optionnel mais recommandé)</label>
+                    <input type="url" class="form-input" id="edit-resources-link" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes personnelles</label>
+                    <textarea class="form-textarea" id="edit-resources-note" placeholder="Pourquoi tu aimes cette ressource ? Comment tu l'utilises ?"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-resources-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Note Modal -->
     <div class="modal" id="note-modal">
         <div class="modal-content">
@@ -2144,6 +2297,103 @@
 
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('note-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Note Modal -->
+    <div class="modal" id="edit-note-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Modifier la note</h2>
+                <button class="close-btn" onclick="closeModal('edit-note-modal')">&times;</button>
+            </div>
+            
+            <form id="edit-note-form">
+                <input type="hidden" id="edit-note-id">
+                <div class="form-group">
+                    <label class="form-label">Catégorie</label>
+                    <select class="form-select" id="edit-note-category" required>
+                        <option value="">Choisir...</option>
+                        <option value="grammaire">Grammaire</option>
+                        <option value="prononciation">Prononciation</option>
+                        <option value="phrases">Phrases</option>
+                        <option value="vocabulaire">Vocabulaire</option>
+                        <option value="culture">Culture</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Titre / Question</label>
+                    <input type="text" class="form-input" id="edit-note-title" placeholder="ex: Comment utiliser le subjonctif ?" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contenu / Réponse</label>
+                    <textarea class="form-textarea" id="edit-note-content" rows="6" placeholder="Écris ta note ici..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien (optionnel)</label>
+                    <input type="url" class="form-input" id="edit-note-link" placeholder="https://...">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-note-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Recording Modal -->
+    <div class="modal" id="edit-recording-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Modifier l'enregistrement</h2>
+                <button class="close-btn" onclick="closeModal('edit-recording-modal')">&times;</button>
+            </div>
+            
+            <form id="edit-recording-form">
+                <input type="hidden" id="edit-recording-id">
+                <div class="form-group">
+                    <label class="form-label">Question</label>
+                    <input type="text" class="form-input" id="edit-recording-question" placeholder="La question que tu as répondu...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Note supplémentaire</label>
+                    <textarea class="form-textarea" id="edit-recording-note" placeholder="Ajoute ou modifie ta note..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-recording-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Writing Modal -->
+    <div class="modal" id="edit-writing-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Modifier l'écriture</h2>
+                <button class="close-btn" onclick="closeModal('edit-writing-modal')">&times;</button>
+            </div>
+            
+            <form id="edit-writing-form">
+                <input type="hidden" id="edit-writing-id">
+                <div class="form-group">
+                    <label class="form-label">Texte</label>
+                    <textarea class="form-textarea" id="edit-writing-text" rows="10" placeholder="Modifie ton texte ici..." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-writing-modal')">Annuler</button>
                     <button type="submit" class="btn btn-primary">Sauvegarder</button>
                 </div>
             </form>
@@ -2867,7 +3117,7 @@
         });
 
         // ============================================
-        // READING LIST - FIXED
+        // READING LIST - FIXED WITH EDIT
         // ============================================
         function renderReadingList() {
             const grid = document.getElementById('reading-grid');
@@ -2904,13 +3154,34 @@
                         ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
                         <div class="resource-status">${statusLabels[item.status]}</div>
                     </div>
-                    <button class="icon-btn" onclick="deleteReading(${item.id})" title="Supprimer">
-                        <svg class="svg-icon" viewBox="0 0 24 24">
-                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                        </svg>
-                    </button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="icon-btn" onclick="editReading(${item.id})" title="Modifier">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </button>
+                        <button class="icon-btn" onclick="deleteReading(${item.id})" title="Supprimer">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        function editReading(id) {
+            const item = readingList.find(r => r.id === id);
+            if (!item) return;
+
+            document.getElementById('edit-reading-id').value = id;
+            document.getElementById('edit-reading-type').value = item.type;
+            document.getElementById('edit-reading-title').value = item.title;
+            document.getElementById('edit-reading-link').value = item.link || '';
+            document.getElementById('edit-reading-status').value = item.status;
+            document.getElementById('edit-reading-note').value = item.note || '';
+
+            openModal('edit-reading-modal');
         }
 
         function deleteReading(id) {
@@ -2950,8 +3221,37 @@
             closeModal('reading-modal');
         });
 
+        // EDIT READING FORM SUBMISSION
+        document.getElementById('edit-reading-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('edit-reading-id').value);
+            const index = readingList.findIndex(r => r.id === id);
+            
+            if (index === -1) return;
+
+            readingList[index] = {
+                ...readingList[index],
+                type: document.getElementById('edit-reading-type').value,
+                title: document.getElementById('edit-reading-title').value.trim(),
+                link: document.getElementById('edit-reading-link').value.trim(),
+                status: document.getElementById('edit-reading-status').value,
+                note: document.getElementById('edit-reading-note').value.trim() || ''
+            };
+
+            // Validate required field
+            if (!readingList[index].title) {
+                alert('Veuillez entrer un titre');
+                return;
+            }
+
+            localStorage.setItem('readingList', JSON.stringify(readingList));
+            renderReadingList();
+            closeModal('edit-reading-modal');
+        });
+
         // ============================================
-        // LISTENING LIST - FIXED
+        // LISTENING LIST - FIXED WITH EDIT
         // ============================================
         function renderListeningList() {
             const grid = document.getElementById('listening-grid');
@@ -2989,14 +3289,35 @@
                                 </svg>
                             </a>
                         ` : ''}
-                        <button class="icon-btn" onclick="deleteListening(${item.id})" title="Supprimer">
-                            <svg class="svg-icon" viewBox="0 0 24 24">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
-                        </button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="icon-btn" onclick="editListening(${item.id})" title="Modifier">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                            </button>
+                            <button class="icon-btn" onclick="deleteListening(${item.id})" title="Supprimer">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function editListening(id) {
+            const item = listeningList.find(l => l.id === id);
+            if (!item) return;
+
+            document.getElementById('edit-listening-id').value = id;
+            document.getElementById('edit-listening-type').value = item.type;
+            document.getElementById('edit-listening-title').value = item.title;
+            document.getElementById('edit-listening-link').value = item.link || '';
+            document.getElementById('edit-listening-transcript').value = item.transcriptLink || '';
+            document.getElementById('edit-listening-note').value = item.note || '';
+
+            openModal('edit-listening-modal');
         }
 
         function deleteListening(id) {
@@ -3036,8 +3357,37 @@
             closeModal('listening-modal');
         });
 
+        // EDIT LISTENING FORM SUBMISSION
+        document.getElementById('edit-listening-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('edit-listening-id').value);
+            const index = listeningList.findIndex(l => l.id === id);
+            
+            if (index === -1) return;
+
+            listeningList[index] = {
+                ...listeningList[index],
+                type: document.getElementById('edit-listening-type').value,
+                title: document.getElementById('edit-listening-title').value.trim(),
+                link: document.getElementById('edit-listening-link').value.trim(),
+                transcriptLink: document.getElementById('edit-listening-transcript').value.trim(),
+                note: document.getElementById('edit-listening-note').value.trim() || ''
+            };
+
+            // Validate required field
+            if (!listeningList[index].title) {
+                alert('Veuillez entrer un titre');
+                return;
+            }
+
+            localStorage.setItem('listeningList', JSON.stringify(listeningList));
+            renderListeningList();
+            closeModal('edit-listening-modal');
+        });
+
         // ============================================
-        // RESOURCES LIST - FIXED
+        // RESOURCES LIST - FIXED WITH EDIT
         // ============================================
         function renderResourcesList() {
             const grid = document.getElementById('resources-grid');
@@ -3078,13 +3428,34 @@
                         ${item.link ? `<a href="${item.link}" class="resource-link" target="_blank" rel="noopener noreferrer">${item.link}</a>` : ''}
                         ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
                     </div>
-                    <button class="icon-btn" onclick="deleteResource(${item.id})" title="Supprimer">
-                        <svg class="svg-icon" viewBox="0 0 24 24">
-                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                        </svg>
-                    </button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="icon-btn" onclick="editResource(${item.id})" title="Modifier">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </button>
+                        <button class="icon-btn" onclick="deleteResource(${item.id})" title="Supprimer">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        function editResource(id) {
+            const item = resourcesList.find(r => r.id === id);
+            if (!item) return;
+
+            document.getElementById('edit-resources-id').value = id;
+            document.getElementById('edit-resources-type').value = item.type;
+            document.getElementById('edit-resources-name').value = item.name;
+            document.getElementById('edit-resources-description').value = item.description || '';
+            document.getElementById('edit-resources-link').value = item.link || '';
+            document.getElementById('edit-resources-note').value = item.note || '';
+
+            openModal('edit-resources-modal');
         }
 
         function deleteResource(id) {
@@ -3122,6 +3493,35 @@
             localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
             renderResourcesList();
             closeModal('resources-modal');
+        });
+
+        // EDIT RESOURCES FORM SUBMISSION
+        document.getElementById('edit-resources-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('edit-resources-id').value);
+            const index = resourcesList.findIndex(r => r.id === id);
+            
+            if (index === -1) return;
+
+            resourcesList[index] = {
+                ...resourcesList[index],
+                type: document.getElementById('edit-resources-type').value,
+                name: document.getElementById('edit-resources-name').value.trim(),
+                description: document.getElementById('edit-resources-description').value.trim() || '',
+                link: document.getElementById('edit-resources-link').value.trim(),
+                note: document.getElementById('edit-resources-note').value.trim() || ''
+            };
+
+            // Validate required field
+            if (!resourcesList[index].name) {
+                alert('Veuillez entrer un nom');
+                return;
+            }
+
+            localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+            renderResourcesList();
+            closeModal('edit-resources-modal');
         });
 
         // ============================================
@@ -3303,11 +3703,18 @@
                             <div>
                                 <div class="recording-date">${dateStr} à ${timeStr}</div>
                             </div>
-                            <button class="icon-btn" onclick="deleteRecording(${rec.id})">
-                                <svg class="svg-icon" viewBox="0 0 24 24">
-                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                </svg>
-                            </button>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="icon-btn" onclick="editRecording(${rec.id})" title="Modifier">
+                                    <svg class="svg-icon" viewBox="0 0 24 24">
+                                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                    </svg>
+                                </button>
+                                <button class="icon-btn" onclick="deleteRecording(${rec.id})" title="Supprimer">
+                                    <svg class="svg-icon" viewBox="0 0 24 24">
+                                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         ${rec.question ? `<div style="font-weight: 500; color: var(--crimson); margin-bottom: 0.75rem; font-size: 1rem;">Q: ${rec.question}</div>` : ''}
                         ${rec.audioData ? `
@@ -3315,12 +3722,42 @@
                                 <source src="${rec.audioData}" type="audio/webm">
                             </audio>
                         ` : ''}
-                        ${rec.transcript ? `<div class="recording-transcript">${rec.transcript}</div>` : ''}
                         ${rec.note ? `<div class="recording-note">${rec.note}</div>` : ''}
                     </div>
                 `;
             }).join('');
         }
+
+        function editRecording(id) {
+            const rec = recordings.find(r => r.id === id);
+            if (!rec) return;
+
+            document.getElementById('edit-recording-id').value = id;
+            document.getElementById('edit-recording-question').value = rec.question || '';
+            document.getElementById('edit-recording-note').value = rec.note || '';
+
+            openModal('edit-recording-modal');
+        }
+
+        // EDIT RECORDING FORM SUBMISSION
+        document.getElementById('edit-recording-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('edit-recording-id').value);
+            const index = recordings.findIndex(r => r.id === id);
+            
+            if (index === -1) return;
+
+            recordings[index] = {
+                ...recordings[index],
+                question: document.getElementById('edit-recording-question').value.trim(),
+                note: document.getElementById('edit-recording-note').value.trim() || ''
+            };
+
+            localStorage.setItem('recordings', JSON.stringify(recordings));
+            renderRecordings();
+            closeModal('edit-recording-modal');
+        });
 
         function deleteRecording(id) {
             if (confirm('Supprimer cet enregistrement ?')) {
@@ -3331,7 +3768,7 @@
         }
 
         // ============================================
-        // WRITING - FIXED
+        // WRITING - FIXED WITH EDIT
         // ============================================
         const writingArea = document.getElementById('writing-area');
         const wordCountEl = document.getElementById('word-count');
@@ -3393,16 +3830,58 @@
                             month: 'long',
                             day: 'numeric'
                         })}</div>
-                        <button class="icon-btn" onclick="deleteWriting(${writing.id})">
-                            <svg class="svg-icon" viewBox="0 0 24 24">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
-                        </button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="icon-btn" onclick="editWriting(${writing.id})" title="Modifier">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                            </button>
+                            <button class="icon-btn" onclick="deleteWriting(${writing.id})" title="Supprimer">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="writing-text">${writing.text.replace(/\n/g, '<br>')}</div>
                 </div>
             `).join('');
         }
+
+        function editWriting(id) {
+            const writing = writings.find(w => w.id === id);
+            if (!writing) return;
+
+            document.getElementById('edit-writing-id').value = id;
+            document.getElementById('edit-writing-text').value = writing.text;
+
+            openModal('edit-writing-modal');
+        }
+
+        // EDIT WRITING FORM SUBMISSION
+        document.getElementById('edit-writing-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('edit-writing-id').value);
+            const index = writings.findIndex(w => w.id === id);
+            
+            if (index === -1) return;
+
+            writings[index] = {
+                ...writings[index],
+                text: document.getElementById('edit-writing-text').value.trim()
+            };
+
+            // Validate required field
+            if (!writings[index].text) {
+                alert('Veuillez entrer un texte');
+                return;
+            }
+
+            localStorage.setItem('writings', JSON.stringify(writings));
+            renderWritingsArchive();
+            closeModal('edit-writing-modal');
+        });
 
         function deleteWriting(id) {
             if (confirm('Supprimer cette écriture ?')) {
@@ -3569,7 +4048,7 @@
         });
 
         // ============================================
-        // NOTES SECTION
+        // NOTES SECTION WITH EDIT
         // ============================================
         let activeNoteFilter = 'all';
 
@@ -3615,11 +4094,18 @@
                             <span class="note-category" style="background: ${categoryColor}20; color: ${categoryColor}; border-left: 3px solid ${categoryColor};">
                                 ${note.category}
                             </span>
-                            <button class="icon-btn" onclick="deleteNote(${note.id})">
-                                <svg class="svg-icon" viewBox="0 0 24 24">
-                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                </svg>
-                            </button>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="icon-btn" onclick="editNote(${note.id})" title="Modifier">
+                                    <svg class="svg-icon" viewBox="0 0 24 24">
+                                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                    </svg>
+                                </button>
+                                <button class="icon-btn" onclick="deleteNote(${note.id})">
+                                    <svg class="svg-icon" viewBox="0 0 24 24">
+                                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <h3 class="note-title">${note.title}</h3>
                         <div class="note-content">${note.content.replace(/\n/g, '<br>')}</div>
@@ -3639,6 +4125,19 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function editNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (!note) return;
+
+            document.getElementById('edit-note-id').value = id;
+            document.getElementById('edit-note-category').value = note.category;
+            document.getElementById('edit-note-title').value = note.title;
+            document.getElementById('edit-note-content').value = note.content;
+            document.getElementById('edit-note-link').value = note.link || '';
+
+            openModal('edit-note-modal');
         }
 
         function deleteNote(id) {
@@ -3684,6 +4183,34 @@
             document.getElementById('note-form').reset();
         });
 
+        // EDIT NOTE FORM SUBMISSION
+        document.getElementById('edit-note-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('edit-note-id').value);
+            const index = notes.findIndex(n => n.id === id);
+            
+            if (index === -1) return;
+
+            notes[index] = {
+                ...notes[index],
+                category: document.getElementById('edit-note-category').value,
+                title: document.getElementById('edit-note-title').value.trim(),
+                content: document.getElementById('edit-note-content').value.trim(),
+                link: document.getElementById('edit-note-link').value.trim()
+            };
+
+            // Validate required fields
+            if (!notes[index].title || !notes[index].content) {
+                alert('Veuillez remplir tous les champs requis');
+                return;
+            }
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+            closeModal('edit-note-modal');
+        });
+
         // ============================================
         // INITIALIZE - FIXED
         // ============================================
@@ -3713,6 +4240,131 @@
             
             // Initialize speech recognition
             initializeSpeechRecognition();
+
+            // Add event listeners for edit forms
+            document.getElementById('edit-reading-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('edit-reading-id').value);
+                const index = readingList.findIndex(r => r.id === id);
+                
+                if (index === -1) return;
+
+                readingList[index] = {
+                    ...readingList[index],
+                    type: document.getElementById('edit-reading-type').value,
+                    title: document.getElementById('edit-reading-title').value.trim(),
+                    link: document.getElementById('edit-reading-link').value.trim(),
+                    status: document.getElementById('edit-reading-status').value,
+                    note: document.getElementById('edit-reading-note').value.trim() || ''
+                };
+
+                localStorage.setItem('readingList', JSON.stringify(readingList));
+                renderReadingList();
+                closeModal('edit-reading-modal');
+            });
+
+            document.getElementById('edit-listening-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('edit-listening-id').value);
+                const index = listeningList.findIndex(l => l.id === id);
+                
+                if (index === -1) return;
+
+                listeningList[index] = {
+                    ...listeningList[index],
+                    type: document.getElementById('edit-listening-type').value,
+                    title: document.getElementById('edit-listening-title').value.trim(),
+                    link: document.getElementById('edit-listening-link').value.trim(),
+                    transcriptLink: document.getElementById('edit-listening-transcript').value.trim(),
+                    note: document.getElementById('edit-listening-note').value.trim() || ''
+                };
+
+                localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                renderListeningList();
+                closeModal('edit-listening-modal');
+            });
+
+            document.getElementById('edit-resources-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('edit-resources-id').value);
+                const index = resourcesList.findIndex(r => r.id === id);
+                
+                if (index === -1) return;
+
+                resourcesList[index] = {
+                    ...resourcesList[index],
+                    type: document.getElementById('edit-resources-type').value,
+                    name: document.getElementById('edit-resources-name').value.trim(),
+                    description: document.getElementById('edit-resources-description').value.trim() || '',
+                    link: document.getElementById('edit-resources-link').value.trim(),
+                    note: document.getElementById('edit-resources-note').value.trim() || ''
+                };
+
+                localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                renderResourcesList();
+                closeModal('edit-resources-modal');
+            });
+
+            document.getElementById('edit-note-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('edit-note-id').value);
+                const index = notes.findIndex(n => n.id === id);
+                
+                if (index === -1) return;
+
+                notes[index] = {
+                    ...notes[index],
+                    category: document.getElementById('edit-note-category').value,
+                    title: document.getElementById('edit-note-title').value.trim(),
+                    content: document.getElementById('edit-note-content').value.trim(),
+                    link: document.getElementById('edit-note-link').value.trim()
+                };
+
+                localStorage.setItem('notes', JSON.stringify(notes));
+                renderNotes();
+                closeModal('edit-note-modal');
+            });
+
+            document.getElementById('edit-recording-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('edit-recording-id').value);
+                const index = recordings.findIndex(r => r.id === id);
+                
+                if (index === -1) return;
+
+                recordings[index] = {
+                    ...recordings[index],
+                    question: document.getElementById('edit-recording-question').value.trim(),
+                    note: document.getElementById('edit-recording-note').value.trim() || ''
+                };
+
+                localStorage.setItem('recordings', JSON.stringify(recordings));
+                renderRecordings();
+                closeModal('edit-recording-modal');
+            });
+
+            document.getElementById('edit-writing-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('edit-writing-id').value);
+                const index = writings.findIndex(w => w.id === id);
+                
+                if (index === -1) return;
+
+                writings[index] = {
+                    ...writings[index],
+                    text: document.getElementById('edit-writing-text').value.trim()
+                };
+
+                localStorage.setItem('writings', JSON.stringify(writings));
+                renderWritingsArchive();
+                closeModal('edit-writing-modal');
+            });
         });
     </script>
 </body>
