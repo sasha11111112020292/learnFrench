@@ -8755,17 +8755,30 @@ const firebaseConfig = {
         
         // Load all data from Firebase
         async function loadDataFromFirebase(userId) {
+            console.log('🔍 loadDataFromFirebase called for userId:', userId);
             const { doc, getDoc } = window.firebaseModules;
             
             try {
+                console.log('📡 Fetching user document...');
                 const userDoc = await getDoc(doc(window.firebaseDB, 'users', userId));
+                console.log('📄 User doc exists?', userDoc.exists());
                 
                 if (userDoc.exists()) {
                     const data = userDoc.data();
+                    console.log('📦 Data received:', {
+                        vocabulary: data.vocabulary?.length || 0,
+                        readingList: data.readingList?.length || 0,
+                        listeningList: data.listeningList?.length || 0,
+                        recordings: data.recordings?.length || 0,
+                        writings: data.writings?.length || 0,
+                        notes: data.notes?.length || 0,
+                        resourcesList: data.resourcesList?.length || 0
+                    });
                     
                     // Load all data directly into memory (no localStorage)
                     if (data.vocabulary) {
                         vocabulary = data.vocabulary;
+                        console.log('✅ Loaded', vocabulary.length, 'vocabulary items');
                         renderWords();
                     }
                     
@@ -8805,6 +8818,7 @@ const firebaseConfig = {
                     initializeSRSData();
                     updateSRSStatsDisplay();
                 } else {
+                    console.log('ℹ️ No existing data found - new user');
                     // First time user - try to migrate from localStorage if it exists
                     const localVocab = localStorage.getItem('vocabulary');
                     const localReadings = localStorage.getItem('readingList');
@@ -8858,7 +8872,11 @@ const firebaseConfig = {
                     }
                 }
             } catch (error) {
-                console.error('Error loading from Firebase:', error);
+                console.error('❌ Error loading from Firebase:', error);
+                console.error('   Error type:', error.constructor.name);
+                console.error('   Error message:', error.message);
+                console.error('   Error stack:', error.stack);
+                alert('Failed to load data: ' + error.message);
             }
         }
         
