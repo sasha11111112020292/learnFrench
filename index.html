@@ -27,6 +27,472 @@
             --sage: #A8B8A8;
         }
 
+        /* Dark mode variables - Rich, sophisticated night theme */
+        body.dark-mode {
+            --cream: #0d1117;
+            --cream-dark: #161b22;
+            --crimson: #ff6b8a;
+            --crimson-soft: #ff8fab;
+            --navy: #e8dcc8;
+            --navy-soft: #c9b8a0;
+            --gold: #f4d58d;
+            --gold-pale: #d4b886;
+            --text: #e8dcc8;
+            --text-soft: #9d8e7a;
+            --whisper: rgba(232, 220, 200, 0.08);
+            --shadow: rgba(0, 0, 0, 0.5);
+            --shadow-strong: rgba(0, 0, 0, 0.7);
+            --rosy: #d4969d;
+            --sage: #9fb99f;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1f26 100%);
+        }
+
+        body.dark-mode .header {
+            background: rgba(22, 27, 34, 0.95);
+            border-bottom-color: rgba(232, 220, 200, 0.1);
+        }
+
+        body.dark-mode .nav {
+            border-bottom-color: rgba(232, 220, 200, 0.1);
+        }
+
+        body.dark-mode .word-card,
+        body.dark-mode .entrance-card,
+        body.dark-mode .reading-card,
+        body.dark-mode .listening-card,
+        body.dark-mode .recording-card,
+        body.dark-mode .writing-card,
+        body.dark-mode .note-card,
+        body.dark-mode .resource-card {
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid rgba(232, 220, 200, 0.12);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .word-card:hover,
+        body.dark-mode .reading-card:hover,
+        body.dark-mode .listening-card:hover,
+        body.dark-mode .recording-card:hover,
+        body.dark-mode .writing-card:hover,
+        body.dark-mode .note-card:hover,
+        body.dark-mode .resource-card:hover {
+            border-color: rgba(244, 213, 141, 0.3);
+            box-shadow: 0 8px 24px rgba(244, 213, 141, 0.15);
+        }
+
+        /* ====== SVG ANIMATIONS ====== */
+        .animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        /* Floating Hearts */
+        .floating-heart {
+            position: absolute;
+            bottom: -50px;
+            animation: floatUp 4s ease-in-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(var(--drift)) rotate(var(--rotation));
+                opacity: 0;
+            }
+        }
+
+        /* Musical Notes */
+        .musical-note {
+            position: absolute;
+            animation: note-float 5s ease-in-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes note-float {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.9;
+            }
+            50% {
+                transform: translateY(-50vh) rotate(var(--rotation)) scale(1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(var(--rotation)) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* Fireflies/Світлячки (Dark Mode) */
+        .firefly {
+            position: absolute;
+            animation: firefly-float 4s ease-in-out infinite;
+            opacity: 0;
+            filter: blur(0.5px) drop-shadow(0 0 8px rgba(244, 213, 141, 0.9)) drop-shadow(0 0 12px rgba(244, 213, 141, 0.6));
+            z-index: 9998;
+        }
+
+        @keyframes firefly-float {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0);
+            }
+            10% {
+                opacity: 0.8;
+            }
+            25% {
+                opacity: 1;
+                transform: translate(var(--drift-x), calc(var(--drift-y) * 0.5));
+            }
+            50% {
+                opacity: 0.6;
+                transform: translate(calc(var(--drift-x) * 1.3), var(--drift-y));
+            }
+            75% {
+                opacity: 0.9;
+                transform: translate(calc(var(--drift-x) * 0.7), calc(var(--drift-y) * 1.2));
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(0, calc(var(--drift-y) * 0.3));
+            }
+        }
+
+        /* Hide fireflies in light mode */
+        body:not(.dark-mode) .firefly {
+            display: none;
+        }
+
+        body.dark-mode .btn-primary {
+            background: linear-gradient(135deg, #d4746f 0%, #b85d5d 100%);
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(212, 116, 111, 0.3);
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background: linear-gradient(135deg, #e08882 0%, #c96b6b 100%);
+            box-shadow: 0 6px 16px rgba(212, 116, 111, 0.4);
+        }
+
+        /* Comprehensive dark mode: Override ALL white backgrounds */
+        body.dark-mode .affirmation,
+        body.dark-mode .heart-note,
+        body.dark-mode .modal-content,
+        body.dark-mode .filter-bar,
+        body.dark-mode .stat-card,
+        body.dark-mode .srs-stat-box,
+        body.dark-mode .srs-card-container,
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select,
+        body.dark-mode .form-group textarea,
+        body.dark-mode .srs-diff-btn,
+        body.dark-mode .garden-summary,
+        body.dark-mode .pdf-page {
+            background: rgba(22, 27, 34, 0.9) !important;
+        }
+
+        body.dark-mode .btn-secondary {
+            background: rgba(232, 220, 200, 0.1);
+            border: 1px solid rgba(232, 220, 200, 0.2);
+            color: var(--gold);
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background: rgba(232, 220, 200, 0.15);
+            border-color: rgba(232, 220, 200, 0.3);
+        }
+
+        body.dark-mode .icon-btn {
+            background: rgba(232, 220, 200, 0.08);
+            color: var(--gold);
+        }
+
+        body.dark-mode .icon-btn:hover {
+            background: rgba(232, 220, 200, 0.15);
+        }
+
+        body.dark-mode .modal-content {
+            background: #161b22;
+            border: 1px solid rgba(232, 220, 200, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        body.dark-mode .form-input,
+        body.dark-mode .form-textarea,
+        body.dark-mode .form-select {
+            background: rgba(13, 17, 23, 0.6);
+            border-color: rgba(232, 220, 200, 0.15);
+            color: var(--text);
+        }
+
+        body.dark-mode .form-input:focus,
+        body.dark-mode .form-textarea:focus,
+        body.dark-mode .form-select:focus {
+            border-color: var(--gold);
+            background: rgba(13, 17, 23, 0.8);
+        }
+
+        body.dark-mode .category-tag {
+            background: rgba(244, 213, 141, 0.15);
+            border: 1px solid rgba(244, 213, 141, 0.3);
+            color: var(--gold);
+        }
+
+        body.dark-mode .affirmation {
+            background: rgba(22, 27, 34, 0.95);
+            border-left-color: var(--gold);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        body.dark-mode .game-section {
+            background: rgba(22, 27, 34, 0.6);
+            border: 1px solid rgba(232, 220, 200, 0.12);
+        }
+
+        body.dark-mode .empty {
+            color: var(--text-soft);
+        }
+
+        /* === SRS SYSTEM STYLES === */
+        .srs-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .srs-stat-box {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 2px;
+            text-align: center;
+            box-shadow: 0 2px 8px var(--shadow);
+            border-left: 3px solid var(--gold);
+        }
+
+        body.dark-mode .srs-stat-box {
+            background: rgba(22, 27, 34, 0.8);
+        }
+
+        .srs-stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--crimson);
+            font-weight: 500;
+        }
+
+        .srs-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .srs-card-container {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 2rem auto;
+            max-width: 700px;
+        }
+
+        body.dark-mode .srs-card-container {
+            background: rgba(22, 27, 34, 0.8);
+        }
+
+        .srs-card-word {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 500;
+            color: var(--crimson);
+            margin-bottom: 1.5rem;
+        }
+
+        .srs-card-translation {
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .srs-card-container.revealed .srs-card-translation {
+            opacity: 1;
+        }
+
+        .srs-card-example {
+            font-size: 1.1rem;
+            color: var(--text-soft);
+            font-style: italic;
+            padding: 1.5rem;
+            background: var(--whisper);
+            border-radius: 8px;
+            max-width: 550px;
+            margin: 1.5rem auto;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .srs-card-container.revealed .srs-card-example {
+            opacity: 1;
+        }
+
+        .srs-difficulty-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .srs-card-container.revealed .srs-difficulty-buttons {
+            opacity: 1;
+        }
+
+        .srs-diff-btn {
+            padding: 1rem;
+            border: 2px solid;
+            border-radius: 8px;
+            background: var(--cream);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        body.dark-mode .srs-diff-btn {
+            background: var(--cream-dark);
+        }
+
+        .srs-diff-btn small {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .srs-diff-btn.again {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .srs-diff-btn.again:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .srs-diff-btn.hard {
+            border-color: #fd7e14;
+            color: #fd7e14;
+        }
+
+        .srs-diff-btn.hard:hover {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .srs-diff-btn.good {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .srs-diff-btn.good:hover {
+            background: #28a745;
+            color: white;
+        }
+
+        .srs-diff-btn.easy {
+            border-color: #007bff;
+            color: #007bff;
+        }
+
+        .srs-diff-btn.easy:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .srs-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--whisper);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .srs-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--crimson), var(--gold));
+            transition: width 0.3s;
+        }
+
+        .srs-progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            margin-bottom: 1rem;
+        }
+
+        .srs-complete-message {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .srs-complete-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .srs-complete-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--crimson);
+            margin-bottom: 1rem;
+        }
+
+        .srs-complete-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-soft);
+            margin-bottom: 2rem;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -53,7 +519,7 @@
             right: 3rem;
             max-width: 280px;
             padding: 1.5rem;
-            background: white;
+            background: var(--cream);
             border-left: 2px solid var(--gold);
             box-shadow: 0 4px 20px var(--shadow);
             opacity: 0;
@@ -96,6 +562,181 @@
         @keyframes heartPulse {
             0%, 100% { transform: scale(1); opacity: 0.2; }
             50% { transform: scale(1.08); opacity: 0.3; }
+        }
+
+        /* Dark Mode Toggle Button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--cream);
+            border: 1px solid var(--whisper);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: var(--cream-dark);
+            border-color: var(--whisper);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 24px var(--shadow-strong);
+        }
+
+        .dark-mode-toggle svg {
+            width: 24px;
+            height: 24px;
+            transition: all 0.4s ease;
+        }
+
+        .dark-mode-toggle .sun-icon {
+            display: none;
+        }
+
+        body.dark-mode .dark-mode-toggle .sun-icon {
+            display: block;
+        }
+
+        body.dark-mode .dark-mode-toggle .moon-icon {
+            display: none;
+        }
+
+        /* Floating Quick Actions */
+        .floating-actions {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .floating-btn-main {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--crimson);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(139, 38, 53, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .floating-btn-main:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 28px rgba(139, 38, 53, 0.6);
+        }
+
+        .floating-btn-main svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+
+        .floating-btn-main .close-icon {
+            opacity: 0;
+            transform: rotate(-90deg);
+        }
+
+        .floating-actions.active .floating-btn-main .plus-icon {
+            opacity: 0;
+            transform: rotate(90deg);
+        }
+
+        .floating-actions.active .floating-btn-main .close-icon {
+            opacity: 1;
+            transform: rotate(0);
+        }
+
+        .floating-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .floating-actions.active .floating-menu {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .floating-btn-action {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--cream);
+            border: 1px solid var(--whisper);
+            border-radius: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px var(--shadow);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--navy);
+        }
+
+        .floating-btn-action:hover {
+            background: var(--cream-dark);
+            transform: translateX(-4px);
+            box-shadow: 0 6px 24px var(--shadow-strong);
+        }
+
+        .floating-btn-action svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--crimson);
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .floating-btn-main {
+            background: var(--gold);
+            box-shadow: 0 4px 20px rgba(244, 213, 141, 0.4);
+        }
+
+        body.dark-mode .floating-btn-main:hover {
+            box-shadow: 0 6px 28px rgba(244, 213, 141, 0.6);
+        }
+
+        body.dark-mode .floating-btn-main svg {
+            stroke: var(--navy);
+        }
+
+        body.dark-mode .floating-btn-action {
+            background: var(--cream-dark);
+            border-color: rgba(232, 220, 200, 0.15);
+        }
+
+        body.dark-mode .floating-btn-action:hover {
+            background: rgba(22, 27, 34, 0.9);
+            border-color: rgba(244, 213, 141, 0.3);
+        }
+
+        body.dark-mode .floating-btn-action svg {
+            stroke: var(--gold);
         }
 
         /* Header */
@@ -234,7 +875,7 @@
 
         /* Cards */
         .entrance-card {
-            background: white;
+            background: var(--cream);
             padding: 3rem;
             border-radius: 2px;
             box-shadow: 0 4px 24px var(--shadow);
@@ -298,13 +939,31 @@
         }
 
         .btn-secondary {
-            background: white;
+            background: var(--cream);
             color: var(--navy);
             border: 1px solid var(--navy);
         }
 
         .btn-secondary:hover {
             background: var(--cream-dark);
+        }
+
+        .timer-preset {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            min-width: auto;
+        }
+
+        .timer-preset.active {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+
+        body.dark-mode .timer-preset.active {
+            background: var(--gold);
+            color: var(--navy);
+            border-color: var(--gold);
         }
 
         .btn-danger {
@@ -327,7 +986,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: white;
+            background: var(--cream);
             color: var(--navy);
             border: 1px solid var(--navy);
             cursor: pointer;
@@ -348,7 +1007,7 @@
         }
 
         .word-card {
-            background: white;
+            background: var(--cream);
             padding: 2rem;
             border-radius: 2px;
             box-shadow: 0 2px 12px var(--shadow);
@@ -366,7 +1025,7 @@
         }
 
         .icon-btn {
-            background: white;
+            background: var(--cream);
             border: none;
             cursor: pointer;
             font-size: 1.1rem;
@@ -380,12 +1039,158 @@
             opacity: 1;
         }
 
+        .icon-btn.favorite-active {
+            opacity: 1;
+        }
+
+        .icon-btn.favorite-active:hover {
+            transform: scale(1.1);
+        }
+
         .word-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
             border-radius: 2px;
             margin-bottom: 1rem;
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .view-toggle.active {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+
+        body.dark-mode .view-toggle.active {
+            background: var(--gold);
+            color: var(--navy);
+            border-color: var(--gold);
+        }
+
+        /* Flip Cards */
+        .flip-card-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            margin: 2rem 0;
+            perspective: 1000px;
+        }
+
+        .flip-card {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .flip-card-front {
+            background: linear-gradient(135deg, white 0%, var(--cream-dark) 100%);
+            border: 2px solid var(--gold);
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        body.dark-mode .flip-card-front {
+            background: linear-gradient(135deg, var(--cream-dark) 0%, #1a1f26 100%);
+            border-color: var(--gold);
+        }
+
+        body.dark-mode .flip-card-back {
+            background: linear-gradient(135deg, var(--gold) 0%, #d4b886 100%);
+            color: var(--navy);
+        }
+
+        .flip-card-content {
+            text-align: center;
+            width: 100%;
+        }
+
+        .flip-card-word {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 500;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        body.dark-mode .flip-card-word {
+            color: var(--gold);
+        }
+
+        .flip-card-hint {
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            font-style: italic;
+        }
+
+        .flip-card-meaning {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .flip-card-example {
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .flip-card-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .flip-card-counter {
+            font-size: 1.1rem;
+            color: var(--text);
+            font-weight: 500;
+            min-width: 80px;
+            text-align: center;
         }
 
         .word-french {
@@ -487,13 +1292,120 @@
 
         /* Game section */
         .game-section {
-            background: white;
+            background: var(--cream);
             padding: 2rem;
             border-radius: 2px;
             box-shadow: 0 2px 12px var(--shadow);
             margin-bottom: 2rem;
             text-align: center;
             border-top: 3px solid var(--crimson);
+        }
+
+        .game-container {
+            margin-top: 1.5rem;
+        }
+
+        .game-mode-btn {
+            font-size: 0.85rem;
+            padding: 0.6rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .game-mode-btn svg {
+            flex-shrink: 0;
+        }
+
+        .game-mode-btn.active {
+            background: var(--crimson);
+            color: white;
+            border-color: var(--crimson);
+        }
+
+        .game-instructions {
+            font-size: 1rem;
+            color: var(--text-soft);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .matching-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .matching-card {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--whisper);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: var(--navy);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .matching-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .matching-card.selected {
+            background: var(--gold-pale);
+            border-color: var(--gold);
+        }
+
+        .matching-card.matched {
+            background: #e8f5e8;
+            border-color: #7fa87f;
+            cursor: default;
+            opacity: 0.6;
+        }
+
+        .matching-card.wrong {
+            background: #ffe8e8;
+            border-color: var(--crimson);
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .fillblank-option {
+            padding: 0.75rem 1.5rem;
+            background: var(--cream);
+            border: 2px solid var(--whisper);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            color: var(--navy);
+        }
+
+        .fillblank-option:hover {
+            border-color: var(--gold);
+            background: var(--gold-pale);
+        }
+
+        .fillblank-option.correct {
+            background: #e8f5e8;
+            border-color: #7fa87f;
+            cursor: default;
+        }
+
+        .fillblank-option.incorrect {
+            background: #ffe8e8;
+            border-color: var(--crimson);
+            animation: shake 0.4s;
         }
 
         .game-result {
@@ -524,7 +1436,7 @@
         }
 
         .resource-card {
-            background: white;
+            background: var(--cream);
             padding: 1.5rem;
             border-radius: 2px;
             box-shadow: 0 2px 8px var(--shadow);
@@ -646,7 +1558,7 @@
 
         /* Speaking recordings */
         .recording-card {
-            background: white;
+            background: var(--cream);
             padding: 1.5rem;
             border-radius: 2px;
             box-shadow: 0 2px 8px var(--shadow);
@@ -682,6 +1594,100 @@
             border-left: 2px solid var(--gold-pale);
         }
 
+        /* Transcript Cards */
+        .transcript-card {
+            background: var(--cream);
+            padding: 2rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px var(--shadow);
+            border-left: 3px solid var(--crimson);
+            margin-bottom: 1.5rem;
+        }
+
+        body.dark-mode .transcript-card {
+            background: rgba(22, 27, 34, 0.8);
+            border-left-color: var(--crimson);
+        }
+
+        .transcript-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .transcript-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            font-weight: 500;
+        }
+
+        .transcript-body {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .clickable-word {
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px dotted transparent;
+            padding: 0 2px;
+        }
+
+        .clickable-word:hover {
+            background: var(--gold-pale);
+            border-bottom-color: var(--gold);
+            color: var(--navy);
+        }
+
+        body.dark-mode .clickable-word:hover {
+            background: rgba(244, 213, 141, 0.2);
+            border-bottom-color: var(--gold);
+        }
+
+        .lookup-info {
+            padding: 1rem 0;
+        }
+
+        .lookup-lemma {
+            font-size: 1rem;
+            color: var(--text-soft);
+            margin-bottom: 0.5rem;
+        }
+
+        .lookup-ipa {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .lookup-translations {
+            list-style: none;
+            padding: 0;
+        }
+
+        .lookup-translations li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--whisper);
+        }
+
+        .lookup-translations li:last-child {
+            border-bottom: none;
+        }
+
+        .lookup-sentence {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--whisper);
+            border-left: 3px solid var(--gold);
+            font-style: italic;
+            color: var(--text-soft);
+        }
+
         /* Notes section */
         #notes-grid {
             display: grid;
@@ -690,7 +1696,7 @@
         }
 
         .note-card {
-            background: white;
+            background: var(--cream);
             padding: 1.5rem;
             border-radius: 2px;
             box-shadow: 0 2px 8px var(--shadow);
@@ -758,7 +1764,7 @@
 
         /* Writings archive */
         .writing-card {
-            background: white;
+            background: var(--cream);
             padding: 2rem;
             border-radius: 2px;
             box-shadow: 0 2px 8px var(--shadow);
@@ -808,7 +1814,7 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--cream);
             padding: 3rem;
             border-radius: 2px;
             max-width: 600px;
@@ -919,7 +1925,7 @@
 
         /* Writing area */
         .writing-container {
-            background: white;
+            background: var(--cream);
             padding: 3rem;
             border-radius: 2px;
             box-shadow: 0 4px 24px var(--shadow);
@@ -936,11 +1942,21 @@
             font-size: 1.25rem;
             line-height: 2;
             color: var(--text);
+            background: var(--cream);
             resize: vertical;
         }
 
         .writing-area:focus {
             outline: none;
+            border-color: var(--gold);
+        }
+
+        body.dark-mode .writing-area {
+            background: rgba(22, 27, 34, 0.6);
+            border-color: rgba(232, 220, 200, 0.2);
+        }
+
+        body.dark-mode .writing-area:focus {
             border-color: var(--gold);
         }
 
@@ -982,7 +1998,7 @@
         }
 
         .stat-card {
-            background: white;
+            background: var(--cream);
             padding: 1.5rem;
             border-radius: 2px;
             border-left: 3px solid var(--gold);
@@ -1054,7 +2070,7 @@
             flex-wrap: wrap;
             gap: 0.75rem;
             padding: 1.75rem;
-            background: white;
+            background: var(--cream);
             border-radius: 16px;
             margin-bottom: 2rem;
             box-shadow: 0 2px 12px var(--shadow);
@@ -1098,7 +2114,7 @@
 
         /* Question Section (Parler) */
         .question-section {
-            background: white;
+            background: var(--cream);
             padding: 2rem;
             border-radius: 16px;
             box-shadow: 0 2px 12px var(--shadow);
@@ -1187,7 +2203,7 @@
             align-items: center;
             gap: 0.65rem;
             padding: 0.85rem 1.75rem;
-            background: white;
+            background: var(--cream);
             color: var(--crimson);
             border: 2px solid var(--gold-pale);
             border-radius: 24px;
@@ -1248,7 +2264,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.9);
-            background: white;
+            background: var(--cream);
             padding: 2.5rem;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(139, 38, 53, 0.2);
@@ -1265,6 +2281,545 @@
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
+        /* HEATMAP CALENDAR */
+        .heatmap-container {
+            background: var(--cream);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .heatmap-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            max-width: 600px;
+        }
+
+        .heatmap-day {
+            aspect-ratio: 1;
+            background: var(--whisper);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .heatmap-day:hover {
+            transform: scale(1.15);
+            z-index: 10;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .heatmap-day[data-count="1"] { background: #fef3e8; }
+        .heatmap-day[data-count="2"] { background: #fde8d0; }
+        .heatmap-day[data-count="3"] { background: #f9d3ab; }
+        .heatmap-day[data-count="4"] { background: #f4be86; }
+        .heatmap-day[data-count="5"] { background: #efa961; }
+        .heatmap-day[data-count="6"] { background: #e89442; }
+        .heatmap-day[data-count="7"] { background: #df7f29; }
+        .heatmap-day[data-count="8"] { background: #d46a16; }
+        .heatmap-day[data-count="9"] { background: #c85a0c; }
+        .heatmap-day[data-count="10"] { background: #b84d06; border: 2px solid var(--crimson); }
+
+        .heatmap-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--navy);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }
+
+        .heatmap-day:hover .heatmap-tooltip {
+            opacity: 1;
+        }
+
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-soft);
+        }
+
+        .heatmap-legend-item {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        /* GARDEN VISUAL */
+        .garden-visual {
+            background: linear-gradient(to bottom, #e8f4f8 0%, #f5f9e8 100%);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px var(--shadow);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .garden-visual::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30%;
+            background: linear-gradient(to top, rgba(168, 184, 168, 0.2), transparent);
+            pointer-events: none;
+        }
+
+        .garden-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 2rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .garden-flowers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: flex-end;
+            min-height: 200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .flower {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            animation: flowerGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .flower:hover {
+            transform: translateY(-8px);
+        }
+
+        @keyframes flowerGrow {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .flower-bloom {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            margin-bottom: 4px;
+        }
+
+        .flower-bloom.small { width: 35px; height: 35px; }
+        .flower-bloom.medium { width: 50px; height: 50px; }
+        .flower-bloom.large { width: 65px; height: 65px; }
+
+        .flower-stem {
+            width: 3px;
+            background: linear-gradient(to bottom, #7fa87f, #a8b8a8);
+            border-radius: 2px;
+        }
+
+        .flower-stem.small { height: 40px; }
+        .flower-stem.medium { height: 60px; }
+        .flower-stem.large { height: 80px; }
+
+        .flower-label {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--navy);
+            font-weight: 500;
+            text-align: center;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .garden-stats {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(168, 184, 168, 0.3);
+            font-size: 0.9rem;
+            color: var(--text-soft);
+        }
+
+        /* MUSIC PLAYER MODAL */
+        .music-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(27, 43, 58, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .music-modal.active {
+            display: flex;
+        }
+
+        .music-modal-content {
+            background: linear-gradient(135deg, var(--cream) 0%, white 100%);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: auto;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .music-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--whisper);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .music-modal-close:hover {
+            background: var(--crimson);
+            transform: rotate(90deg);
+        }
+
+        .music-modal-close:hover svg {
+            stroke: white;
+        }
+
+        .music-modal-close svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .music-modal-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .music-modal-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-soft);
+            margin-bottom: 2.5rem;
+            font-style: italic;
+        }
+
+        .music-player-card {
+            background: var(--cream);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .music-album-art {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--gold-pale) 0%, var(--rosy) 100%);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .music-album-art svg {
+            width: 80px;
+            height: 80px;
+            fill: white;
+            opacity: 0.3;
+        }
+
+        .music-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            animation: musicWave 2s ease-in-out infinite;
+        }
+
+        @keyframes musicWave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .music-now-playing {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .music-track-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .music-track-artist {
+            font-size: 0.9rem;
+            color: var(--text-soft);
+        }
+
+        .music-controls-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .music-play-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(139, 38, 53, 0.3);
+        }
+
+        .music-play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(139, 38, 53, 0.4);
+        }
+
+        .music-play-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        .music-volume-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+
+        .music-volume-icon {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-soft);
+            flex-shrink: 0;
+        }
+
+        .music-volume-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--whisper);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .music-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--crimson);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .music-volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .music-volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--crimson);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .music-playlist {
+            margin-top: 1.5rem;
+        }
+
+        .music-playlist-title {
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .music-track-item {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--cream);
+        }
+
+        .music-track-item:hover {
+            background: var(--gold-pale);
+            transform: translateX(4px);
+        }
+
+        .music-track-item.active {
+            background: var(--gold-pale);
+            border-left: 3px solid var(--crimson);
+        }
+
+        .music-track-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .music-track-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--crimson);
+        }
+
+        .music-track-info {
+            flex: 1;
+        }
+
+        .music-track-info-name {
+            font-size: 0.95rem;
+            color: var(--navy);
+            font-weight: 500;
+        }
+
+        .music-track-info-duration {
+            font-size: 0.8rem;
+            color: var(--text-soft);
+        }
+
+        /* Music button in header */
+        .header-music-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--whisper);
+            border: 1px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .header-music-btn:hover {
+            background: var(--gold-pale);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .header-music-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--navy);
+        }
+
+        .header-music-btn.playing::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            background: var(--crimson);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .affirmation {
@@ -1279,6 +2834,27 @@
             .main {
                 padding: 2rem 1rem 3rem;
             }
+
+            .heatmap-grid {
+                gap: 3px;
+            }
+
+            .garden-flowers {
+                gap: 1rem;
+            }
+
+            .flower-bloom.large { width: 50px; height: 50px; }
+
+            .music-modal-close {
+                width: 48px;
+                height: 48px;
+            }
+
+            .music-modal-close svg {
+                width: 28px;
+                height: 28px;
+            }
+        }
 
             .nav {
                 padding: 1rem;
@@ -1342,6 +2918,9 @@
     </style>
 </head>
 <body>
+    <!-- Animation Container for SVG effects -->
+    <div class="animation-container" id="animationContainer"></div>
+
     <!-- Affirmation -->
     <div class="affirmation" id="affirmation">
         <div class="affirmation-text"></div>
@@ -1360,8 +2939,8 @@
     <header class="header">
         <div class="header-inner">
             <div class="logo">
-                <div class="logo-main">Ma Maison</div>
-                <div class="logo-sub">French Sanctuary</div>
+                <div class="logo-main" id="logo-main" style="cursor: pointer;">Ma Maison</div>
+                <div class="logo-sub" id="logo-sub" style="cursor: pointer;">Où chaque moment est doux</div>
             </div>
             <div class="signature">apprendre</div>
         </div>
@@ -1371,12 +2950,12 @@
     <nav class="nav">
         <button class="nav-link active" data-room="entree">L'Entrée</button>
         <button class="nav-link" data-room="jardin">Le Jardin</button>
-        <button class="nav-link" data-room="lire">Lire</button>
-        <button class="nav-link" data-room="ecouter">Écouter</button>
-        <button class="nav-link" data-room="parler">Parler</button>
-        <button class="nav-link" data-room="ecrire">Écrire</button>
-        <button class="nav-link" data-room="notes">Notes</button>
-        <button class="nav-link" data-room="ressources">Ressources</button>
+        <button class="nav-link" data-room="lire">Le Coin Lecture</button>
+        <button class="nav-link" data-room="ecouter">Le Studio d'Écoute</button>
+        <button class="nav-link" data-room="parler">Le Parloir</button>
+        <button class="nav-link" data-room="ecrire">Le Salon d'Écriture</button>
+        <button class="nav-link" data-room="notes">Le Cabinet de Travail</button>
+        <button class="nav-link" data-room="ressources">La Réserve</button>
     </nav>
 
     <!-- Main -->
@@ -1391,6 +2970,45 @@
             </div>
 
             <div id="entrance-content"></div>
+
+            <!-- Monthly Heatmap -->
+            <div class="heatmap-container">
+                <div class="heatmap-title">Ton activité d'étude</div>
+                <div class="heatmap-grid" id="heatmap-grid"></div>
+                <div class="heatmap-legend">
+                    <span>Moins</span>
+                    <div class="heatmap-legend-item" style="background: var(--whisper);"></div>
+                    <div class="heatmap-legend-item" style="background: #fde8d0;"></div>
+                    <div class="heatmap-legend-item" style="background: #f4be86;"></div>
+                    <div class="heatmap-legend-item" style="background: #df7f29;"></div>
+                    <div class="heatmap-legend-item" style="background: #b84d06;"></div>
+                    <span>Plus</span>
+                </div>
+            </div>
+
+            <!-- Study Timer -->
+            <div class="entrance-card">
+                <div class="entrance-sentence">Minuteur d'étude</div>
+                <div class="entrance-translation">
+                    Concentre-toi. Prends des pauses. Apprends à ton rythme.
+                </div>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <div id="timer-display" style="font-family: 'Cormorant Garamond', serif; font-size: 3rem; color: var(--navy); margin-bottom: 1rem; font-weight: 500;">25:00</div>
+                    
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
+                        <button class="btn btn-secondary timer-preset" data-minutes="5">5 min</button>
+                        <button class="btn btn-secondary timer-preset" data-minutes="15">15 min</button>
+                        <button class="btn btn-secondary timer-preset active" data-minutes="25">25 min</button>
+                        <button class="btn btn-secondary timer-preset" data-minutes="45">45 min</button>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <button class="btn btn-primary" id="timer-start">Commencer</button>
+                        <button class="btn btn-secondary" id="timer-reset" style="display: none;">Réinitialiser</button>
+                    </div>
+                </div>
+            </div>
 
             <!-- Data management -->
             <div class="entrance-card">
@@ -1424,6 +3042,13 @@
                 <p class="room-description">
                     Plante des mots. Laisse-les grandir dans leur propre temps.
                 </p>
+            </div>
+
+            <!-- Garden Visual -->
+            <div class="garden-visual">
+                <div class="garden-title">Ton jardin de mots</div>
+                <div class="garden-flowers" id="garden-flowers"></div>
+                <div class="garden-stats" id="garden-stats"></div>
             </div>
 
             <!-- Jardin Filters - NEW -->
@@ -1462,6 +3087,14 @@
                             <option value="">Tous les thèmes</option>
                         </select>
                     </div>
+
+                    <div>
+                        <label class="form-label">Favoris</label>
+                        <select class="form-select" id="filter-favorite">
+                            <option value="">Tous</option>
+                            <option value="true">Favoris de Sasha ⭐</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div style="text-align:right;">
@@ -1471,16 +3104,207 @@
 
             <!-- Game section -->
             <div class="game-section">
-                <button class="btn btn-primary" id="random-word">
-                    Donne-moi un mot
-                </button>
-                <div class="game-result" id="game-result">
-                    <div class="game-prompt">Clique pour commencer</div>
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1rem;">
+                        <button class="btn btn-secondary game-mode-btn" data-game="srs">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            SRS Review
+                        </button>
+                        <button class="btn btn-secondary game-mode-btn active" data-game="random">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <circle cx="15.5" cy="15.5" r="1.5"></circle>
+                                <circle cx="8.5" cy="15.5" r="1.5"></circle>
+                                <circle cx="15.5" cy="8.5" r="1.5"></circle>
+                            </svg>
+                            Mot aléatoire
+                        </button>
+                        <button class="btn btn-secondary game-mode-btn" data-game="matching">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                                <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+                                <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                            </svg>
+                            Association
+                        </button>
+                        <button class="btn btn-secondary game-mode-btn" data-game="fillblank">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Compléter
+                        </button>
+                        <button class="btn btn-secondary game-mode-btn" data-game="speed">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                            Chrono
+                        </button>
+                        <button class="btn btn-secondary game-mode-btn" data-game="quiz">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            Quiz
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Random Word Game (Original) -->
+                <div class="game-container" id="game-random" style="display: block;">
+                    <button class="btn btn-primary" id="random-word">
+                        Donne-moi un mot
+                    </button>
+                    <div class="game-result" id="game-result">
+                        <div class="game-prompt">Clique pour commencer</div>
+                    </div>
+                </div>
+
+                <!-- Matching Game -->
+                <div class="game-container" id="game-matching" style="display: none;">
+                    <div class="game-instructions">Associe les mots français avec leurs traductions</div>
+                    <div id="matching-pairs" class="matching-grid"></div>
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <button class="btn btn-primary" id="start-matching">Commencer</button>
+                        <button class="btn btn-secondary" id="reset-matching" style="display: none;">Nouvelle partie</button>
+                    </div>
+                    <div id="matching-score" style="margin-top: 1rem; text-align: center; font-size: 1.2rem; color: var(--navy);"></div>
+                </div>
+
+                <!-- Fill in the Blank -->
+                <div class="game-container" id="game-fillblank" style="display: none;">
+                    <div class="game-instructions">Complète la phrase avec le bon mot</div>
+                    <div id="fillblank-content">
+                        <div id="fillblank-sentence" style="font-size: 1.3rem; color: var(--navy); margin: 2rem 0; font-family: 'Cormorant Garamond', serif;"></div>
+                        <div id="fillblank-options" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;"></div>
+                        <div id="fillblank-feedback" style="margin-top: 1.5rem; font-size: 1.1rem; min-height: 40px;"></div>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <button class="btn btn-primary" id="start-fillblank">Commencer</button>
+                        <button class="btn btn-secondary" id="next-fillblank" style="display: none;">Suivant</button>
+                    </div>
+                    <div id="fillblank-score" style="margin-top: 1rem; text-align: center; font-size: 1rem; color: var(--text-soft);"></div>
+                </div>
+
+                <!-- Speed Round -->
+                <div class="game-container" id="game-speed" style="display: none;">
+                    <div class="game-instructions">Combien de mots peux-tu te rappeler en 60 secondes ?</div>
+                    <div id="speed-timer" style="font-size: 3rem; color: var(--crimson); font-family: 'Cormorant Garamond', serif; text-align: center; margin: 1.5rem 0;">60</div>
+                    <div id="speed-word" style="font-size: 2rem; color: var(--navy); font-family: 'Cormorant Garamond', serif; text-align: center; margin: 1.5rem 0; min-height: 60px;"></div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                        <button class="btn btn-primary" id="speed-know" style="display: none;">✓ Je sais</button>
+                        <button class="btn btn-secondary" id="speed-skip" style="display: none;">→ Passer</button>
+                    </div>
+                    <div style="margin-top: 1.5rem; text-align: center;">
+                        <button class="btn btn-primary" id="start-speed">Commencer</button>
+                    </div>
+                    <div id="speed-score" style="margin-top: 1rem; text-align: center; font-size: 1.1rem; color: var(--navy);"></div>
+                </div>
+
+                <!-- Translation Quiz -->
+                <div class="game-container" id="game-quiz" style="display: none;">
+                    <div class="game-instructions">Traduis ce mot</div>
+                    <div id="quiz-word" style="font-size: 2.5rem; color: var(--crimson); font-family: 'Cormorant Garamond', serif; text-align: center; margin: 2rem 0; min-height: 80px;"></div>
+                    <div style="max-width: 400px; margin: 0 auto;">
+                        <input type="text" id="quiz-input" class="form-input" placeholder="Ta réponse..." style="text-align: center; font-size: 1.2rem; display: none;">
+                    </div>
+                    <div id="quiz-feedback" style="margin-top: 1.5rem; font-size: 1.1rem; text-align: center; min-height: 40px;"></div>
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <button class="btn btn-primary" id="start-quiz">Commencer</button>
+                        <button class="btn btn-primary" id="submit-quiz" style="display: none;">Vérifier</button>
+                        <button class="btn btn-secondary" id="next-quiz" style="display: none;">Suivant</button>
+                    </div>
+                    <div id="quiz-score" style="margin-top: 1rem; text-align: center; font-size: 1rem; color: var(--text-soft);"></div>
+                </div>
+
+                <!-- SRS Review -->
+                <div class="game-container" id="game-srs" style="display: none;">
+                    <div class="srs-stats-grid">
+                        <div class="srs-stat-box">
+                            <div class="srs-stat-number" id="srs-due-count">0</div>
+                            <div class="srs-stat-label">Due Today</div>
+                        </div>
+                        <div class="srs-stat-box">
+                            <div class="srs-stat-number" id="srs-new-count">0</div>
+                            <div class="srs-stat-label">New</div>
+                        </div>
+                        <div class="srs-stat-box">
+                            <div class="srs-stat-number" id="srs-learning-count">0</div>
+                            <div class="srs-stat-label">Learning</div>
+                        </div>
+                        <div class="srs-stat-box">
+                            <div class="srs-stat-number" id="srs-mastered-count">0</div>
+                            <div class="srs-stat-label">Mastered</div>
+                        </div>
+                    </div>
+                    <div id="srs-session-area">
+                        <div style="text-align: center; padding: 2rem;">
+                            <button class="btn btn-primary" id="start-srs-session" style="font-size: 1.1rem; padding: 1.25rem 3rem;">
+                                Commencer la révision
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div style="margin-bottom: 2rem; text-align: center;">
+                <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 1rem;">
+                    <button class="btn btn-secondary view-toggle active" data-view="grid">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        Grille
+                    </button>
+                    <button class="btn btn-secondary view-toggle" data-view="cards">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                        </svg>
+                        Cartes
+                    </button>
+                </div>
                 <button class="btn btn-primary" id="add-word-btn">+ Planter un nouveau mot</button>
+            </div>
+
+            <!-- Flip Cards View -->
+            <div id="flip-cards-container" style="display: none;">
+                <div class="flip-card-wrapper">
+                    <div class="flip-card" id="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="flip-card-word" id="flip-card-word">Cliquez pour commencer</div>
+                                <div class="flip-card-hint">Cliquez pour voir la traduction</div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="flip-card-meaning" id="flip-card-meaning"></div>
+                                <div class="flip-card-example" id="flip-card-example"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flip-card-controls">
+                    <button class="btn btn-secondary" id="flip-prev">← Précédent</button>
+                    <div class="flip-card-counter">
+                        <span id="flip-current">0</span> / <span id="flip-total">0</span>
+                    </div>
+                    <button class="btn btn-secondary" id="flip-next">Suivant →</button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button class="btn btn-secondary" id="flip-shuffle">🔀 Mélanger</button>
+                </div>
             </div>
 
             <div class="word-grid" id="word-grid"></div>
@@ -1496,7 +3320,7 @@
         <!-- Lire -->
         <section class="room" id="lire">
             <div class="room-intro">
-                <h1 class="room-title">Lire</h1>
+                <h1 class="room-title">Le Coin Lecture</h1>
                 <p class="room-description">
                     Garde une trace de ce que tu lis ou veux lire.
                 </p>
@@ -1504,15 +3328,22 @@
 
             <div style="margin-bottom: 2rem; text-align: center;">
                 <button class="btn btn-primary" id="add-reading-btn">+ Ajouter un article ou livre</button>
+                <button class="btn btn-secondary" id="add-reading-transcript-btn">+ Ajouter une transcription</button>
             </div>
 
             <div class="resource-grid" id="reading-grid"></div>
+            
+            <!-- Transcripts Section -->
+            <div id="reading-transcripts-section" style="margin-top: 3rem; display: none;">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 1.5rem;">Transcriptions</h3>
+                <div id="reading-transcripts-container"></div>
+            </div>
         </section>
 
         <!-- Écouter -->
         <section class="room" id="ecouter">
             <div class="room-intro">
-                <h1 class="room-title">Écouter</h1>
+                <h1 class="room-title">Le Studio d'Écoute</h1>
                 <p class="room-description">
                     Chansons, vidéos, films — tout ce que tu écoutes pour apprendre.
                 </p>
@@ -1520,15 +3351,22 @@
 
             <div style="margin-bottom: 2rem; text-align: center;">
                 <button class="btn btn-primary" id="add-listening-btn">+ Ajouter une chanson/vidéo/film</button>
+                <button class="btn btn-secondary" id="add-listening-transcript-btn">+ Ajouter une transcription</button>
             </div>
 
             <div class="resource-grid" id="listening-grid"></div>
+            
+            <!-- Transcripts Section -->
+            <div id="listening-transcripts-section" style="margin-top: 3rem; display: none;">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 1.5rem;">Transcriptions</h3>
+                <div id="listening-transcripts-container"></div>
+            </div>
         </section>
 
         <!-- Parler -->
         <section class="room" id="parler">
             <div class="room-intro">
-                <h1 class="room-title">Parler</h1>
+                <h1 class="room-title">Le Parloir</h1>
                 <p class="room-description">
                     Réponds aux questions. Enregistre ta voix. Personne ne juge.
                 </p>
@@ -1614,7 +3452,7 @@
         <!-- Écrire -->
         <section class="room" id="ecrire">
             <div class="room-intro">
-                <h1 class="room-title">Écrire</h1>
+                <h1 class="room-title">Le Salon d'Écriture</h1>
                 <p class="room-description">
                     Écris ce que tu veux. Tout est sauvegardé.
                 </p>
@@ -1650,7 +3488,7 @@
         <!-- Notes -->
         <section class="room" id="notes">
             <div class="room-intro">
-                <h1 class="room-title">Notes</h1>
+                <h1 class="room-title">Le Cabinet de Travail</h1>
                 <p class="room-description">
                     Ta base de connaissances personnelle. Grammaire, prononciation, phrases — tout organisé.
                 </p>
@@ -1679,13 +3517,24 @@
         <!-- Ressources -->
         <section class="room" id="ressources">
             <div class="room-intro">
-                <h1 class="room-title">Ressources</h1>
+                <h1 class="room-title">La Réserve</h1>
                 <p class="room-description">
                     Sites web, chaînes YouTube, applications — tous tes outils pour apprendre.
                 </p>
             </div>
 
-            <div style="margin-bottom: 2rem; text-align: center;">
+            <div style="margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <div style="min-width: 200px;">
+                    <select class="form-select" id="filter-resources-type">
+                        <option value="">Tous les types</option>
+                        <option value="website">Sites web</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="app">Applications</option>
+                        <option value="book">Livres</option>
+                        <option value="podcast">Podcasts</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
                 <button class="btn btn-primary" id="add-resource-btn">+ Ajouter une ressource</button>
             </div>
 
@@ -2403,12 +4252,253 @@
     <!-- Hidden file input for import -->
     <input type="file" id="import-file-input" accept=".json" style="display: none;">
 
+    <!-- Add Reading Transcript Modal -->
+    <div class="modal" id="add-reading-transcript-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter une transcription</h2>
+                <button class="close-btn" onclick="closeModal('add-reading-transcript-modal')">&times;</button>
+            </div>
+            
+            <form id="add-reading-transcript-form">
+                <div class="form-group">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-input" id="reading-transcript-title" placeholder="Ex: Article du Monde" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Transcription</label>
+                    <textarea class="form-textarea" id="reading-transcript-text" rows="12" placeholder="Colle le texte ici..." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('add-reading-transcript-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Listening Transcript Modal -->
+    <div class="modal" id="add-listening-transcript-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter une transcription</h2>
+                <button class="close-btn" onclick="closeModal('add-listening-transcript-modal')">&times;</button>
+            </div>
+            
+            <form id="add-listening-transcript-form">
+                <div class="form-group">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-input" id="listening-transcript-title" placeholder="Ex: Paroles de chanson" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Transcription</label>
+                    <textarea class="form-textarea" id="listening-transcript-text" rows="12" placeholder="Colle les paroles ici..." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('add-listening-transcript-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Word Lookup Popup -->
+    <div class="modal" id="word-lookup-modal" style="z-index: 10000;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="lookup-word-title">...</h2>
+                <button class="close-btn" onclick="closeModal('word-lookup-modal')">&times;</button>
+            </div>
+            
+            <div id="lookup-content" style="padding: 1.5rem;">
+                <div style="text-align: center; padding: 2rem; color: var(--text-soft);">
+                    Chargement...
+                </div>
+            </div>
+
+            <div class="form-actions" id="lookup-actions" style="display: none;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('word-lookup-modal')">Annuler</button>
+                <button type="button" class="btn btn-primary" id="save-lookup-word">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Floating Heart -->
     <svg class="floating-heart" width="80" height="80" viewBox="0 0 24 24" fill="#A64253">
         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
     </svg>
 
     <script>
+        // ============================================
+        // SVG ANIMATIONS
+        // ============================================
+        const animationContainer = document.getElementById('animationContainer');
+
+        // SVG Definitions
+        const heartSVG = `
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" 
+                      fill="#ff6b8a" opacity="0.8"/>
+            </svg>
+        `;
+
+        const musicNoteSVG = `
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" 
+                      fill="#c9a861" opacity="0.7"/>
+            </svg>
+        `;
+
+        const fireflySVG = `
+            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer glow -->
+                <circle cx="8" cy="8" r="6" fill="#f4d58d" opacity="0.15">
+                    <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.1;0.2;0.1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Mid glow -->
+                <circle cx="8" cy="8" r="4" fill="#f4d58d" opacity="0.4">
+                    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Inner bright core -->
+                <circle cx="8" cy="8" r="2" fill="#fff9e6" opacity="0.95">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Center bright point -->
+                <circle cx="8" cy="8" r="1" fill="#ffffff" opacity="1"/>
+            </svg>
+        `;
+
+        // Create floating hearts (when adding words or completing tasks)
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = heartSVG;
+            
+            const randomX = Math.random() * window.innerWidth;
+            const drift = (Math.random() - 0.5) * 200;
+            const rotation = (Math.random() - 0.5) * 360;
+            
+            heart.style.left = randomX + 'px';
+            heart.style.setProperty('--drift', drift + 'px');
+            heart.style.setProperty('--rotation', rotation + 'deg');
+            
+            animationContainer.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 4000);
+        }
+
+        // Animation triggers
+        let fireflyInterval = null;
+        let musicNoteInterval = null;
+
+        // Create musical note (when music is playing)
+        function createMusicalNote() {
+            const note = document.createElement('div');
+            note.className = 'musical-note';
+            note.innerHTML = musicNoteSVG;
+            
+            const randomX = Math.random() * window.innerWidth;
+            const rotation = (Math.random() - 0.5) * 720;
+            
+            note.style.left = randomX + 'px';
+            note.style.bottom = '0px';
+            note.style.setProperty('--rotation', rotation + 'deg');
+            
+            animationContainer.appendChild(note);
+            
+            setTimeout(() => note.remove(), 5000);
+        }
+
+        // Create firefly/світлячок (dark mode only)
+        function createFirefly() {
+            if (!document.body.classList.contains('dark-mode')) {
+                console.log('Not in dark mode, skipping firefly');
+                return;
+            }
+            
+            console.log('Creating firefly! ✨');
+            
+            const firefly = document.createElement('div');
+            firefly.className = 'firefly';
+            firefly.innerHTML = fireflySVG;
+            
+            const randomX = Math.random() * window.innerWidth;
+            const randomY = Math.random() * window.innerHeight;
+            const driftX = (Math.random() - 0.5) * 120;
+            const driftY = (Math.random() - 0.5) * 120;
+            
+            firefly.style.left = randomX + 'px';
+            firefly.style.top = randomY + 'px';
+            firefly.style.setProperty('--drift-x', driftX + 'px');
+            firefly.style.setProperty('--drift-y', driftY + 'px');
+            
+            animationContainer.appendChild(firefly);
+            console.log('Firefly added! Total:', animationContainer.children.length);
+            
+            setTimeout(() => firefly.remove(), 4000);
+        }
+
+        // Start firefly animations (dark mode only, every 1-2 seconds)
+        function startFireflyAnimations() {
+            console.log('startFireflyAnimations called, dark mode:', document.body.classList.contains('dark-mode'));
+            
+            if (!document.body.classList.contains('dark-mode')) {
+                stopFireflyAnimations();
+                return;
+            }
+            
+            if (fireflyInterval) {
+                console.log('Firefly interval already running');
+                return;
+            }
+            
+            console.log('Starting firefly interval ✨');
+            
+            function scheduleFirefly() {
+                createFirefly();
+                const nextDelay = 1000 + Math.random() * 1000; // 1-2 seconds
+                fireflyInterval = setTimeout(scheduleFirefly, nextDelay);
+            }
+            
+            scheduleFirefly();
+        }
+
+        function stopFireflyAnimations() {
+            if (fireflyInterval) {
+                clearTimeout(fireflyInterval);
+                fireflyInterval = null;
+            }
+        }
+
+        // Start/stop music note animations
+        function startMusicNoteAnimations() {
+            if (musicNoteInterval) return;
+            
+            musicNoteInterval = setInterval(() => {
+                createMusicalNote();
+            }, 3000); // Every 3 seconds while music plays
+        }
+
+        function stopMusicNoteAnimations() {
+            if (musicNoteInterval) {
+                clearInterval(musicNoteInterval);
+                musicNoteInterval = null;
+            }
+        }
+
+        // Initialize animations on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check dark mode and start sparkles if appropriate
+            if (document.body.classList.contains('dark-mode')) {
+                startFireflyAnimations();
+            }
+        });
+
         // ============================================
         // DATA MANAGEMENT
         // ============================================
@@ -2422,6 +4512,198 @@
 
         let currentRecording = null;
 
+        // Easter egg click counters
+        let logoSubClicks = 0;
+        let logoMainClicks = 0;
+        let logoSubTimer = null;
+        let logoMainTimer = null;
+
+        // === SRS SYSTEM ===
+        function initializeSRSData() {
+            vocabulary.forEach(word => {
+                if (!word.srs) {
+                    word.srs = {
+                        easeFactor: 2.5,
+                        interval: 0,
+                        repetitions: 0,
+                        dueDate: new Date().toISOString(),
+                        lastReviewed: null,
+                        status: 'new'
+                    };
+                }
+            });
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+        }
+
+        function calculateNextReview(word, quality) {
+            const srs = word.srs;
+            srs.lastReviewed = new Date().toISOString();
+
+            if (quality < 2) {
+                srs.repetitions = 0;
+                srs.interval = 1;
+                srs.status = 'learning';
+            } else {
+                if (srs.repetitions === 0) {
+                    srs.interval = 1;
+                } else if (srs.repetitions === 1) {
+                    srs.interval = 6;
+                } else {
+                    srs.interval = Math.round(srs.interval * srs.easeFactor);
+                }
+                srs.repetitions++;
+                srs.easeFactor = srs.easeFactor + (0.1 - (3 - quality) * (0.08 + (3 - quality) * 0.02));
+                if (srs.easeFactor < 1.3) srs.easeFactor = 1.3;
+                if (quality === 3) srs.interval = Math.round(srs.interval * 1.3);
+                if (srs.repetitions >= 3 && srs.interval >= 21) {
+                    srs.status = 'mastered';
+                } else {
+                    srs.status = 'review';
+                }
+            }
+
+            const nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + srs.interval);
+            srs.dueDate = nextDate.toISOString();
+        }
+
+        function isDueForReview(word) {
+            if (!word.srs) return true;
+            return new Date(word.srs.dueDate) <= new Date();
+        }
+
+        function getDueWords() {
+            return vocabulary.filter(w => isDueForReview(w));
+        }
+
+        function getSRSStats() {
+            const dueWords = getDueWords();
+            const newWords = vocabulary.filter(w => !w.srs || w.srs.status === 'new');
+            const learningWords = vocabulary.filter(w => w.srs && w.srs.status === 'learning');
+            const masteredWords = vocabulary.filter(w => w.srs && w.srs.status === 'mastered');
+            return { 
+                due: dueWords.length, 
+                new: newWords.length, 
+                learning: learningWords.length, 
+                mastered: masteredWords.length 
+            };
+        }
+
+        function updateSRSStatsDisplay() {
+            const stats = getSRSStats();
+            document.getElementById('srs-due-count').textContent = stats.due;
+            document.getElementById('srs-new-count').textContent = stats.new;
+            document.getElementById('srs-learning-count').textContent = stats.learning;
+            document.getElementById('srs-mastered-count').textContent = stats.mastered;
+        }
+
+        let currentSRSSession = [];
+        let currentSRSIndex = 0;
+
+        function startSRSSession() {
+            const dueWords = getDueWords();
+            if (dueWords.length === 0) {
+                showSRSComplete();
+                return;
+            }
+            currentSRSSession = dueWords.sort(() => Math.random() - 0.5);
+            currentSRSIndex = 0;
+            showSRSCard(currentSRSSession[currentSRSIndex]);
+        }
+
+        function showSRSCard(word) {
+            const sessionArea = document.getElementById('srs-session-area');
+            sessionArea.innerHTML = `
+                <div class="srs-progress-bar">
+                    <div class="srs-progress-fill" style="width: ${(currentSRSIndex / currentSRSSession.length) * 100}%"></div>
+                </div>
+                <div class="srs-progress-text">${currentSRSIndex + 1} / ${currentSRSSession.length} cartes</div>
+                <div class="srs-card-container" id="srs-card">
+                    <div class="srs-card-word">${word.french}</div>
+                    <button class="btn btn-primary" onclick="revealSRSAnswer()" style="margin: 1.5rem 0;">Voir la réponse</button>
+                    <div class="srs-card-translation">${word.english}</div>
+                    ${word.example ? `<div class="srs-card-example">${word.example}</div>` : ''}
+                    <div class="srs-difficulty-buttons">
+                        <button class="srs-diff-btn again" onclick="rateSRSCard(0)">
+                            <div>❌ À revoir</div>
+                            <small>< 1 jour</small>
+                        </button>
+                        <button class="srs-diff-btn hard" onclick="rateSRSCard(1)">
+                            <div>😓 Difficile</div>
+                            <small>< 6 jours</small>
+                        </button>
+                        <button class="srs-diff-btn good" onclick="rateSRSCard(2)">
+                            <div>✅ Bien</div>
+                            <small>${getNextIntervalPreview(word, 2)} jours</small>
+                        </button>
+                        <button class="srs-diff-btn easy" onclick="rateSRSCard(3)">
+                            <div>🌟 Facile</div>
+                            <small>${getNextIntervalPreview(word, 3)} jours</small>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getNextIntervalPreview(word, quality) {
+            if (!word.srs) return 1;
+            if (quality < 2) return 1;
+            let interval;
+            if (word.srs.repetitions === 0) {
+                interval = 1;
+            } else if (word.srs.repetitions === 1) {
+                interval = 6;
+            } else {
+                interval = Math.round(word.srs.interval * word.srs.easeFactor);
+            }
+            if (quality === 3) interval = Math.round(interval * 1.3);
+            return Math.max(1, interval);
+        }
+
+        function revealSRSAnswer() {
+            document.getElementById('srs-card').classList.add('revealed');
+            event.target.style.display = 'none';
+        }
+
+        function rateSRSCard(quality) {
+            const word = currentSRSSession[currentSRSIndex];
+            calculateNextReview(word, quality);
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            
+            // Trigger hearts for good/easy ratings
+            if (quality >= 2) {
+                createFloatingHeart();
+            }
+            
+            currentSRSIndex++;
+            if (currentSRSIndex >= currentSRSSession.length) {
+                showSRSComplete();
+            } else {
+                showSRSCard(currentSRSSession[currentSRSIndex]);
+            }
+            updateSRSStatsDisplay();
+        }
+
+        function showSRSComplete() {
+            const sessionArea = document.getElementById('srs-session-area');
+            sessionArea.innerHTML = `
+                <div class="srs-complete-message">
+                    <div class="srs-complete-icon">🎉</div>
+                    <div class="srs-complete-title">Bravo!</div>
+                    <div class="srs-complete-subtitle">
+                        Tu as terminé ta session de révision.<br>
+                        Reviens demain pour continuer ton apprentissage!
+                    </div>
+                    <button class="btn btn-primary" onclick="location.reload()">Retour au jardin</button>
+                </div>
+            `;
+            
+            // Celebration hearts!
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => createFloatingHeart(), i * 200);
+            }
+        }
+
         // ============================================
         // FILTER STATE - NEW
         // ============================================
@@ -2429,91 +4711,106 @@
             year: "",
             quarter: "",
             week: "",
-            theme: ""
+            theme: "",
+            favorite: ""
         };
 
         // ============================================
         // IMPORT / EXPORT - FIXED
         // ============================================
-        document.getElementById('export-data').addEventListener('click', () => {
-            const data = {
-                vocabulary,
-                writings,
-                readingList,
-                listeningList,
-                recordings,
-                resourcesList,
-                notes,
-                exportDate: new Date().toISOString()
-            };
+        function setupImportExport() {
+            console.log('setupImportExport called');
+            const exportBtn = document.getElementById('export-data');
+            const importBtn = document.getElementById('import-data');
+            console.log('Export button:', exportBtn);
+            console.log('Import button:', importBtn);
+            
+            if (!exportBtn || !importBtn) {
+                console.error('BUTTONS NOT FOUND!');
+                return;
+            }
+            
+            document.getElementById('export-data').addEventListener('click', () => {
+                console.log('Export clicked!');
+                const data = {
+                    vocabulary,
+                    writings,
+                    readingList,
+                    listeningList,
+                    recordings,
+                    resourcesList,
+                    notes,
+                    exportDate: new Date().toISOString()
+                };
 
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ma-maison-${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        });
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ma-maison-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
 
-        // FIX: Added missing import button click handler
-        document.getElementById('import-data').addEventListener('click', () => {
-            document.getElementById('import-file-input').click();
-        });
+            // FIX: Added missing import button click handler
+            document.getElementById('import-data').addEventListener('click', () => {
+                console.log('Import button clicked!');
+                document.getElementById('import-file-input').click();
+            });
 
-        document.getElementById('import-file-input').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+            document.getElementById('import-file-input').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const data = JSON.parse(event.target.result);
-                    
-                    if (confirm('Importer ces données ? Cela remplacera tout ce que tu as actuellement.')) {
-                        vocabulary = data.vocabulary || [];
-                        writings = data.writings || [];
-                        readingList = data.readingList || [];
-                        listeningList = data.listeningList || [];
-                        recordings = data.recordings || [];
-                        resourcesList = data.resourcesList || [];
-                        notes = data.notes || [];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
                         
-                        localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
-                        localStorage.setItem('writings', JSON.stringify(writings));
-                        localStorage.setItem('readingList', JSON.stringify(readingList));
-                        localStorage.setItem('listeningList', JSON.stringify(listeningList));
-                        localStorage.setItem('recordings', JSON.stringify(recordings));
-                        localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
-                        localStorage.setItem('notes', JSON.stringify(notes));
-                        
-                        renderGarden();
-                        populateJardinFilters(); // NEW
-                        renderReadingList();
-                        renderListeningList();
-                        renderRecordings();
-                        renderWritingsArchive();
-                        renderResourcesList();
-                        renderNotes();
-                        
-                        alert('Données importées avec succès ✓');
+                        if (confirm('Importer ces données ? Cela remplacera tout ce que tu as actuellement.')) {
+                            vocabulary = data.vocabulary || [];
+                            writings = data.writings || [];
+                            readingList = data.readingList || [];
+                            listeningList = data.listeningList || [];
+                            recordings = data.recordings || [];
+                            resourcesList = data.resourcesList || [];
+                            notes = data.notes || [];
+                            
+                            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                            localStorage.setItem('writings', JSON.stringify(writings));
+                            localStorage.setItem('readingList', JSON.stringify(readingList));
+                            localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                            localStorage.setItem('recordings', JSON.stringify(recordings));
+                            localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                            localStorage.setItem('notes', JSON.stringify(notes));
+                            
+                            renderGarden();
+                            populateJardinFilters(); // NEW
+                            renderReadingList();
+                            renderListeningList();
+                            renderRecordings();
+                            renderWritingsArchive();
+                            renderResourcesList();
+                            renderNotes();
+                            
+                            alert('Données importées avec succès ✓');
+                        }
+                    } catch (err) {
+                        alert('Erreur : fichier invalide');
+                        console.error(err);
                     }
-                } catch (err) {
-                    alert('Erreur : fichier invalide');
-                    console.error(err);
-                }
-            };
-            reader.readAsText(file);
-            // Reset the file input
-            e.target.value = '';
-        });
+                };
+                reader.readAsText(file);
+                // Reset the file input
+                e.target.value = '';
+            });
 
-        document.getElementById('drive-link').addEventListener('click', () => {
-            window.open('https://drive.google.com/drive/folders/1E7JYANvw4DjaJ2VUsPZuuSExqB4PzU9f', '_blank');
-        });
+            document.getElementById('drive-link').addEventListener('click', () => {
+                window.open('https://drive.google.com/drive/folders/1E7JYANvw4DjaJ2VUsPZuuSExqB4PzU9f', '_blank');
+            });
 
-        document.getElementById('reset-data').addEventListener('click', () => {
-            if (confirm('Vraiment tout effacer ? Cette action est irréversible.')) {
+            document.getElementById('reset-data').addEventListener('click', () => {
+                if (confirm('Vraiment tout effacer ? Cette action est irréversible.')) {
                 if (confirm('Dernière confirmation — tu es sûr ?')) {
                     localStorage.clear();
                     vocabulary = [];
@@ -2522,9 +4819,9 @@
                     listeningList = [];
                     recordings = [];
                     resourcesList = [];
-                    activeFilters = { year: "", quarter: "", week: "", theme: "" }; // NEW
+                    activeFilters = { year: "", quarter: "", week: "", theme: "", favorite: "" };
                     renderGarden();
-                    populateJardinFilters(); // NEW
+                    populateJardinFilters();
                     renderReadingList();
                     renderListeningList();
                     renderRecordings();
@@ -2533,7 +4830,396 @@
                     alert('Tout a été effacé. Tu peux recommencer.');
                 }
             }
-        });
+            });
+        }
+
+        // ============================================
+        // STUDY TIMER
+        // ============================================
+        let timerInterval = null;
+        let timerSeconds = 25 * 60; // Default 25 minutes
+        let timerRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function setupTimer() {
+            const timerDisplay = document.getElementById('timer-display');
+            const startBtn = document.getElementById('timer-start');
+            const resetBtn = document.getElementById('timer-reset');
+            const presetBtns = document.querySelectorAll('.timer-preset');
+
+            if (!timerDisplay || !startBtn) return;
+
+            // Preset buttons
+            presetBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (timerRunning) return; // Don't change during countdown
+                    
+                    const minutes = parseInt(btn.dataset.minutes);
+                    timerSeconds = minutes * 60;
+                    updateTimerDisplay();
+                    
+                    // Update active state
+                    presetBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            // Start/Pause button
+            startBtn.addEventListener('click', () => {
+                if (!timerRunning) {
+                    // Start timer
+                    timerRunning = true;
+                    startBtn.textContent = 'Pause';
+                    resetBtn.style.display = 'inline-block';
+                    
+                    timerInterval = setInterval(() => {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                        
+                        if (timerSeconds <= 0) {
+                            clearInterval(timerInterval);
+                            timerRunning = false;
+                            startBtn.textContent = 'Commencer';
+                            
+                            // Play sound or notification
+                            if ('Notification' in window && Notification.permission === 'granted') {
+                                new Notification('Minuteur terminé !', {
+                                    body: 'Temps d\'étude terminé. Prends une pause ! ☕',
+                                    icon: '🎉'
+                                });
+                            } else {
+                                alert('Temps d\'étude terminé ! Prends une pause ☕');
+                            }
+                        }
+                    }, 1000);
+                } else {
+                    // Pause timer
+                    timerRunning = false;
+                    clearInterval(timerInterval);
+                    startBtn.textContent = 'Reprendre';
+                }
+            });
+
+            // Reset button
+            resetBtn.addEventListener('click', () => {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                
+                // Reset to active preset
+                const activePreset = document.querySelector('.timer-preset.active');
+                const minutes = activePreset ? parseInt(activePreset.dataset.minutes) : 25;
+                timerSeconds = minutes * 60;
+                
+                updateTimerDisplay();
+                startBtn.textContent = 'Commencer';
+                resetBtn.style.display = 'none';
+            });
+
+            // Request notification permission
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        // ============================================
+        // STUDY HEATMAP
+        // ============================================
+        function renderHeatmap() {
+            const heatmapGrid = document.getElementById('heatmap-grid');
+            if (!heatmapGrid) return;
+
+            const today = new Date();
+            const days = [];
+            
+            // Generate last 84 days (12 weeks)
+            for (let i = 83; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                days.push(date);
+            }
+
+            heatmapGrid.innerHTML = days.map(date => {
+                const dateStr = date.toISOString().split('T')[0];
+                const count = getActivityCountForDate(dateStr);
+                
+                return `
+                    <div class="heatmap-day" data-count="${Math.min(count, 10)}" data-date="${dateStr}">
+                        <div class="heatmap-tooltip">
+                            ${date.toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })}: ${count} ${count === 1 ? 'mot' : 'mots'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getActivityCountForDate(dateStr) {
+            // Count words added on this date
+            const wordsOnDate = vocabulary.filter(w => {
+                if (!w.created) return false;
+                const wordDate = new Date(w.created).toISOString().split('T')[0];
+                return wordDate === dateStr;
+            });
+            return wordsOnDate.length;
+        }
+
+        // ============================================
+        // GARDEN VISUAL
+        // ============================================
+        function renderGardenVisual() {
+            const gardenFlowers = document.getElementById('garden-flowers');
+            const gardenStats = document.getElementById('garden-stats');
+            
+            if (!gardenFlowers) return;
+
+            const recentWords = [...vocabulary]
+                .sort((a, b) => new Date(b.created) - new Date(a.created))
+                .slice(0, 15); // Show last 15 words as flowers
+
+            if (recentWords.length === 0) {
+                gardenFlowers.innerHTML = `
+                    <div style="text-align: center; color: var(--text-soft); padding: 2rem;">
+                        Ton jardin est vide... Plante ton premier mot! 🌱
+                    </div>
+                `;
+                gardenStats.innerHTML = '';
+                return;
+            }
+
+            gardenFlowers.innerHTML = recentWords.map((word, index) => {
+                const age = Math.floor((Date.now() - new Date(word.created)) / (1000 * 60 * 60 * 24));
+                const size = age < 7 ? 'small' : age < 30 ? 'medium' : 'large';
+                const colors = ['#ff6b8a', '#ffa07a', '#ffb347', '#f4d58d', '#d4a5d4', '#a8b8ff', '#8ab8d4'];
+                const color = colors[index % colors.length];
+                
+                return `
+                    <div class="flower" style="animation-delay: ${index * 0.1}s;">
+                        <div class="flower-bloom ${size}">
+                            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                                <!-- Center -->
+                                <circle cx="50" cy="50" r="12" fill="#f4d58d"/>
+                                <!-- Petals -->
+                                <circle cx="50" cy="30" r="15" fill="${color}" opacity="0.9"/>
+                                <circle cx="70" cy="40" r="15" fill="${color}" opacity="0.85"/>
+                                <circle cx="70" cy="60" r="15" fill="${color}" opacity="0.8"/>
+                                <circle cx="50" cy="70" r="15" fill="${color}" opacity="0.85"/>
+                                <circle cx="30" cy="60" r="15" fill="${color}" opacity="0.8"/>
+                                <circle cx="30" cy="40" r="15" fill="${color}" opacity="0.85"/>
+                            </svg>
+                        </div>
+                        <div class="flower-stem ${size}"></div>
+                        <div class="flower-label" title="${word.french}">${word.french}</div>
+                    </div>
+                `;
+            }).join('');
+
+            const totalWords = vocabulary.length;
+            const thisWeek = vocabulary.filter(w => {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return new Date(w.created) >= weekAgo;
+            }).length;
+
+            gardenStats.innerHTML = `
+                <strong>${totalWords}</strong> mots dans ton jardin · 
+                <strong>${thisWeek}</strong> plantés cette semaine
+            `;
+        }
+
+        // ============================================
+        // FLOATING QUICK ACTIONS
+        // ============================================
+        function setupFloatingActions() {
+            const floatingActions = document.getElementById('floating-actions');
+            const mainBtn = document.getElementById('floating-main');
+            const quickAddWord = document.getElementById('quick-add-word');
+            const quickStartTimer = document.getElementById('quick-start-timer');
+            const quickFlipCards = document.getElementById('quick-flip-cards');
+
+            if (!floatingActions || !mainBtn) return;
+
+            // Toggle menu
+            mainBtn.addEventListener('click', () => {
+                floatingActions.classList.toggle('active');
+            });
+
+            // Quick add word
+            quickAddWord.addEventListener('click', () => {
+                floatingActions.classList.remove('active');
+                openModal('word-modal');
+                // Navigate to jardin if not already there
+                const jardinBtn = document.querySelector('[data-room="jardin"]');
+                if (jardinBtn && !jardinBtn.classList.contains('active')) {
+                    jardinBtn.click();
+                }
+            });
+
+            // Quick start timer
+            quickStartTimer.addEventListener('click', () => {
+                floatingActions.classList.remove('active');
+                // Navigate to entree
+                const entreeBtn = document.querySelector('[data-room="entree"]');
+                if (entreeBtn) {
+                    entreeBtn.click();
+                    // Scroll to timer
+                    setTimeout(() => {
+                        document.getElementById('timer-display')?.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }, 100);
+                }
+            });
+
+            // Quick flip cards
+            quickFlipCards.addEventListener('click', () => {
+                floatingActions.classList.remove('active');
+                // Navigate to jardin
+                const jardinBtn = document.querySelector('[data-room="jardin"]');
+                if (jardinBtn) {
+                    jardinBtn.click();
+                    // Switch to cards view
+                    setTimeout(() => {
+                        const cardsToggle = document.querySelector('[data-view="cards"]');
+                        if (cardsToggle) {
+                            cardsToggle.click();
+                        }
+                    }, 100);
+                }
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!floatingActions.contains(e.target) && floatingActions.classList.contains('active')) {
+                    floatingActions.classList.remove('active');
+                }
+            });
+        }
+
+        // ============================================
+        // FLIP CARDS
+        // ============================================
+        let flipCardsData = [];
+        let currentFlipIndex = 0;
+
+        function setupFlipCards() {
+            const viewToggles = document.querySelectorAll('.view-toggle');
+            const flipCardsContainer = document.getElementById('flip-cards-container');
+            const wordGrid = document.getElementById('word-grid');
+            const flipCard = document.getElementById('flip-card');
+            const flipPrev = document.getElementById('flip-prev');
+            const flipNext = document.getElementById('flip-next');
+            const flipShuffle = document.getElementById('flip-shuffle');
+
+            if (!viewToggles.length || !flipCardsContainer) return;
+
+            // View toggle
+            viewToggles.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.view;
+                    viewToggles.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    if (view === 'cards') {
+                        flipCardsContainer.style.display = 'block';
+                        wordGrid.style.display = 'none';
+                        initializeFlipCards();
+                    } else {
+                        flipCardsContainer.style.display = 'none';
+                        wordGrid.style.display = 'grid';
+                    }
+                });
+            });
+
+            // Flip card click
+            flipCard.addEventListener('click', () => {
+                flipCard.classList.toggle('flipped');
+            });
+
+            // Navigation
+            flipPrev.addEventListener('click', () => {
+                if (currentFlipIndex > 0) {
+                    currentFlipIndex--;
+                    showFlipCard(currentFlipIndex);
+                }
+            });
+
+            flipNext.addEventListener('click', () => {
+                if (currentFlipIndex < flipCardsData.length - 1) {
+                    currentFlipIndex++;
+                    showFlipCard(currentFlipIndex);
+                }
+            });
+
+            // Shuffle
+            flipShuffle.addEventListener('click', () => {
+                flipCardsData = shuffleArray([...getFilteredVocabulary()]);
+                currentFlipIndex = 0;
+                showFlipCard(currentFlipIndex);
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (flipCardsContainer.style.display === 'block') {
+                    if (e.key === 'ArrowLeft') {
+                        flipPrev.click();
+                    } else if (e.key === 'ArrowRight') {
+                        flipNext.click();
+                    } else if (e.key === ' ') {
+                        e.preventDefault();
+                        flipCard.click();
+                    }
+                }
+            });
+        }
+
+        function initializeFlipCards() {
+            flipCardsData = getFilteredVocabulary();
+            if (flipCardsData.length === 0) {
+                document.getElementById('flip-card-word').textContent = 'Aucun mot disponible';
+                document.getElementById('flip-card-meaning').textContent = '';
+                document.getElementById('flip-card-example').textContent = '';
+                document.getElementById('flip-current').textContent = '0';
+                document.getElementById('flip-total').textContent = '0';
+                return;
+            }
+            currentFlipIndex = 0;
+            showFlipCard(currentFlipIndex);
+        }
+
+        function showFlipCard(index) {
+            const card = flipCardsData[index];
+            if (!card) return;
+
+            // Reset flip state
+            document.getElementById('flip-card').classList.remove('flipped');
+
+            // Update content
+            document.getElementById('flip-card-word').textContent = card.french;
+            document.getElementById('flip-card-meaning').textContent = card.meaning || 'Pas de traduction';
+            
+            // Show best available context
+            const context = card.contexts && card.contexts[0] ? card.contexts[0] : '';
+            document.getElementById('flip-card-example').textContent = context;
+
+            // Update counter
+            document.getElementById('flip-current').textContent = index + 1;
+            document.getElementById('flip-total').textContent = flipCardsData.length;
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
 
         // ============================================
         // AFFIRMATIONS
@@ -2550,7 +5236,19 @@
             { fr: "La beauté n'est pas une faiblesse.", en: "Beauty is not weakness." },
             { fr: "Tu apprends plus vite que tu crois.", en: "You learn faster than you think." },
             { fr: "Prends ton temps.", en: "Take your time." },
-            { fr: "Tu es capable.", en: "You are capable." }
+            { fr: "Tu es capable.", en: "You are capable." },
+            { fr: "Courage !", en: "Courage!" },
+            { fr: "Tu vas y arriver !", en: "You're going to make it!" },
+            { fr: "Petit à petit, l'oiseau fait son nid.", en: "Little by little, the bird builds its nest." },
+            { fr: "Rome ne s'est pas faite en un jour.", en: "Rome wasn't built in a day." },
+            { fr: "Continue comme ça.", en: "Keep going like this." },
+            { fr: "Tu fais des progrès.", en: "You're making progress." },
+            { fr: "Chaque erreur est une leçon.", en: "Every mistake is a lesson." },
+            { fr: "Sois fier de toi.", en: "Be proud of yourself." },
+            { fr: "L'effort est déjà une victoire.", en: "The effort is already a victory." },
+            { fr: "Tu es plus fort que tu crois.", en: "You're stronger than you think." },
+            { fr: "Rien n'est impossible.", en: "Nothing is impossible." },
+            { fr: "Continue d'avancer.", en: "Keep moving forward." }
         ];
 
         function showAffirmation() {
@@ -2778,6 +5476,7 @@
                 if (activeFilters.quarter && word.quarter !== activeFilters.quarter) return false;
                 if (activeFilters.week && word.week !== activeFilters.week) return false;
                 if (activeFilters.theme && word.theme !== activeFilters.theme) return false;
+                if (activeFilters.favorite === 'true' && !word.favorite) return false;
                 return true;
             });
         }
@@ -2809,6 +5508,11 @@
             grid.innerHTML = sortedVocabulary.map(word => `
                 <div class="word-card">
                     <div class="word-actions">
+                        <button class="icon-btn ${word.favorite ? 'favorite-active' : ''}" onclick="toggleFavorite(${word.id})" title="${word.favorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
+                            <svg class="svg-icon" viewBox="0 0 24 24" fill="${word.favorite ? 'var(--gold)' : 'none'}" stroke="currentColor">
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                            </svg>
+                        </button>
                         <button class="icon-btn" onclick="editWord(${word.id})" title="Modifier">
                             <svg class="svg-icon" viewBox="0 0 24 24">
                                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
@@ -2823,6 +5527,7 @@
                     ${word.image ? `<img src="${word.image}" class="word-image" alt="${word.french}">` : ''}
                     
                     <div class="category-tags">
+                        ${word.favorite ? `<div class="category-tag" style="background: var(--gold-pale); color: var(--navy);">⭐ Favori</div>` : ''}
                         ${word.theme ? `<div class="category-tag topic">${word.theme}</div>` : ''}
                         ${word.week ? `<div class="category-tag time">Semaine ${word.week}</div>` : ''}
                         ${word.quarter ? `<div class="category-tag time">${word.quarter}</div>` : ''}
@@ -2858,6 +5563,8 @@
             `).join('');
             
             updatePDFButtonVisibility();
+            renderGardenVisual(); // Update garden visual when words change
+            renderHeatmap(); // Update heatmap when words change
         }
 
         // ============================================
@@ -2915,13 +5622,19 @@
                 renderGarden();
             });
 
+            document.getElementById('filter-favorite').addEventListener('change', e => {
+                activeFilters.favorite = e.target.value;
+                renderGarden();
+            });
+
             document.getElementById('reset-filters').addEventListener('click', () => {
-                activeFilters = { year: "", quarter: "", week: "", theme: "" };
+                activeFilters = { year: "", quarter: "", week: "", theme: "", favorite: "" };
 
                 document.getElementById('filter-year').value = "";
                 document.getElementById('filter-quarter').value = "";
                 document.getElementById('filter-week').value = "";
                 document.getElementById('filter-theme').value = "";
+                document.getElementById('filter-favorite').value = "";
 
                 renderGarden();
             });
@@ -3001,6 +5714,15 @@
             }
         }
 
+        function toggleFavorite(id) {
+            const word = vocabulary.find(w => w.id === id);
+            if (word) {
+                word.favorite = !word.favorite;
+                localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                renderGarden();
+            }
+        }
+
         // ============================================
         // ADD WORD - FIXED
         // ============================================
@@ -3040,6 +5762,11 @@
             renderGarden();
             populateJardinFilters(); // Update filters after adding
             closeModal('word-modal');
+            
+            // Trigger floating hearts animation
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createFloatingHeart(), i * 300);
+            }
         });
 
         // ============================================
@@ -3117,6 +5844,319 @@
         });
 
         // ============================================
+        // GAME MODE SWITCHING
+        // ============================================
+        document.querySelectorAll('.game-mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const gameMode = btn.dataset.game;
+                
+                // Update active button
+                document.querySelectorAll('.game-mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Hide all game containers
+                document.querySelectorAll('.game-container').forEach(c => c.style.display = 'none');
+                
+                // Show selected game
+                document.getElementById(`game-${gameMode}`).style.display = 'block';
+            });
+        });
+
+        // ============================================
+        // MATCHING GAME
+        // ============================================
+        let matchingPairs = [];
+        let selectedCards = [];
+        let matchedCount = 0;
+
+        document.getElementById('start-matching').addEventListener('click', startMatchingGame);
+        document.getElementById('reset-matching').addEventListener('click', startMatchingGame);
+
+        function startMatchingGame() {
+            const filteredVocabulary = getFilteredVocabulary();
+            if (filteredVocabulary.length < 4) {
+                alert('Tu as besoin d\'au moins 4 mots pour jouer');
+                return;
+            }
+
+            // Get 4 random words
+            const shuffled = [...filteredVocabulary].sort(() => Math.random() - 0.5).slice(0, 4);
+            matchingPairs = [];
+            selectedCards = [];
+            matchedCount = 0;
+
+            // Create pairs
+            shuffled.forEach((word, i) => {
+                matchingPairs.push({ id: i, text: word.french, type: 'french', wordId: i });
+                matchingPairs.push({ id: i + 4, text: word.meaning || word.french, type: 'meaning', wordId: i });
+            });
+
+            // Shuffle pairs
+            matchingPairs.sort(() => Math.random() - 0.5);
+
+            // Render
+            const grid = document.getElementById('matching-pairs');
+            grid.innerHTML = matchingPairs.map(pair => `
+                <div class="matching-card" data-id="${pair.id}" data-word-id="${pair.wordId}">
+                    ${pair.text}
+                </div>
+            `).join('');
+
+            // Add click handlers
+            document.querySelectorAll('.matching-card').forEach(card => {
+                card.addEventListener('click', handleMatchingClick);
+            });
+
+            document.getElementById('start-matching').style.display = 'none';
+            document.getElementById('reset-matching').style.display = 'inline-block';
+            document.getElementById('matching-score').textContent = '';
+        }
+
+        function handleMatchingClick(e) {
+            const card = e.currentTarget;
+            if (card.classList.contains('matched') || selectedCards.includes(card)) return;
+
+            card.classList.add('selected');
+            selectedCards.push(card);
+
+            if (selectedCards.length === 2) {
+                const [card1, card2] = selectedCards;
+                const wordId1 = card1.dataset.wordId;
+                const wordId2 = card2.dataset.wordId;
+
+                if (wordId1 === wordId2) {
+                    // Match!
+                    card1.classList.remove('selected');
+                    card2.classList.remove('selected');
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedCount++;
+
+                    if (matchedCount === 4) {
+                        setTimeout(() => {
+                            document.getElementById('matching-score').innerHTML = '✨ Parfait ! Tu as tout trouvé ! ✨';
+                        }, 300);
+                    }
+                } else {
+                    // No match
+                    card1.classList.add('wrong');
+                    card2.classList.add('wrong');
+                    setTimeout(() => {
+                        card1.classList.remove('selected', 'wrong');
+                        card2.classList.remove('selected', 'wrong');
+                    }, 600);
+                }
+
+                selectedCards = [];
+            }
+        }
+
+        // ============================================
+        // FILL IN THE BLANK GAME
+        // ============================================
+        let fillBlankScore = 0;
+        let fillBlankTotal = 0;
+        let currentFillBlankWord = null;
+
+        document.getElementById('start-fillblank').addEventListener('click', nextFillBlank);
+        document.getElementById('next-fillblank').addEventListener('click', nextFillBlank);
+
+        function nextFillBlank() {
+            const filteredVocabulary = getFilteredVocabulary();
+            if (filteredVocabulary.length === 0) {
+                alert('Aucun mot disponible');
+                return;
+            }
+
+            // Get words with contexts
+            const wordsWithContext = filteredVocabulary.filter(w => w.contexts && w.contexts[0]);
+            if (wordsWithContext.length === 0) {
+                alert('Tu as besoin de mots avec des exemples pour jouer');
+                return;
+            }
+
+            currentFillBlankWord = wordsWithContext[Math.floor(Math.random() * wordsWithContext.length)];
+            const sentence = currentFillBlankWord.contexts[0];
+
+            // Replace the word with blank
+            const blankSentence = sentence.replace(new RegExp(currentFillBlankWord.french, 'gi'), '______');
+
+            // Get 3 wrong options
+            const wrongOptions = filteredVocabulary
+                .filter(w => w.id !== currentFillBlankWord.id)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3)
+                .map(w => w.french);
+
+            const allOptions = [currentFillBlankWord.french, ...wrongOptions].sort(() => Math.random() - 0.5);
+
+            document.getElementById('fillblank-sentence').textContent = blankSentence;
+            document.getElementById('fillblank-options').innerHTML = allOptions.map(opt => `
+                <button class="fillblank-option" data-word="${opt}">${opt}</button>
+            `).join('');
+
+            document.querySelectorAll('.fillblank-option').forEach(btn => {
+                btn.addEventListener('click', handleFillBlankChoice);
+            });
+
+            document.getElementById('fillblank-feedback').textContent = '';
+            document.getElementById('start-fillblank').style.display = 'none';
+            document.getElementById('next-fillblank').style.display = 'none';
+            document.getElementById('fillblank-score').textContent = `Score: ${fillBlankScore}/${fillBlankTotal}`;
+        }
+
+        function handleFillBlankChoice(e) {
+            const chosen = e.currentTarget.dataset.word;
+            fillBlankTotal++;
+
+            document.querySelectorAll('.fillblank-option').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+            });
+
+            if (chosen === currentFillBlankWord.french) {
+                e.currentTarget.classList.add('correct');
+                document.getElementById('fillblank-feedback').innerHTML = '✓ Correct !';
+                document.getElementById('fillblank-feedback').style.color = '#7fa87f';
+                fillBlankScore++;
+            } else {
+                e.currentTarget.classList.add('incorrect');
+                document.getElementById('fillblank-feedback').innerHTML = `✗ C'était: <strong>${currentFillBlankWord.french}</strong>`;
+                document.getElementById('fillblank-feedback').style.color = 'var(--crimson)';
+            }
+
+            document.getElementById('next-fillblank').style.display = 'inline-block';
+            document.getElementById('fillblank-score').textContent = `Score: ${fillBlankScore}/${fillBlankTotal}`;
+        }
+
+        // ============================================
+        // SPEED ROUND GAME
+        // ============================================
+        let speedTimer = 60;
+        let speedInterval = null;
+        let speedCorrect = 0;
+        let speedTotal = 0;
+        let speedWords = [];
+        let speedIndex = 0;
+
+        document.getElementById('start-speed').addEventListener('click', startSpeedRound);
+        document.getElementById('speed-know').addEventListener('click', () => handleSpeedAnswer(true));
+        document.getElementById('speed-skip').addEventListener('click', () => handleSpeedAnswer(false));
+
+        function startSpeedRound() {
+            const filteredVocabulary = getFilteredVocabulary();
+            if (filteredVocabulary.length === 0) {
+                alert('Aucun mot disponible');
+                return;
+            }
+
+            speedTimer = 60;
+            speedCorrect = 0;
+            speedTotal = 0;
+            speedIndex = 0;
+            speedWords = [...filteredVocabulary].sort(() => Math.random() - 0.5);
+
+            document.getElementById('start-speed').style.display = 'none';
+            document.getElementById('speed-know').style.display = 'inline-block';
+            document.getElementById('speed-skip').style.display = 'inline-block';
+
+            showSpeedWord();
+
+            speedInterval = setInterval(() => {
+                speedTimer--;
+                document.getElementById('speed-timer').textContent = speedTimer;
+
+                if (speedTimer <= 0) {
+                    endSpeedRound();
+                }
+            }, 1000);
+        }
+
+        function showSpeedWord() {
+            if (speedIndex >= speedWords.length) {
+                speedWords = [...speedWords].sort(() => Math.random() - 0.5);
+                speedIndex = 0;
+            }
+            document.getElementById('speed-word').textContent = speedWords[speedIndex].french;
+        }
+
+        function handleSpeedAnswer(correct) {
+            speedTotal++;
+            if (correct) speedCorrect++;
+            speedIndex++;
+            showSpeedWord();
+        }
+
+        function endSpeedRound() {
+            clearInterval(speedInterval);
+            document.getElementById('speed-know').style.display = 'none';
+            document.getElementById('speed-skip').style.display = 'none';
+            document.getElementById('start-speed').style.display = 'inline-block';
+            document.getElementById('speed-word').textContent = '';
+            document.getElementById('speed-timer').textContent = '60';
+            document.getElementById('speed-score').innerHTML = `
+                Terminé ! 🎉<br>
+                Tu as reconnu <strong>${speedCorrect}</strong> mots sur <strong>${speedTotal}</strong>
+            `;
+        }
+
+        // ============================================
+        // TRANSLATION QUIZ GAME
+        // ============================================
+        let quizScore = 0;
+        let quizTotal = 0;
+        let currentQuizWord = null;
+
+        document.getElementById('start-quiz').addEventListener('click', nextQuiz);
+        document.getElementById('submit-quiz').addEventListener('click', checkQuizAnswer);
+        document.getElementById('next-quiz').addEventListener('click', nextQuiz);
+
+        document.getElementById('quiz-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkQuizAnswer();
+            }
+        });
+
+        function nextQuiz() {
+            const filteredVocabulary = getFilteredVocabulary();
+            if (filteredVocabulary.length === 0) {
+                alert('Aucun mot disponible');
+                return;
+            }
+
+            currentQuizWord = filteredVocabulary[Math.floor(Math.random() * filteredVocabulary.length)];
+
+            document.getElementById('quiz-word').textContent = currentQuizWord.french;
+            document.getElementById('quiz-input').value = '';
+            document.getElementById('quiz-input').style.display = 'block';
+            document.getElementById('quiz-feedback').textContent = '';
+            document.getElementById('start-quiz').style.display = 'none';
+            document.getElementById('submit-quiz').style.display = 'inline-block';
+            document.getElementById('next-quiz').style.display = 'none';
+            document.getElementById('quiz-score').textContent = `Score: ${quizScore}/${quizTotal}`;
+            document.getElementById('quiz-input').focus();
+        }
+
+        function checkQuizAnswer() {
+            const answer = document.getElementById('quiz-input').value.trim().toLowerCase();
+            const correct = (currentQuizWord.meaning || '').toLowerCase();
+
+            quizTotal++;
+
+            if (answer === correct || correct.includes(answer)) {
+                document.getElementById('quiz-feedback').innerHTML = '✓ Correct !';
+                document.getElementById('quiz-feedback').style.color = '#7fa87f';
+                quizScore++;
+            } else {
+                document.getElementById('quiz-feedback').innerHTML = `✗ C'était: <strong>${currentQuizWord.meaning}</strong>`;
+                document.getElementById('quiz-feedback').style.color = 'var(--crimson)';
+            }
+
+            document.getElementById('submit-quiz').style.display = 'none';
+            document.getElementById('next-quiz').style.display = 'inline-block';
+            document.getElementById('quiz-score').textContent = `Score: ${quizScore}/${quizTotal}`;
+        }
+
+        // ============================================
         // READING LIST - FIXED WITH EDIT
         // ============================================
         function renderReadingList() {
@@ -3192,11 +6232,12 @@
             }
         }
 
-        document.getElementById('add-reading-btn').addEventListener('click', () => {
-            openModal('reading-modal');
-        });
+        function setupReadingListeners() {
+            document.getElementById('add-reading-btn').addEventListener('click', () => {
+                openModal('reading-modal');
+            });
 
-        document.getElementById('reading-form').addEventListener('submit', (e) => {
+            document.getElementById('reading-form').addEventListener('submit', (e) => {
             e.preventDefault();
             
             const item = {
@@ -3249,6 +6290,7 @@
             renderReadingList();
             closeModal('edit-reading-modal');
         });
+        }
 
         // ============================================
         // LISTENING LIST - FIXED WITH EDIT
@@ -3328,11 +6370,12 @@
             }
         }
 
-        document.getElementById('add-listening-btn').addEventListener('click', () => {
-            openModal('listening-modal');
-        });
+        function setupListeningListeners() {
+            document.getElementById('add-listening-btn').addEventListener('click', () => {
+                openModal('listening-modal');
+            });
 
-        document.getElementById('listening-form').addEventListener('submit', (e) => {
+            document.getElementById('listening-form').addEventListener('submit', (e) => {
             e.preventDefault();
             
             const item = {
@@ -3385,14 +6428,22 @@
             renderListeningList();
             closeModal('edit-listening-modal');
         });
+        }
 
         // ============================================
         // RESOURCES LIST - FIXED WITH EDIT
         // ============================================
         function renderResourcesList() {
             const grid = document.getElementById('resources-grid');
+            const filterType = document.getElementById('filter-resources-type')?.value || '';
             
-            if (resourcesList.length === 0) {
+            // Filter resources by type
+            let filteredResources = resourcesList;
+            if (filterType) {
+                filteredResources = resourcesList.filter(r => r.type === filterType);
+            }
+            
+            if (filteredResources.length === 0) {
                 grid.innerHTML = `
                     <div class="empty">
                         <div class="empty-icon">
@@ -3400,7 +6451,7 @@
                                 <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
                             </svg>
                         </div>
-                        <div class="empty-text">Rien ici encore...</div>
+                        <div class="empty-text">${resourcesList.length === 0 ? 'Rien ici encore...' : 'Aucune ressource ne correspond à ce filtre.'}</div>
                     </div>
                 `;
                 return;
@@ -3411,13 +6462,14 @@
                 youtube: 'YouTube',
                 app: 'Application',
                 podcast: 'Podcast',
+                book: 'Livre',
                 tool: 'Outil',
                 course: 'Cours',
                 other: 'Autre'
             };
 
             // Sort by most recent first
-            const sortedResourcesList = [...resourcesList].sort((a, b) => b.id - a.id);
+            const sortedResourcesList = [...filteredResources].sort((a, b) => b.id - a.id);
 
             grid.innerHTML = sortedResourcesList.map(item => `
                 <div class="resource-card">
@@ -3466,11 +6518,12 @@
             }
         }
 
-        document.getElementById('add-resource-btn').addEventListener('click', () => {
-            openModal('resources-modal');
-        });
+        function setupResourcesListeners() {
+            document.getElementById('add-resource-btn').addEventListener('click', () => {
+                openModal('resources-modal');
+            });
 
-        document.getElementById('resources-form').addEventListener('submit', (e) => {
+            document.getElementById('resources-form').addEventListener('submit', (e) => {
             e.preventDefault();
             
             const item = {
@@ -3523,6 +6576,7 @@
             renderResourcesList();
             closeModal('edit-resources-modal');
         });
+        }
 
         // ============================================
         // SPEAKING - FIXED VERSION
@@ -3949,34 +7003,27 @@
                 // Word number and French word
                 doc.setFontSize(14);
                 doc.setTextColor(27, 43, 58); // navy
-                doc.text(`${index + 1}. ${word.french}`, margin, y);
+                const wordText = word.article ? `${index + 1}. ${word.article} ${word.french}` : `${index + 1}. ${word.french}`;
+                doc.text(wordText, margin, y);
                 y += 7;
                 
-                // Article if present
-                if (word.article) {
-                    doc.setFontSize(10);
-                    doc.setTextColor(201, 168, 97); // gold
-                    doc.text(`Article: ${word.article}`, margin + 5, y);
-                    y += 5;
-                }
-                
-                // Meaning
+                // Meaning - THE IMPORTANT PART
                 if (word.meaning) {
-                    doc.setFontSize(10);
+                    doc.setFontSize(11);
                     doc.setTextColor(42, 37, 32); // text
-                    doc.text(`Signification: ${word.meaning}`, margin + 5, y);
-                    y += 5;
+                    doc.text(`→ ${word.meaning}`, margin + 5, y);
+                    y += 6;
                 }
                 
-                // Categories
+                // Categories on same line
                 const categories = [];
                 if (word.theme) categories.push(word.theme);
-                if (word.week) categories.push(`Semaine ${word.week}`);
+                if (word.week) categories.push(`S${word.week}`);
                 if (word.quarter) categories.push(word.quarter);
                 if (word.year) categories.push(word.year);
                 
                 if (categories.length > 0) {
-                    doc.setFontSize(9);
+                    doc.setFontSize(8);
                     doc.setTextColor(107, 97, 92);
                     doc.text(categories.join(' • '), margin + 5, y);
                     y += 5;
@@ -3988,7 +7035,7 @@
                     doc.setTextColor(107, 97, 92);
                     
                     if (word.contexts[0]) {
-                        const contextText = doc.splitTextToSize(`Neutre: ${word.contexts[0]}`, 170);
+                        const contextText = doc.splitTextToSize(`Ex: ${word.contexts[0]}`, 170);
                         doc.text(contextText, margin + 5, y);
                         y += contextText.length * 4;
                     }
@@ -4031,6 +7078,117 @@
         }
 
         document.getElementById('save-words-pdf').addEventListener('click', saveWordsAsPDF);
+
+        // ============================================
+        // MUSIC PLAYER MODAL
+        // ============================================
+        function setupMusicPlayer() {
+            const modal = document.getElementById('music-modal');
+            const audio = document.getElementById('background-music');
+            const toggleBtn = document.getElementById('modal-music-toggle');
+            const playIcon = toggleBtn?.querySelector('.play-icon');
+            const pauseIcon = toggleBtn?.querySelector('.pause-icon');
+            const volumeSlider = document.getElementById('modal-volume-slider');
+            const trackName = document.getElementById('current-track-name');
+            const trackItems = document.querySelectorAll('.music-track-item');
+
+            if (!audio || !modal) return;
+
+            // Set initial volume
+            audio.volume = 0.5;
+
+            // Load saved volume
+            const savedVolume = localStorage.getItem('musicVolume');
+            if (savedVolume && volumeSlider) {
+                volumeSlider.value = savedVolume;
+                audio.volume = savedVolume / 100;
+            }
+
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Toggle play/pause
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    if (audio.paused) {
+                        if (!audio.src) {
+                            alert('Sélectionne d\'abord une piste dans la playlist');
+                            return;
+                        }
+                        audio.play();
+                        if (playIcon) playIcon.style.display = 'none';
+                        if (pauseIcon) pauseIcon.style.display = 'block';
+                        
+                        // Start musical note animations
+                        startMusicNoteAnimations();
+                    } else {
+                        audio.pause();
+                        if (playIcon) playIcon.style.display = 'block';
+                        if (pauseIcon) pauseIcon.style.display = 'none';
+                        
+                        // Stop musical note animations
+                        stopMusicNoteAnimations();
+                    }
+                });
+            }
+
+            // Track selection
+            trackItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const src = item.dataset.src;
+                    const name = item.dataset.name;
+
+                    // Update active state
+                    trackItems.forEach(t => t.classList.remove('active'));
+                    item.classList.add('active');
+
+                    // Load and play
+                    audio.src = src;
+                    audio.load();
+                    if (trackName) trackName.textContent = name;
+
+                    audio.play().then(() => {
+                        if (playIcon) playIcon.style.display = 'none';
+                        if (pauseIcon) pauseIcon.style.display = 'block';
+                        
+                        // Start musical note animations
+                        startMusicNoteAnimations();
+                    }).catch(err => {
+                        console.error('Playback error:', err);
+                        alert('Fichier audio introuvable. Place les fichiers sound1.mp3, sound2.mp3, etc. dans le même dossier que cette page.');
+                        if (playIcon) playIcon.style.display = 'block';
+                        if (pauseIcon) pauseIcon.style.display = 'none';
+                    });
+                });
+            });
+
+            // Volume control
+            if (volumeSlider) {
+                volumeSlider.addEventListener('input', (e) => {
+                    audio.volume = e.target.value / 100;
+                });
+
+                volumeSlider.addEventListener('change', (e) => {
+                    localStorage.setItem('musicVolume', e.target.value);
+                });
+            }
+
+            // Handle audio errors
+            audio.addEventListener('error', () => {
+                if (playIcon) playIcon.style.display = 'block';
+                if (pauseIcon) pauseIcon.style.display = 'none';
+            });
+
+            // Update playing indicator when audio ends
+            audio.addEventListener('ended', () => {
+                if (playIcon) playIcon.style.display = 'block';
+                if (pauseIcon) pauseIcon.style.display = 'none';
+            });
+        }
 
         // ============================================
         // NAVIGATION
@@ -4215,8 +7373,53 @@
         // INITIALIZE - FIXED
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            // EASTER EGGS
+            const logoSub = document.getElementById('logo-sub');
+            if (logoSub) {
+                logoSub.addEventListener('click', () => {
+                    logoSubClicks++;
+                    clearTimeout(logoSubTimer);
+                    logoSubTimer = setTimeout(() => { logoSubClicks = 0; }, 2000);
+                    if (logoSubClicks === 3) {
+                        logoSubClicks = 0;
+                        document.getElementById('music-modal').classList.add('active');
+                    }
+                });
+            }
+
+            const logoMain = document.getElementById('logo-main');
+            if (logoMain) {
+                logoMain.addEventListener('click', () => {
+                    logoMainClicks++;
+                    clearTimeout(logoMainTimer);
+                    logoMainTimer = setTimeout(() => { logoMainClicks = 0; }, 2000);
+                    if (logoMainClicks === 2) {
+                        logoMainClicks = 0;
+                        document.body.classList.toggle('dark-mode');
+                        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+                    }
+                });
+            }
+
+            // Initialize SRS
+            initializeSRSData();
+            updateSRSStatsDisplay();
+
+            // SRS button
+            const startSRSBtn = document.getElementById('start-srs-session');
+            if (startSRSBtn) {
+                startSRSBtn.addEventListener('click', startSRSSession);
+            }
+
+            setupImportExport(); // Initialize import/export buttons
+            setupTimer(); // Initialize study timer
+            setupMusicPlayer(); // Initialize music player
+            setupFloatingActions(); // Initialize floating quick actions
+            setupFlipCards(); // Initialize flip cards
             renderEntrance();
             renderGarden();
+            renderHeatmap(); // NEW: Render activity heatmap
+            renderGardenVisual(); // NEW: Render garden visual
             populateJardinFilters(); // NEW
             setupFilterListeners(); // NEW
             renderReadingList();
@@ -4225,6 +7428,13 @@
             renderWritingsArchive();
             renderResourcesList();
             renderNotes();
+            setupTranscriptSystem(); // Initialize transcript system
+            
+            // Resources filter listener
+            const resourcesFilter = document.getElementById('filter-resources-type');
+            if (resourcesFilter) {
+                resourcesFilter.addEventListener('change', renderResourcesList);
+            }
             
             // Fix: Properly attach event listener for add word button
             const addWordBtn = document.getElementById('add-word-btn');
@@ -4241,50 +7451,35 @@
             // Initialize speech recognition
             initializeSpeechRecognition();
 
-            // Add event listeners for edit forms
-            document.getElementById('edit-reading-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const id = parseInt(document.getElementById('edit-reading-id').value);
-                const index = readingList.findIndex(r => r.id === id);
-                
-                if (index === -1) return;
+            // Setup all button listeners
+            setupReadingListeners();
+            setupListeningListeners();
+            setupResourcesListeners();
 
-                readingList[index] = {
-                    ...readingList[index],
-                    type: document.getElementById('edit-reading-type').value,
-                    title: document.getElementById('edit-reading-title').value.trim(),
-                    link: document.getElementById('edit-reading-link').value.trim(),
-                    status: document.getElementById('edit-reading-status').value,
-                    note: document.getElementById('edit-reading-note').value.trim() || ''
-                };
+            // ============================================
+            // DARK MODE TOGGLE
+            // ============================================
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
 
-                localStorage.setItem('readingList', JSON.stringify(readingList));
-                renderReadingList();
-                closeModal('edit-reading-modal');
-            });
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
 
-            document.getElementById('edit-listening-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const id = parseInt(document.getElementById('edit-listening-id').value);
-                const index = listeningList.findIndex(l => l.id === id);
-                
-                if (index === -1) return;
-
-                listeningList[index] = {
-                    ...listeningList[index],
-                    type: document.getElementById('edit-listening-type').value,
-                    title: document.getElementById('edit-listening-title').value.trim(),
-                    link: document.getElementById('edit-listening-link').value.trim(),
-                    transcriptLink: document.getElementById('edit-listening-transcript').value.trim(),
-                    note: document.getElementById('edit-listening-note').value.trim() || ''
-                };
-
-                localStorage.setItem('listeningList', JSON.stringify(listeningList));
-                renderListeningList();
-                closeModal('edit-listening-modal');
-            });
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('click', () => {
+                    document.body.classList.toggle('dark-mode');
+                    const isDark = document.body.classList.contains('dark-mode');
+                    localStorage.setItem('darkMode', isDark);
+                    
+                    // Toggle firefly animations based on dark mode
+                    if (isDark) {
+                        startFireflyAnimations();
+                    } else {
+                        stopFireflyAnimations();
+                    }
+                });
+            }
 
             document.getElementById('edit-resources-form').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -4366,6 +7561,489 @@
                 closeModal('edit-writing-modal');
             });
         });
+        // ============================================
+        // TRANSCRIPT SYSTEM WITH AI LOOKUP
+        // ============================================
+        
+        // Storage
+        let readingTranscripts = JSON.parse(localStorage.getItem('readingTranscripts') || '[]');
+        let listeningTranscripts = JSON.parse(localStorage.getItem('listeningTranscripts') || '[]');
+        let wordLookupCache = JSON.parse(localStorage.getItem('wordLookupCache') || '{}');
+        
+        // Current lookup state
+        let currentLookup = null;
+
+        // Normalize word for lookup
+        function normalizeWord(word) {
+            return word.toLowerCase()
+                .replace(/['']/g, "'")  // normalize apostrophes
+                .replace(/[.,!?;:]/g, '')  // remove punctuation
+                .trim();
+        }
+
+        // Make transcript text clickable
+        function makeTranscriptClickable(text, sourceId) {
+            // Split into sentences to preserve structure
+            const sentences = text.split(/([.!?]+\s)/);
+            
+            return sentences.map(sentence => {
+                // Split sentence into words and punctuation
+                const tokens = sentence.split(/(\s+|[''.,!?;:—])/);
+                
+                return tokens.map(token => {
+                    // Skip whitespace and punctuation
+                    if (!token.trim() || /^[''.,!?;:—\s]+$/.test(token)) {
+                        return token;
+                    }
+                    
+                    const normalized = normalizeWord(token);
+                    if (!normalized) return token;
+                    
+                    return `<span class="clickable-word" data-word="${normalized}" data-source="${sourceId}">${token}</span>`;
+                }).join('');
+            }).join('');
+        }
+
+        // Render transcripts
+        function renderTranscripts(type) {
+            const transcripts = type === 'reading' ? readingTranscripts : listeningTranscripts;
+            const container = document.getElementById(`${type}-transcripts-container`);
+            const section = document.getElementById(`${type}-transcripts-section`);
+            
+            if (transcripts.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            
+            container.innerHTML = transcripts.map(t => `
+                <div class="transcript-card" data-transcript-id="${t.id}">
+                    <div class="transcript-header">
+                        <h3 class="transcript-title">${t.title}</h3>
+                        <button class="icon-btn" onclick="deleteTranscript('${type}', ${t.id})" title="Supprimer">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="transcript-body">
+                        ${makeTranscriptClickable(t.text, t.id)}
+                    </div>
+                </div>
+            `).join('');
+            
+            // Attach click listeners to all clickable words
+            container.querySelectorAll('.clickable-word').forEach(word => {
+                word.addEventListener('click', function() {
+                    handleWordClick(this);
+                });
+            });
+        }
+
+        // Handle word click
+        async function handleWordClick(element) {
+            const word = element.dataset.word;
+            const sourceId = element.dataset.source;
+            
+            // Get sentence context
+            const card = element.closest('.transcript-card');
+            const fullText = card.querySelector('.transcript-body').textContent;
+            
+            // Find sentence containing the word
+            const sentences = fullText.split(/[.!?]+/);
+            let sentence = '';
+            for (let s of sentences) {
+                if (s.toLowerCase().includes(word)) {
+                    sentence = s.trim();
+                    break;
+                }
+            }
+            
+            // Open popup immediately
+            openModal('word-lookup-modal');
+            document.getElementById('lookup-word-title').textContent = word;
+            document.getElementById('lookup-content').innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-soft);">Chargement...</div>';
+            document.getElementById('lookup-actions').style.display = 'none';
+            
+            // Check cache first
+            if (wordLookupCache[word]) {
+                console.log('Using cached result for:', word);
+                displayLookupResult(wordLookupCache[word], sentence, sourceId);
+                return;
+            }
+            
+            // Fetch from AI
+            try {
+                const result = await fetchWordDefinition(word, sentence);
+                
+                // Cache the result
+                wordLookupCache[word] = result;
+                localStorage.setItem('wordLookupCache', JSON.stringify(wordLookupCache));
+                
+                displayLookupResult(result, sentence, sourceId);
+            } catch (error) {
+                console.error('Lookup error:', error);
+                document.getElementById('lookup-content').innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--crimson);">
+                        Impossible de charger la traduction.
+                        <br><br>
+                        <button class="btn btn-secondary" onclick="handleWordClick(document.querySelector('[data-word=\\'${word}\\']'))">
+                            Réessayer
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Fetch word definition from AI
+        async function fetchWordDefinition(word, sentence) {
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 1000,
+                    messages: [{
+                        role: 'user',
+                        content: `You are a French-English dictionary. For the French word "${word}" in the sentence "${sentence}", provide:
+
+1. Lemma (base form)
+2. Part of speech
+3. English translations (list of 2-3 most common)
+4. IPA pronunciation if known
+5. Short definition in English
+
+Respond ONLY with valid JSON in this exact format:
+{
+  "lemma": "...",
+  "partOfSpeech": "...",
+  "translations": ["...", "..."],
+  "ipa": "...",
+  "definition": "..."
+}`
+                    }]
+                })
+            });
+
+            const data = await response.json();
+            const text = data.content.find(c => c.type === 'text')?.text || '';
+            
+            // Parse JSON from response
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) throw new Error('No JSON in response');
+            
+            return JSON.parse(jsonMatch[0]);
+        }
+
+        // Display lookup result
+        function displayLookupResult(result, sentence, sourceId) {
+            currentLookup = { ...result, sentence, sourceId };
+            
+            const translationsList = result.translations.map(t => `<li>${t}</li>`).join('');
+            
+            document.getElementById('lookup-content').innerHTML = `
+                <div class="lookup-info">
+                    ${result.lemma ? `<div class="lookup-lemma"><strong>Lemme:</strong> ${result.lemma} <em>(${result.partOfSpeech || ''})</em></div>` : ''}
+                    ${result.ipa ? `<div class="lookup-ipa">/${result.ipa}/</div>` : ''}
+                    ${result.definition ? `<div style="margin-bottom: 1rem; color: var(--text-soft);">${result.definition}</div>` : ''}
+                    <div>
+                        <strong>Traductions:</strong>
+                        <ul class="lookup-translations">
+                            ${translationsList}
+                        </ul>
+                    </div>
+                    <div class="lookup-sentence">
+                        <strong>Contexte:</strong><br>
+                        ${sentence}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('lookup-actions').style.display = 'flex';
+        }
+
+        // Save word to vocabulary
+        document.getElementById('save-lookup-word')?.addEventListener('click', function() {
+            if (!currentLookup) return;
+            
+            const word = {
+                id: Date.now(),
+                french: currentLookup.lemma || document.getElementById('lookup-word-title').textContent,
+                meaning: currentLookup.translations.join(', '),
+                article: '',
+                gender: '',
+                theme: 'De transcription',
+                week: '',
+                quarter: '',
+                year: new Date().getFullYear().toString(),
+                contexts: [currentLookup.sentence],
+                note: currentLookup.definition || '',
+                image: null,
+                created: new Date().toISOString(),
+                srs: {
+                    easeFactor: 2.5,
+                    interval: 0,
+                    repetitions: 0,
+                    dueDate: new Date().toISOString(),
+                    lastReviewed: null,
+                    status: 'new'
+                }
+            };
+            
+            vocabulary.push(word);
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            renderGarden();
+            updateSRSStatsDisplay();
+            
+            // Show confirmation
+            document.getElementById('lookup-content').innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--gold);">
+                    ✅ Mot ajouté au jardin !
+                </div>
+            `;
+            
+            document.getElementById('lookup-actions').style.display = 'none';
+            
+            // Trigger hearts
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createFloatingHeart(), i * 200);
+            }
+            
+            setTimeout(() => closeModal('word-lookup-modal'), 1500);
+        });
+
+        // Delete transcript
+        function deleteTranscript(type, id) {
+            if (!confirm('Supprimer cette transcription ?')) return;
+            
+            if (type === 'reading') {
+                readingTranscripts = readingTranscripts.filter(t => t.id !== id);
+                localStorage.setItem('readingTranscripts', JSON.stringify(readingTranscripts));
+                renderTranscripts('reading');
+            } else {
+                listeningTranscripts = listeningTranscripts.filter(t => t.id !== id);
+                localStorage.setItem('listeningTranscripts', JSON.stringify(listeningTranscripts));
+                renderTranscripts('listening');
+            }
+        }
+
+        // Setup transcript buttons and forms
+        function setupTranscriptSystem() {
+            // Reading transcript button
+            document.getElementById('add-reading-transcript-btn')?.addEventListener('click', () => {
+                openModal('add-reading-transcript-modal');
+            });
+            
+            // Listening transcript button
+            document.getElementById('add-listening-transcript-btn')?.addEventListener('click', () => {
+                openModal('add-listening-transcript-modal');
+            });
+            
+            // Reading transcript form
+            document.getElementById('add-reading-transcript-form')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const transcript = {
+                    id: Date.now(),
+                    title: document.getElementById('reading-transcript-title').value.trim(),
+                    text: document.getElementById('reading-transcript-text').value.trim(),
+                    created: new Date().toISOString()
+                };
+                
+                readingTranscripts.push(transcript);
+                localStorage.setItem('readingTranscripts', JSON.stringify(readingTranscripts));
+                renderTranscripts('reading');
+                closeModal('add-reading-transcript-modal');
+                
+                e.target.reset();
+            });
+            
+            // Listening transcript form
+            document.getElementById('add-listening-transcript-form')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const transcript = {
+                    id: Date.now(),
+                    title: document.getElementById('listening-transcript-title').value.trim(),
+                    text: document.getElementById('listening-transcript-text').value.trim(),
+                    created: new Date().toISOString()
+                };
+                
+                listeningTranscripts.push(transcript);
+                localStorage.setItem('listeningTranscripts', JSON.stringify(listeningTranscripts));
+                renderTranscripts('listening');
+                closeModal('add-listening-transcript-modal');
+                
+                e.target.reset();
+            });
+            
+            // Initial render
+            renderTranscripts('reading');
+            renderTranscripts('listening');
+        }
+
     </script>
+
+    <!-- Floating Quick Actions -->
+    <div class="floating-actions" id="floating-actions">
+        <button class="floating-btn-main" id="floating-main" aria-label="Quick actions">
+            <svg class="plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="floating-menu" id="floating-menu">
+            <button class="floating-btn-action" id="quick-add-word" title="Ajouter un mot">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9zM5.6 10.25c0 1.38 1.12 2.5 2.5 2.5.53 0 1.01-.16 1.42-.44l-.02.19c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5l-.02-.19c.4.28.89.44 1.42.44 1.38 0 2.5-1.12 2.5-2.5 0-1.25-.93-2.3-2.14-2.46.4-.49.64-1.1.64-1.79 0-1.38-1.12-2.5-2.5-2.5-.53 0-1.01.16-1.42.44l.02-.19C12.5 2.12 11.38 1 10 1S7.5 2.12 7.5 3.5l.02.19c-.4-.28-.89-.44-1.42-.44-1.38 0-2.5 1.12-2.5 2.5 0 .69.24 1.3.64 1.79-1.21.16-2.14 1.21-2.14 2.46z"/>
+                </svg>
+                <span>Mot</span>
+            </button>
+
+            <button class="floating-btn-action" id="quick-start-timer" title="Démarrer le minuteur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Timer</span>
+            </button>
+
+            <button class="floating-btn-action" id="quick-flip-cards" title="Pratiquer avec cartes">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                <span>Cartes</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Music Player Modal -->
+    <div class="music-modal" id="music-modal">
+        <div class="music-modal-content">
+            <button class="music-modal-close" id="close-music-modal" onclick="document.getElementById('music-modal').classList.remove('active')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="music-modal-title">Musique d'ambiance</div>
+            <div class="music-modal-subtitle">Étudie avec des sons apaisants</div>
+
+            <div class="music-player-card">
+                <div class="music-album-art">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                    </svg>
+                    <div class="music-wave"></div>
+                </div>
+
+                <div class="music-now-playing">
+                    <div class="music-track-name" id="current-track-name">Sélectionne une piste</div>
+                    <div class="music-track-artist">Musique d'étude</div>
+                </div>
+
+                <div class="music-controls-main">
+                    <button class="music-play-btn" id="modal-music-toggle">
+                        <svg class="play-icon" viewBox="0 0 24 24">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <svg class="pause-icon" viewBox="0 0 24 24" style="display: none;">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="music-volume-section">
+                    <svg class="music-volume-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2" fill="none"></path>
+                    </svg>
+                    <input type="range" class="music-volume-slider" id="modal-volume-slider" min="0" max="100" value="50">
+                </div>
+            </div>
+
+            <div class="music-playlist">
+                <div class="music-playlist-title">Playlist</div>
+                
+                <div class="music-track-item" data-src="sound1.mp3" data-name="Ambient Study">
+                    <div class="music-track-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path>
+                        </svg>
+                    </div>
+                    <div class="music-track-info">
+                        <div class="music-track-info-name">Ambient Study</div>
+                        <div class="music-track-info-duration">Lofi ambiance</div>
+                    </div>
+                </div>
+
+                <div class="music-track-item" data-src="sound2.mp3" data-name="Peaceful Piano">
+                    <div class="music-track-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 2v19.5L3 18v-3h-.5A2.5 2.5 0 0 1 0 12.5v-9A2.5 2.5 0 0 1 2.5 1H3a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1zM0 12.5v.5h2.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5H0v2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="music-track-info">
+                        <div class="music-track-info-name">Peaceful Piano</div>
+                        <div class="music-track-info-duration">Piano classique</div>
+                    </div>
+                </div>
+
+                <div class="music-track-item" data-src="sound3.mp3" data-name="Nature Sounds">
+                    <div class="music-track-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.30C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"></path>
+                        </svg>
+                    </div>
+                    <div class="music-track-info">
+                        <div class="music-track-info-name">Nature Sounds</div>
+                        <div class="music-track-info-duration">Forêt & oiseaux</div>
+                    </div>
+                </div>
+
+                <div class="music-track-item" data-src="sound4.mp3" data-name="Lo-fi Beats">
+                    <div class="music-track-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 3h-2v4h2V3zM10 3H8v4h2V3z"></path>
+                        </svg>
+                    </div>
+                    <div class="music-track-info">
+                        <div class="music-track-info-name">Lo-fi Beats</div>
+                        <div class="music-track-info-duration">Chill hip-hop</div>
+                    </div>
+                </div>
+
+                <div class="music-track-item" data-src="sound5.mp3" data-name="Café Ambiance">
+                    <div class="music-track-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"></path>
+                        </svg>
+                    </div>
+                    <div class="music-track-info">
+                        <div class="music-track-info-name">Café Ambiance</div>
+                        <div class="music-track-info-duration">Café parisien</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden audio element -->
+    <audio id="background-music" loop></audio>
+
 </body>
 </html>
