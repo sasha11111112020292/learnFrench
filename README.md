@@ -12,63 +12,101 @@
     
     <!-- Firebase SDK -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyD5l89evtb8svRKoTVICAVwA4JbpoXjJKQ",
-            authDomain: "ma-maison-french.firebaseapp.com",
-            projectId: "ma-maison-french",
-            storageBucket: "ma-maison-french.firebasestorage.app",
-            messagingSenderId: "319573050083",
-            appId: "1:319573050083:web:11ff8453f39cce3160fbd6",
-            measurementId: "G-JP9BNPQX0B"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Make Firebase available globally
-        window.firebaseAuth = auth;
-        window.firebaseDB = db;
-        window.firebaseModules = {
-            signInWithEmailAndPassword,
-            createUserWithEmailAndPassword,
-            signOut,
-            onAuthStateChanged,
-            GoogleAuthProvider,
-            signInWithPopup,
-            collection,
-            doc,
-            setDoc,
-            getDoc,
-            getDocs,
-            deleteDoc,
-            onSnapshot,
-            query,
-            where
-        };
+        console.log('🔄 Starting Firebase module load...');
         
-        // Signal that Firebase is ready
-        window.firebaseReady = true;
-        console.log('✅ Firebase loaded and ready!');
-        
-        // Trigger initialization immediately if function exists
-        if (window.initFirebaseAuth) {
-            console.log('🚀 Calling initFirebaseAuth immediately');
-            window.initFirebaseAuth();
-        } else {
-            // Otherwise wait for DOM and try again
-            console.log('⏳ Waiting for initFirebaseAuth function...');
-            const checkInit = setInterval(() => {
-                if (window.initFirebaseAuth) {
-                    console.log('🚀 Found initFirebaseAuth, calling now');
-                    clearInterval(checkInit);
-                    window.initFirebaseAuth();
-                }
-            }, 100);
+        try {
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+            console.log('✅ Firebase app module loaded');
+            
+            const { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+            console.log('✅ Firebase auth module loaded');
+            
+            const { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, query, where } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+            console.log('✅ Firebase firestore module loaded');
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyD5l89evtb8svRKoTVICAVwA4JbpoXjJKQ",
+                authDomain: "ma-maison-french.firebaseapp.com",
+                projectId: "ma-maison-french",
+                storageBucket: "ma-maison-french.firebasestorage.app",
+                messagingSenderId: "319573050083",
+                appId: "1:319573050083:web:11ff8453f39cce3160fbd6",
+                measurementId: "G-JP9BNPQX0B"
+            };
+
+            console.log('🔧 Initializing Firebase app...');
+            console.log('📝 Project ID:', firebaseConfig.projectId);
+            
+            const app = initializeApp(firebaseConfig);
+            console.log('✅ Firebase app created');
+            
+            const auth = getAuth(app);
+            console.log('✅ Firebase auth initialized');
+            
+            const db = getFirestore(app);
+            console.log('✅ Firebase firestore initialized');ma-maison-french.firebaseapp.com",
+                projectId: "ma-maison-french",
+                storageBucket: "ma-maison-french.firebasestorage.app",
+                messagingSenderId: "319573050083",
+                appId: "1:319573050083:web:11ff8453f39cce3160fbd6",
+                measurementId: "G-JP9BNPQX0B"
+            };
+
+            console.log('🔧 Initializing Firebase app...');
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+            console.log('✅ Firebase initialized successfully');
+
+            // Make Firebase available globally
+            window.firebaseAuth = auth;
+            window.firebaseDB = db;
+            window.firebaseModules = {
+                signInWithEmailAndPassword,
+                createUserWithEmailAndPassword,
+                signOut,
+                onAuthStateChanged,
+                GoogleAuthProvider,
+                signInWithPopup,
+                collection,
+                doc,
+                setDoc,
+                getDoc,
+                getDocs,
+                deleteDoc,
+                onSnapshot,
+                query,
+                where
+            };
+            
+            // Signal that Firebase is ready
+            window.firebaseReady = true;
+            console.log('✅ Firebase loaded and ready!');
+            
+            // Trigger initialization immediately if function exists
+            if (window.initFirebaseAuth) {
+                console.log('🚀 Calling initFirebaseAuth immediately');
+                window.initFirebaseAuth();
+            } else {
+                // Otherwise wait for DOM and try again
+                console.log('⏳ Waiting for initFirebaseAuth function...');
+                const checkInit = setInterval(() => {
+                    if (window.initFirebaseAuth) {
+                        console.log('🚀 Found initFirebaseAuth, calling now');
+                        clearInterval(checkInit);
+                        window.initFirebaseAuth();
+                    }
+                }, 100);
+            }
+        } catch (error) {
+            console.error('❌ Firebase module load FAILED:', error);
+            console.error('Error details:', error.message);
+            console.error('Make sure you are running this file from a web server (http://), not as a file:// URL');
+            
+            // Display error to user
+            setTimeout(() => {
+                alert('⚠️ Firebase n\'a pas pu se charger.\n\nAssurez-vous que:\n1. Vous êtes connecté à Internet\n2. Vous ouvrez ce fichier depuis un serveur web (http://)\n   et non depuis le système de fichiers (file://)\n\nErreur: ' + error.message);
+            }, 1000);
         }
     </script>
     
@@ -8731,6 +8769,34 @@
 
         // Initialize Firebase Auth (Firebase module will call this when ready)
         console.log('📋 initFirebaseAuth function defined and ready');
+        
+        // Function to try initializing with retries
+        function tryInitFirebase() {
+            console.log('🔍 Checking Firebase status...');
+            console.log('  firebaseReady:', window.firebaseReady);
+            console.log('  firebaseAuth:', !!window.firebaseAuth);
+            console.log('  firebaseDB:', !!window.firebaseDB);
+            
+            if (window.firebaseReady && window.firebaseAuth && window.firebaseDB) {
+                console.log('✅ Firebase is ready! Calling initFirebaseAuth...');
+                window.initFirebaseAuth();
+            } else {
+                console.log('⏳ Firebase not ready yet, retrying in 100ms...');
+                setTimeout(tryInitFirebase, 100);
+            }
+        }
+        
+        // Make sure to call initFirebaseAuth when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('📄 DOM loaded, starting Firebase check...');
+                tryInitFirebase();
+            });
+        } else {
+            // DOM already loaded
+            console.log('📄 DOM already loaded, starting Firebase check...');
+            tryInitFirebase();
+        }
 
     </script>
 
