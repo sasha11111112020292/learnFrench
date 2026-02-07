@@ -8132,6 +8132,14 @@ const firebaseConfig = {
             renderNotes();
             setupTranscriptSystem(); // Initialize transcript system
             
+            // IMPORTANT: Try to load user data if already logged in
+            setTimeout(() => {
+                if (currentUser && currentUser.uid) {
+                    console.log('🔄 Page ready - loading data for logged in user');
+                    loadDataFromFirebase(currentUser.uid);
+                }
+            }, 500);
+            
             // Resources filter listener
             const resourcesFilter = document.getElementById('filter-resources-type');
             if (resourcesFilter) {
@@ -8757,13 +8765,6 @@ const firebaseConfig = {
         async function loadDataFromFirebase(userId) {
             console.log('🔍 loadDataFromFirebase called for userId:', userId);
             
-            // Wait for render functions to be defined
-            if (typeof renderWords === 'undefined') {
-                console.log('⏳ Render functions not ready yet, waiting...');
-                setTimeout(() => loadDataFromFirebase(userId), 100);
-                return;
-            }
-            
             const { doc, getDoc } = window.firebaseModules;
             
             try {
@@ -8783,48 +8784,53 @@ const firebaseConfig = {
                         resourcesList: data.resourcesList?.length || 0
                     });
                     
-                    // Load all data directly into memory (no localStorage)
+                    // Load all data directly into memory
                     if (data.vocabulary) {
                         vocabulary = data.vocabulary;
                         console.log('✅ Loaded', vocabulary.length, 'vocabulary items');
-                        renderWords();
                     }
                     
                     if (data.readingList) {
                         readingList = data.readingList;
-                        renderReadingList();
                     }
                     
                     if (data.listeningList) {
                         listeningList = data.listeningList;
-                        renderListeningList();
                     }
                     
                     if (data.recordings) {
                         recordings = data.recordings;
-                        renderRecordings();
                     }
                     
                     if (data.writings) {
                         writings = data.writings;
-                        renderWritingsArchive();
                     }
                     
                     if (data.notes) {
                         notes = data.notes;
-                        renderNotes();
                     }
                     
                     if (data.resourcesList) {
                         resourcesList = data.resourcesList;
-                        renderResourcesList();
                     }
                     
-                    console.log('✅ Data loaded from Firebase!');
+                    console.log('✅ Data loaded from Firebase into memory!');
                     
-                    // Initialize SRS data now that vocabulary is loaded
-                    initializeSRSData();
-                    updateSRSStatsDisplay();
+                    // Try to render if functions exist, otherwise they'll render when page loads
+                    if (typeof renderWords !== 'undefined') {
+                        renderWords();
+                        renderReadingList();
+                        renderListeningList();
+                        renderRecordings();
+                        renderWritingsArchive();
+                        renderNotes();
+                        renderResourcesList();
+                        initializeSRSData();
+                        updateSRSStatsDisplay();
+                        console.log('✅ Rendered all data');
+                    } else {
+                        console.log('⏳ Render functions not ready - data will render when page loads');
+                    }
                 } else {
                     console.log('ℹ️ No existing data found - new user');
                     // First time user - try to migrate from localStorage if it exists
