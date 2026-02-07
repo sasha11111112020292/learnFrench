@@ -3068,7 +3068,10 @@
                     <div style="display: inline-flex; align-items: center; gap: 1rem; background: var(--cream-dark); padding: 1rem 1.5rem; border-radius: 24px; border: 1px solid var(--whisper);">
                         <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 1.1rem;" id="entrance-user-avatar"></div>
                         <div style="text-align: left;">
-                            <div style="font-weight: 500; color: var(--navy); margin-bottom: 0.25rem;">Connecté</div>
+                            <div style="font-weight: 500; color: var(--navy); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>Connecté</span>
+                                <span id="sync-indicator" style="font-size: 0.8rem; color: var(--gold); opacity: 0; transition: opacity 0.3s;">☁️ Sync...</span>
+                            </div>
                             <div id="entrance-user-email" style="color: var(--text-soft); font-size: 0.9rem;"></div>
                         </div>
                         <button class="btn btn-secondary" id="entrance-logout-btn" style="margin-left: 1rem;">Déconnexion</button>
@@ -4620,13 +4623,14 @@
         // ============================================
         // DATA MANAGEMENT
         // ============================================
-        let vocabulary = JSON.parse(localStorage.getItem('vocabulary') || '[]');
-        let writings = JSON.parse(localStorage.getItem('writings') || '[]');
-        let readingList = JSON.parse(localStorage.getItem('readingList') || '[]');
-        let listeningList = JSON.parse(localStorage.getItem('listeningList') || '[]');
-        let recordings = JSON.parse(localStorage.getItem('recordings') || '[]');
-        let resourcesList = JSON.parse(localStorage.getItem('resourcesList') || '[]');
-        let notes = JSON.parse(localStorage.getItem('notes') || '[]');
+        // Initialize empty - will load from Firebase when user logs in
+        let vocabulary = [];
+        let writings = [];
+        let readingList = [];
+        let listeningList = [];
+        let recordings = [];
+        let resourcesList = [];
+        let notes = [];
 
         let currentRecording = null;
 
@@ -4650,7 +4654,7 @@
                     };
                 }
             });
-            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            saveDataToFirebase(); // Save to Firebase instead of localStorage
         }
 
         function calculateNextReview(word, quality) {
@@ -4786,7 +4790,7 @@
         function rateSRSCard(quality) {
             const word = currentSRSSession[currentSRSIndex];
             calculateNextReview(word, quality);
-            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                syncToFirebase(); // Auto-save vocabulary to Firebase
             
             // Trigger hearts for good/easy ratings
             if (quality >= 2) {
@@ -4894,13 +4898,8 @@
                             resourcesList = data.resourcesList || [];
                             notes = data.notes || [];
                             
-                            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
-                            localStorage.setItem('writings', JSON.stringify(writings));
-                            localStorage.setItem('readingList', JSON.stringify(readingList));
-                            localStorage.setItem('listeningList', JSON.stringify(listeningList));
-                            localStorage.setItem('recordings', JSON.stringify(recordings));
-                            localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
-                            localStorage.setItem('notes', JSON.stringify(notes));
+                            // Sync all imported data to Firebase
+                            if (window.syncToFirebase) window.syncToFirebase();
                             
                             renderGarden();
                             populateJardinFilters(); // NEW
@@ -4927,17 +4926,31 @@
                 window.open('https://drive.google.com/drive/folders/1E7JYANvw4DjaJ2VUsPZuuSExqB4PzU9f', '_blank');
             });
 
-            document.getElementById('reset-data').addEventListener('click', () => {
+            document.getElementById('reset-data').addEventListener('click', async () => {
                 if (confirm('Vraiment tout effacer ? Cette action est irréversible.')) {
                 if (confirm('Dernière confirmation — tu es sûr ?')) {
-                    localStorage.clear();
+                    // Clear all data arrays
                     vocabulary = [];
                     writings = [];
                     readingList = [];
                     listeningList = [];
                     recordings = [];
                     resourcesList = [];
+                    notes = [];
                     activeFilters = { year: "", quarter: "", week: "", theme: "", favorite: "" };
+                    
+                    // Clear localStorage (for dark mode, volume, etc)
+                    const darkMode = localStorage.getItem('darkMode');
+                    const musicVolume = localStorage.getItem('musicVolume');
+                    localStorage.clear();
+                    if (darkMode) localStorage.setItem('darkMode', darkMode);
+                    if (musicVolume) localStorage.setItem('musicVolume', musicVolume);
+                    
+                    // Sync empty data to Firebase
+                    if (window.syncToFirebase) {
+                        await saveDataToFirebase(); // Immediate sync, not debounced
+                    }
+                    
                     renderGarden();
                     populateJardinFilters();
                     renderReadingList();
@@ -5826,12 +5839,7 @@
         function deleteWord(id) {
             if (confirm('Supprimer ce mot ?')) {
                 vocabulary = vocabulary.filter(w => w.id !== id);
-                localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
-                
-                // Sync to Firebase
-                if (window.syncToFirebase) {
-                    window.syncToFirebase();
-                }
+                if (window.syncToFirebase) window.syncToFirebase();
                 
                 renderGarden();
                 populateJardinFilters(); // Update filters after deletion
@@ -5842,12 +5850,7 @@
             const word = vocabulary.find(w => w.id === id);
             if (word) {
                 word.favorite = !word.favorite;
-                localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
-                
-                // Sync to Firebase
-                if (window.syncToFirebase) {
-                    window.syncToFirebase();
-                }
+                if (window.syncToFirebase) window.syncToFirebase();
                 
                 renderGarden();
             }
@@ -5888,12 +5891,7 @@
             }
 
             vocabulary.push(word);
-            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
-            
-            // Sync to Firebase
-            if (window.syncToFirebase) {
-                window.syncToFirebase();
-            }
+                if (window.syncToFirebase) window.syncToFirebase();
             
             renderGarden();
             populateJardinFilters(); // Update filters after adding
@@ -5941,14 +5939,7 @@
             if (!vocabulary[index].french) {
                 alert('Veuillez entrer un mot en français');
                 return;
-            }
-
-            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
-            
-            // Sync to Firebase
-            if (window.syncToFirebase) {
-                window.syncToFirebase();
-            }
+            }            if (window.syncToFirebase) window.syncToFirebase();
             
             renderGarden();
             populateJardinFilters(); // Update filters after editing
@@ -6369,7 +6360,7 @@
         function deleteReading(id) {
             if (confirm('Supprimer cet article ?')) {
                 readingList = readingList.filter(r => r.id !== id);
-                localStorage.setItem('readingList', JSON.stringify(readingList));
+                syncToFirebase(); // Auto-save readingList to Firebase
                 renderReadingList();
             }
         }
@@ -6399,7 +6390,7 @@
             }
 
             readingList.push(item);
-            localStorage.setItem('readingList', JSON.stringify(readingList));
+                syncToFirebase(); // Auto-save readingList to Firebase
             renderReadingList();
             closeModal('reading-modal');
         });
@@ -6426,9 +6417,7 @@
             if (!readingList[index].title) {
                 alert('Veuillez entrer un titre');
                 return;
-            }
-
-            localStorage.setItem('readingList', JSON.stringify(readingList));
+            }            syncToFirebase(); // Auto-save readingList to Firebase
             renderReadingList();
             closeModal('edit-reading-modal');
         });
@@ -6509,7 +6498,7 @@
         function deleteListening(id) {
             if (confirm('Supprimer ce média ?')) {
                 listeningList = listeningList.filter(l => l.id !== id);
-                localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                syncToFirebase(); // Auto-save listeningList to Firebase
                 renderListeningList();
             }
         }
@@ -6541,7 +6530,7 @@
             }
 
             listeningList.push(item);
-            localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                syncToFirebase(); // Auto-save listeningList to Firebase
             renderListeningList();
             closeModal('listening-modal');
             
@@ -6570,9 +6559,7 @@
             if (!listeningList[index].title) {
                 alert('Veuillez entrer un titre');
                 return;
-            }
-
-            localStorage.setItem('listeningList', JSON.stringify(listeningList));
+            }            syncToFirebase(); // Auto-save listeningList to Firebase
             renderListeningList();
             closeModal('edit-listening-modal');
         });
@@ -6661,7 +6648,7 @@
         function deleteResource(id) {
             if (confirm('Supprimer cette ressource ?')) {
                 resourcesList = resourcesList.filter(r => r.id !== id);
-                localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                syncToFirebase(); // Auto-save resourcesList to Firebase
                 renderResourcesList();
             }
         }
@@ -6691,7 +6678,7 @@
             }
 
             resourcesList.push(item);
-            localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                syncToFirebase(); // Auto-save resourcesList to Firebase
             renderResourcesList();
             closeModal('resources-modal');
         });
@@ -6718,9 +6705,7 @@
             if (!resourcesList[index].name) {
                 alert('Veuillez entrer un nom');
                 return;
-            }
-
-            localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+            }            syncToFirebase(); // Auto-save resourcesList to Firebase
             renderResourcesList();
             closeModal('edit-resources-modal');
         });
@@ -6817,7 +6802,7 @@
             };
 
             recordings.push(recording);
-            localStorage.setItem('recordings', JSON.stringify(recordings));
+                syncToFirebase(); // Auto-save recordings to Firebase
             
             // Clear UI
             document.getElementById('spoken-text').textContent = '';
@@ -6955,8 +6940,7 @@
                 question: document.getElementById('edit-recording-question').value.trim(),
                 note: document.getElementById('edit-recording-note').value.trim() || ''
             };
-
-            localStorage.setItem('recordings', JSON.stringify(recordings));
+                syncToFirebase(); // Auto-save recordings to Firebase
             renderRecordings();
             closeModal('edit-recording-modal');
         });
@@ -6964,7 +6948,7 @@
         function deleteRecording(id) {
             if (confirm('Supprimer cet enregistrement ?')) {
                 recordings = recordings.filter(r => r.id !== id);
-                localStorage.setItem('recordings', JSON.stringify(recordings));
+                syncToFirebase(); // Auto-save recordings to Firebase
                 renderRecordings();
             }
         }
@@ -6995,7 +6979,7 @@
             };
 
             writings.push(writing);
-            localStorage.setItem('writings', JSON.stringify(writings));
+                syncToFirebase(); // Auto-save writings to Firebase
 
             writingArea.value = '';
             wordCountEl.textContent = '0 mots';
@@ -7078,9 +7062,7 @@
             if (!writings[index].text) {
                 alert('Veuillez entrer un texte');
                 return;
-            }
-
-            localStorage.setItem('writings', JSON.stringify(writings));
+            }            syncToFirebase(); // Auto-save writings to Firebase
             renderWritingsArchive();
             closeModal('edit-writing-modal');
         });
@@ -7088,7 +7070,7 @@
         function deleteWriting(id) {
             if (confirm('Supprimer cette écriture ?')) {
                 writings = writings.filter(w => w.id !== id);
-                localStorage.setItem('writings', JSON.stringify(writings));
+                syncToFirebase(); // Auto-save writings to Firebase
                 renderWritingsArchive();
             }
         }
@@ -7367,8 +7349,7 @@
                 vocabulary.push(word);
                 imported++;
             });
-            
-            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                syncToFirebase(); // Auto-save vocabulary to Firebase
             renderWords();
             closeModal('bulk-import-modal');
             
@@ -7603,7 +7584,7 @@
         function deleteNote(id) {
             if (confirm('Supprimer cette note ?')) {
                 notes = notes.filter(n => n.id !== id);
-                localStorage.setItem('notes', JSON.stringify(notes));
+                syncToFirebase(); // Auto-save notes to Firebase
                 renderNotes();
             }
         }
@@ -7634,7 +7615,7 @@
             };
 
             notes.push(note);
-            localStorage.setItem('notes', JSON.stringify(notes));
+                syncToFirebase(); // Auto-save notes to Firebase
             
             renderNotes();
             closeModal('note-modal');
@@ -7664,9 +7645,7 @@
             if (!notes[index].title || !notes[index].content) {
                 alert('Veuillez remplir tous les champs requis');
                 return;
-            }
-
-            localStorage.setItem('notes', JSON.stringify(notes));
+            }            syncToFirebase(); // Auto-save notes to Firebase
             renderNotes();
             closeModal('edit-note-modal');
         });
@@ -7797,8 +7776,7 @@
                     link: document.getElementById('edit-resources-link').value.trim(),
                     note: document.getElementById('edit-resources-note').value.trim() || ''
                 };
-
-                localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                syncToFirebase(); // Auto-save resourcesList to Firebase
                 renderResourcesList();
                 closeModal('edit-resources-modal');
             });
@@ -7818,8 +7796,7 @@
                     content: document.getElementById('edit-note-content').value.trim(),
                     link: document.getElementById('edit-note-link').value.trim()
                 };
-
-                localStorage.setItem('notes', JSON.stringify(notes));
+                syncToFirebase(); // Auto-save notes to Firebase
                 renderNotes();
                 closeModal('edit-note-modal');
             });
@@ -7837,8 +7814,7 @@
                     question: document.getElementById('edit-recording-question').value.trim(),
                     note: document.getElementById('edit-recording-note').value.trim() || ''
                 };
-
-                localStorage.setItem('recordings', JSON.stringify(recordings));
+                syncToFirebase(); // Auto-save recordings to Firebase
                 renderRecordings();
                 closeModal('edit-recording-modal');
             });
@@ -7855,8 +7831,7 @@
                     ...writings[index],
                     text: document.getElementById('edit-writing-text').value.trim()
                 };
-
-                localStorage.setItem('writings', JSON.stringify(writings));
+                syncToFirebase(); // Auto-save writings to Firebase
                 renderWritingsArchive();
                 closeModal('edit-writing-modal');
             });
@@ -7978,8 +7953,7 @@
                 const result = await fetchWordDefinition(word, sentence);
                 
                 // Cache the result
-                wordLookupCache[word] = result;
-                localStorage.setItem('wordLookupCache', JSON.stringify(wordLookupCache));
+                wordLookupCache[word] = result;            // Cache stored in memory only - no Firebase sync needed
                 
                 displayLookupResult(result, sentence, sourceId);
             } catch (error) {
@@ -8101,7 +8075,7 @@
             };
             
             vocabulary.push(word);
-            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                syncToFirebase(); // Auto-save vocabulary to Firebase
             renderGarden();
             updateSRSStatsDisplay();
             
@@ -8128,11 +8102,10 @@
             
             if (type === 'reading') {
                 readingTranscripts = readingTranscripts.filter(t => t.id !== id);
-                localStorage.setItem('readingTranscripts', JSON.stringify(readingTranscripts));
+                syncToFirebase(); // Auto-save readingTranscripts to Firebase
                 renderTranscripts('reading');
             } else {
-                listeningTranscripts = listeningTranscripts.filter(t => t.id !== id);
-                localStorage.setItem('listeningTranscripts', JSON.stringify(listeningTranscripts));
+                listeningTranscripts = listeningTranscripts.filter(t => t.id !== id);            // Transcripts stored in memory only - no Firebase sync needed
                 renderTranscripts('listening');
             }
         }
@@ -8163,7 +8136,7 @@
                 };
                 
                 readingTranscripts.push(transcript);
-                localStorage.setItem('readingTranscripts', JSON.stringify(readingTranscripts));
+                syncToFirebase(); // Auto-save readingTranscripts to Firebase
                 renderTranscripts('reading');
                 closeModal('add-reading-transcript-modal');
                 
@@ -8183,8 +8156,7 @@
                     created: new Date().toISOString()
                 };
                 
-                listeningTranscripts.push(transcript);
-                localStorage.setItem('listeningTranscripts', JSON.stringify(listeningTranscripts));
+                listeningTranscripts.push(transcript);            // Transcripts stored in memory only - no Firebase sync needed
                 renderTranscripts('listening');
                 closeModal('add-listening-transcript-modal');
                 
@@ -8371,50 +8343,87 @@
                 if (userDoc.exists()) {
                     const data = userDoc.data();
                     
-                    // Load all data
+                    // Load all data directly into memory (no localStorage)
                     if (data.vocabulary) {
                         vocabulary = data.vocabulary;
-                        localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
                         renderWords();
                     }
                     
                     if (data.readingList) {
                         readingList = data.readingList;
-                        localStorage.setItem('readingList', JSON.stringify(readingList));
                         renderReadingList();
                     }
                     
                     if (data.listeningList) {
                         listeningList = data.listeningList;
-                        localStorage.setItem('listeningList', JSON.stringify(listeningList));
                         renderListeningList();
                     }
                     
                     if (data.recordings) {
                         recordings = data.recordings;
-                        localStorage.setItem('recordings', JSON.stringify(recordings));
                         renderRecordings();
                     }
                     
                     if (data.writings) {
                         writings = data.writings;
-                        localStorage.setItem('writings', JSON.stringify(writings));
                         renderWritingsArchive();
                     }
                     
                     if (data.notes) {
                         notes = data.notes;
-                        localStorage.setItem('notes', JSON.stringify(notes));
                         renderNotes();
                     }
                     
                     if (data.resourcesList) {
                         resourcesList = data.resourcesList;
-                        localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
                         renderResourcesList();
                     }
                     
                     console.log('✅ Data loaded from Firebase!');
+                } else {
+                    // First time user - try to migrate from localStorage if it exists
+                    const localVocab = localStorage.getItem('vocabulary');
+                    const localReadings = localStorage.getItem('readingList');
+                    const localListening = localStorage.getItem('listeningList');
+                    const localRecordings = localStorage.getItem('recordings');
+                    const localWritings = localStorage.getItem('writings');
+                    const localNotes = localStorage.getItem('notes');
+                    const localResources = localStorage.getItem('resourcesList');
+                    
+                    if (localVocab || localReadings || localListening || localRecordings || localWritings || localNotes || localResources) {
+                        console.log('📦 Migrating data from localStorage to Firebase...');
+                        
+                        if (localVocab) vocabulary = JSON.parse(localVocab);
+                        if (localReadings) readingList = JSON.parse(localReadings);
+                        if (localListening) listeningList = JSON.parse(localListening);
+                        if (localRecordings) recordings = JSON.parse(localRecordings);
+                        if (localWritings) writings = JSON.parse(localWritings);
+                        if (localNotes) notes = JSON.parse(localNotes);
+                        if (localResources) resourcesList = JSON.parse(localResources);
+                        
+                        // Save migrated data to Firebase
+                        await saveDataToFirebase();
+                        
+                        // Clear localStorage after successful migration
+                        localStorage.removeItem('vocabulary');
+                        localStorage.removeItem('readingList');
+                        localStorage.removeItem('listeningList');
+                        localStorage.removeItem('recordings');
+                        localStorage.removeItem('writings');
+                        localStorage.removeItem('notes');
+                        localStorage.removeItem('resourcesList');
+                        
+                        console.log('✅ Migration complete!');
+                        
+                        // Render all data
+                        renderWords();
+                        renderReadingList();
+                        renderListeningList();
+                        renderRecordings();
+                        renderWritingsArchive();
+                        renderNotes();
+                        renderResourcesList();
+                    }
                 }
             } catch (error) {
                 console.error('Error loading from Firebase:', error);
@@ -8426,6 +8435,10 @@
             if (!currentUser) return;
             
             const { doc, setDoc } = window.firebaseModules;
+            
+            // Show sync indicator
+            const syncIndicator = document.getElementById('sync-indicator');
+            if (syncIndicator) syncIndicator.style.opacity = '1';
             
             try {
                 await setDoc(doc(window.firebaseDB, 'users', currentUser.uid), {
@@ -8440,36 +8453,54 @@
                 });
                 
                 console.log('💾 Data saved to Firebase!');
+                
+                // Hide sync indicator after a moment
+                setTimeout(() => {
+                    if (syncIndicator) {
+                        syncIndicator.textContent = '✓ Sauvegardé';
+                        setTimeout(() => {
+                            syncIndicator.style.opacity = '0';
+                            setTimeout(() => {
+                                syncIndicator.textContent = '☁️ Sync...';
+                            }, 300);
+                        }, 1000);
+                    }
+                }, 200);
             } catch (error) {
                 console.error('Error saving to Firebase:', error);
+                // Show error in indicator
+                if (syncIndicator) {
+                    syncIndicator.textContent = '✗ Erreur';
+                    syncIndicator.style.color = 'var(--crimson)';
+                    setTimeout(() => {
+                        syncIndicator.style.opacity = '0';
+                        setTimeout(() => {
+                            syncIndicator.textContent = '☁️ Sync...';
+                            syncIndicator.style.color = 'var(--gold)';
+                        }, 300);
+                    }, 2000);
+                }
             }
         }
         
         // Setup real-time sync (debounced to avoid too many writes)
         let saveTimeout;
+        
+        // Safe sync function that can be called even before Firebase is ready
+        window.syncToFirebase = function() {
+            // If not logged in or Firebase not ready, do nothing
+            if (!currentUser || !window.firebaseReady) {
+                return;
+            }
+            console.log('📤 Syncing to Firebase in 1 second...');
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveDataToFirebase();
+            }, 1000); // Wait 1 second after last change
+        };
+        
         function setupRealtimeSync(userId) {
-            console.log('🔄 Setting up real-time sync for user:', userId);
-            
-            // Debounced save function
-            window.syncToFirebase = function() {
-                console.log('📤 Syncing to Firebase in 2 seconds...');
-                clearTimeout(saveTimeout);
-                saveTimeout = setTimeout(() => {
-                    saveDataToFirebase();
-                }, 2000); // Wait 2 seconds after last change
-            };
-            
-            // Override localStorage.setItem to auto-sync
-            const originalSetItem = localStorage.setItem;
-            localStorage.setItem = function(key, value) {
-                originalSetItem.apply(this, arguments);
-                if (currentUser && ['vocabulary', 'readingList', 'listeningList', 'recordings', 'writings', 'notes', 'resourcesList'].includes(key)) {
-                    console.log('💫 Auto-syncing after updating:', key);
-                    window.syncToFirebase();
-                }
-            };
-            
-            console.log('✅ Real-time sync is active!');
+            console.log('🔄 Real-time sync is active for user:', userId);
         }
         
         // ============================================
