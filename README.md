@@ -7696,46 +7696,53 @@
             }
         }
 
-        // Fetch word definition from AI
+        // Fetch word definition from free dictionary API
         async function fetchWordDefinition(word, sentence) {
-            const response = await fetch('https://api.anthropic.com/v1/messages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    model: 'claude-sonnet-4-20250514',
-                    max_tokens: 1000,
-                    messages: [{
-                        role: 'user',
-                        content: `You are a French-English dictionary. For the French word "${word}" in the sentence "${sentence}", provide:
-
-1. Lemma (base form)
-2. Part of speech
-3. English translations (list of 2-3 most common)
-4. IPA pronunciation if known
-5. Short definition in English
-
-Respond ONLY with valid JSON in this exact format:
-{
-  "lemma": "...",
-  "partOfSpeech": "...",
-  "translations": ["...", "..."],
-  "ipa": "...",
-  "definition": "..."
-}`
-                    }]
-                })
-            });
-
-            const data = await response.json();
-            const text = data.content.find(c => c.type === 'text')?.text || '';
-            
-            // Parse JSON from response
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            if (!jsonMatch) throw new Error('No JSON in response');
-            
-            return JSON.parse(jsonMatch[0]);
+            // Try free French dictionary API first
+            try {
+                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/fr/${encodeURIComponent(word)}`);
+                
+                if (!response.ok) {
+                    throw new Error('Dictionary API failed');
+                }
+                
+                const data = await response.json();
+                const entry = data[0];
+                
+                // Extract info
+                const lemma = entry.word || word;
+                const meanings = entry.meanings || [];
+                const firstMeaning = meanings[0] || {};
+                const partOfSpeech = firstMeaning.partOfSpeech || '';
+                
+                // Get definitions
+                const definitions = firstMeaning.definitions || [];
+                const translations = definitions.slice(0, 3).map(d => d.definition);
+                
+                // Get phonetics
+                const phonetics = entry.phonetics || [];
+                const ipa = phonetics.find(p => p.text)?.text || '';
+                
+                return {
+                    lemma: lemma,
+                    partOfSpeech: partOfSpeech,
+                    translations: translations.length > 0 ? translations : ['(traduction non disponible)'],
+                    ipa: ipa.replace(/[\/\[\]]/g, ''),
+                    definition: definitions[0]?.definition || ''
+                };
+                
+            } catch (error) {
+                console.error('Dictionary API error:', error);
+                
+                // Fallback: basic response
+                return {
+                    lemma: word,
+                    partOfSpeech: '',
+                    translations: ['Cliquez sur "Sauvegarder" pour ajouter ce mot et ajouter la traduction manuellement'],
+                    ipa: '',
+                    definition: `Mot trouvé dans: "${sentence}"`
+                };
+            }
         }
 
         // Display lookup result
