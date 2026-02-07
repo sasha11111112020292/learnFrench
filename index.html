@@ -5827,6 +5827,12 @@
             if (confirm('Supprimer ce mot ?')) {
                 vocabulary = vocabulary.filter(w => w.id !== id);
                 localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                
+                // Sync to Firebase
+                if (window.syncToFirebase) {
+                    window.syncToFirebase();
+                }
+                
                 renderGarden();
                 populateJardinFilters(); // Update filters after deletion
             }
@@ -5837,6 +5843,12 @@
             if (word) {
                 word.favorite = !word.favorite;
                 localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                
+                // Sync to Firebase
+                if (window.syncToFirebase) {
+                    window.syncToFirebase();
+                }
+                
                 renderGarden();
             }
         }
@@ -5877,6 +5889,12 @@
 
             vocabulary.push(word);
             localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            
+            // Sync to Firebase
+            if (window.syncToFirebase) {
+                window.syncToFirebase();
+            }
+            
             renderGarden();
             populateJardinFilters(); // Update filters after adding
             closeModal('word-modal');
@@ -5926,6 +5944,12 @@
             }
 
             localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            
+            // Sync to Firebase
+            if (window.syncToFirebase) {
+                window.syncToFirebase();
+            }
+            
             renderGarden();
             populateJardinFilters(); // Update filters after editing
             closeModal('edit-word-modal');
@@ -8424,8 +8448,11 @@
         // Setup real-time sync (debounced to avoid too many writes)
         let saveTimeout;
         function setupRealtimeSync(userId) {
+            console.log('🔄 Setting up real-time sync for user:', userId);
+            
             // Debounced save function
             window.syncToFirebase = function() {
+                console.log('📤 Syncing to Firebase in 2 seconds...');
                 clearTimeout(saveTimeout);
                 saveTimeout = setTimeout(() => {
                     saveDataToFirebase();
@@ -8437,9 +8464,12 @@
             localStorage.setItem = function(key, value) {
                 originalSetItem.apply(this, arguments);
                 if (currentUser && ['vocabulary', 'readingList', 'listeningList', 'recordings', 'writings', 'notes', 'resourcesList'].includes(key)) {
+                    console.log('💫 Auto-syncing after updating:', key);
                     window.syncToFirebase();
                 }
             };
+            
+            console.log('✅ Real-time sync is active!');
         }
         
         // ============================================
