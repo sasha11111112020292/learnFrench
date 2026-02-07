@@ -4538,6 +4538,106 @@
 
     <script>
         // ============================================
+        // FIREBASE SYNC FUNCTIONS (MUST BE FIRST!)
+        // ============================================
+        let currentUser = null;
+        let saveTimeout;
+        
+        // Safe sync function that can be called even before Firebase is ready
+        window.syncToFirebase = function() {
+            console.log('🔔 syncToFirebase called!');
+            console.log('   currentUser:', currentUser ? currentUser.email : 'null');
+            console.log('   firebaseReady:', window.firebaseReady);
+            console.log('   vocabulary length:', vocabulary.length);
+            
+            // If not logged in or Firebase not ready, do nothing
+            if (!currentUser || !window.firebaseReady) {
+                console.warn('⏸️ Sync skipped - not logged in or Firebase not ready');
+                return;
+            }
+            console.log('📤 Syncing to Firebase in 1 second...');
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveDataToFirebase();
+            }, 1000); // Wait 1 second after last change
+        };
+        
+        // Save all data to Firebase
+        async function saveDataToFirebase() {
+            console.log('💾 saveDataToFirebase called!');
+            
+            if (!currentUser) {
+                console.error('❌ Save failed - not logged in');
+                return;
+            }
+            
+            if (!window.firebaseModules) {
+                console.error('❌ Save failed - Firebase modules not loaded');
+                return;
+            }
+            
+            const { doc, setDoc } = window.firebaseModules;
+            
+            console.log('📊 Saving data:');
+            console.log('   - vocabulary:', vocabulary.length, 'items');
+            console.log('   - writings:', writings.length, 'items');
+            console.log('   - readingList:', readingList.length, 'items');
+            console.log('   - listeningList:', listeningList.length, 'items');
+            console.log('   - recordings:', recordings.length, 'items');
+            console.log('   - notes:', notes.length, 'items');
+            console.log('   - resourcesList:', resourcesList.length, 'items');
+            
+            // Show sync indicator
+            const syncIndicator = document.getElementById('sync-indicator');
+            if (syncIndicator) syncIndicator.style.opacity = '1';
+            
+            try {
+                await setDoc(doc(window.firebaseDB, 'users', currentUser.uid), {
+                    vocabulary,
+                    readingList,
+                    listeningList,
+                    recordings,
+                    writings,
+                    notes,
+                    resourcesList,
+                    lastUpdated: new Date().toISOString()
+                });
+                
+                console.log('✅ Data saved to Firebase successfully!');
+                
+                // Hide sync indicator after a moment
+                setTimeout(() => {
+                    if (syncIndicator) {
+                        syncIndicator.textContent = '✓ Sauvegardé';
+                        setTimeout(() => {
+                            syncIndicator.style.opacity = '0';
+                            setTimeout(() => {
+                                syncIndicator.textContent = '☁️ Sync...';
+                            }, 300);
+                        }, 1000);
+                    }
+                }, 200);
+            } catch (error) {
+                console.error('❌ Error saving to Firebase:', error);
+                console.error('   Error details:', error.code, error.message);
+                // Show error in indicator
+                if (syncIndicator) {
+                    syncIndicator.textContent = '✗ Erreur';
+                    syncIndicator.style.color = 'var(--crimson)';
+                    setTimeout(() => {
+                        syncIndicator.style.opacity = '0';
+                        setTimeout(() => {
+                            syncIndicator.textContent = '☁️ Sync...';
+                            syncIndicator.style.color = 'var(--gold)';
+                        }, 300);
+                    }, 2000);
+                }
+            }
+        }
+        
+        console.log('✅ Firebase sync functions ready!');
+        
+        // ============================================
         // SVG ANIMATIONS
         // ============================================
         const animationContainer = document.getElementById('animationContainer');
@@ -4654,7 +4754,8 @@
                     };
                 }
             });
-            saveDataToFirebase(); // Save to Firebase instead of localStorage
+            // Use syncToFirebase which checks if user is logged in
+            if (window.syncToFirebase) window.syncToFirebase();
         }
 
         function calculateNextReview(word, quality) {
@@ -4946,8 +5047,8 @@
                     if (darkMode) localStorage.setItem('darkMode', darkMode);
                     if (musicVolume) localStorage.setItem('musicVolume', musicVolume);
                     
-                    // Sync empty data to Firebase
-                    if (window.syncToFirebase) {
+                    // Sync empty data to Firebase (only if logged in)
+                    if (currentUser) {
                         await saveDataToFirebase(); // Immediate sync, not debounced
                     }
                     
@@ -7682,8 +7783,8 @@
                 });
             }
 
-            // Initialize SRS
-            initializeSRSData();
+            // NOTE: initializeSRSData() is now called AFTER Firebase loads user data
+            // See loadDataFromFirebase() function
             updateSRSStatsDisplay();
 
             // SRS button
@@ -8172,8 +8273,6 @@
         // FIREBASE AUTHENTICATION & CLOUD SYNC
         // ============================================
         
-        let currentUser = null;
-        
         // Wait for Firebase to load
         window.initFirebaseAuth = function() {
             console.log('🔍 initFirebaseAuth called');
@@ -8380,6 +8479,10 @@
                     }
                     
                     console.log('✅ Data loaded from Firebase!');
+                    
+                    // Initialize SRS data now that vocabulary is loaded
+                    initializeSRSData();
+                    updateSRSStatsDisplay();
                 } else {
                     // First time user - try to migrate from localStorage if it exists
                     const localVocab = localStorage.getItem('vocabulary');
@@ -8423,81 +8526,20 @@
                         renderWritingsArchive();
                         renderNotes();
                         renderResourcesList();
+                        
+                        // Initialize SRS data now that vocabulary is loaded
+                        initializeSRSData();
+                        updateSRSStatsDisplay();
+                    } else {
+                        // Brand new user with no data - just initialize empty SRS
+                        initializeSRSData();
+                        updateSRSStatsDisplay();
                     }
                 }
             } catch (error) {
                 console.error('Error loading from Firebase:', error);
             }
         }
-        
-        // Save all data to Firebase
-        async function saveDataToFirebase() {
-            if (!currentUser) return;
-            
-            const { doc, setDoc } = window.firebaseModules;
-            
-            // Show sync indicator
-            const syncIndicator = document.getElementById('sync-indicator');
-            if (syncIndicator) syncIndicator.style.opacity = '1';
-            
-            try {
-                await setDoc(doc(window.firebaseDB, 'users', currentUser.uid), {
-                    vocabulary,
-                    readingList,
-                    listeningList,
-                    recordings,
-                    writings,
-                    notes,
-                    resourcesList,
-                    lastUpdated: new Date().toISOString()
-                });
-                
-                console.log('💾 Data saved to Firebase!');
-                
-                // Hide sync indicator after a moment
-                setTimeout(() => {
-                    if (syncIndicator) {
-                        syncIndicator.textContent = '✓ Sauvegardé';
-                        setTimeout(() => {
-                            syncIndicator.style.opacity = '0';
-                            setTimeout(() => {
-                                syncIndicator.textContent = '☁️ Sync...';
-                            }, 300);
-                        }, 1000);
-                    }
-                }, 200);
-            } catch (error) {
-                console.error('Error saving to Firebase:', error);
-                // Show error in indicator
-                if (syncIndicator) {
-                    syncIndicator.textContent = '✗ Erreur';
-                    syncIndicator.style.color = 'var(--crimson)';
-                    setTimeout(() => {
-                        syncIndicator.style.opacity = '0';
-                        setTimeout(() => {
-                            syncIndicator.textContent = '☁️ Sync...';
-                            syncIndicator.style.color = 'var(--gold)';
-                        }, 300);
-                    }, 2000);
-                }
-            }
-        }
-        
-        // Setup real-time sync (debounced to avoid too many writes)
-        let saveTimeout;
-        
-        // Safe sync function that can be called even before Firebase is ready
-        window.syncToFirebase = function() {
-            // If not logged in or Firebase not ready, do nothing
-            if (!currentUser || !window.firebaseReady) {
-                return;
-            }
-            console.log('📤 Syncing to Firebase in 1 second...');
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                saveDataToFirebase();
-            }, 1000); // Wait 1 second after last change
-        };
         
         function setupRealtimeSync(userId) {
             console.log('🔄 Real-time sync is active for user:', userId);
