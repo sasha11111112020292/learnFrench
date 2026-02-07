@@ -8210,11 +8210,6 @@
                     // Hide entrance login section
                     document.getElementById('entrance-login-section').style.display = 'none';
                     
-                    // Old profile display (keeping for compatibility)
-                    document.getElementById('user-profile').style.display = 'block';
-                    document.getElementById('user-email').textContent = user.email;
-                    document.getElementById('user-avatar').textContent = user.email[0].toUpperCase();
-                    
                     closeModal('auth-modal');
                     
                     // Load data from Firestore
@@ -8230,9 +8225,6 @@
                     
                     // Show entrance login section
                     document.getElementById('entrance-login-section').style.display = 'block';
-                    
-                    // Old profile display (keeping for compatibility)
-                    document.getElementById('user-profile').style.display = 'none';
                     
                     // Show login modal when not authenticated
                     setTimeout(() => {
@@ -8324,11 +8316,7 @@
                 }
             });
             
-            // Logout handlers (both old and new buttons)
-            document.getElementById('logout-btn').addEventListener('click', async () => {
-                await signOut(window.firebaseAuth);
-            });
-            
+            // Logout handler
             document.getElementById('entrance-logout-btn').addEventListener('click', async () => {
                 await signOut(window.firebaseAuth);
             });
@@ -8861,15 +8849,6 @@
                     <a href="#" id="show-login" style="color: var(--crimson); text-decoration: none;">Déjà un compte ? Se connecter</a>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- User Profile Display -->
-    <div id="user-profile" style="position: fixed; top: 1rem; right: 1rem; z-index: 1000; display: none;">
-        <div style="background: var(--cream); padding: 0.75rem 1rem; border-radius: 24px; box-shadow: 0 2px 8px var(--shadow); display: flex; align-items: center; gap: 0.75rem;">
-            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--crimson); color: white; display: flex; align-items: center; justify-content: center; font-weight: 500;" id="user-avatar"></div>
-            <span id="user-email" style="color: var(--text); font-size: 0.9rem;"></span>
-            <button class="btn btn-secondary" id="logout-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Déconnexion</button>
         </div>
     </div>
 
