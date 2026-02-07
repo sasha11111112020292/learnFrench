@@ -69,7 +69,25 @@ const FirebaseREST = {
     
     signOut: async function() {
         this.currentUser = null;
-        await window.storage.delete('firebase_user');
+        this._memoryStore = {};
+        
+        // Clear IndexedDB
+        try {
+            const db = await this._getDB();
+            const transaction = db.transaction([this._storeName], 'readwrite');
+            const store = transaction.objectStore(this._storeName);
+            store.delete('firebase_user');
+        } catch (e) {
+            console.warn('IndexedDB clear failed:', e);
+        }
+        
+        // Clear sessionStorage
+        try {
+            sessionStorage.removeItem('firebase_user');
+        } catch (e) {
+            // sessionStorage not available
+        }
+        
         // Trigger auth callback
         if (window._authCallback) window._authCallback(null);
         return Promise.resolve();
@@ -164,32 +182,99 @@ const FirebaseREST = {
         return result;
     },
     
+    // Robust storage using IndexedDB (works everywhere, persists forever)
+    _memoryStore: {},
+    _dbName: 'MaMaisonDB',
+    _storeName: 'auth',
+    
+    _getDB: async function() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(this._dbName, 1);
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve(request.result);
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(this._storeName)) {
+                    db.createObjectStore(this._storeName);
+                }
+            };
+        });
+    },
+    
     storeUser: async function(user) {
-        await window.storage.set('firebase_user', JSON.stringify({ ...user, timestamp: Date.now() }));
+        const userData = { ...user, timestamp: Date.now() };
+        
+        // Store in memory
+        this._memoryStore.firebase_user = userData;
+        
+        // Store in IndexedDB for persistence
+        try {
+            const db = await this._getDB();
+            const transaction = db.transaction([this._storeName], 'readwrite');
+            const store = transaction.objectStore(this._storeName);
+            store.put(userData, 'firebase_user');
+        } catch (e) {
+            console.warn('IndexedDB storage failed:', e);
+            // Fallback to sessionStorage
+            try {
+                sessionStorage.setItem('firebase_user', JSON.stringify(userData));
+            } catch (e2) {
+                console.warn('sessionStorage also failed:', e2);
+            }
+        }
     },
     
     getStoredUser: async function() {
-        try {
-            const result = await window.storage.get('firebase_user');
-            if (!result) return null;
-            const user = JSON.parse(result.value);
-            if (Date.now() - user.timestamp > 60 * 60 * 1000) return null;
-            return user;
-        } catch (e) {
-            return null;
+        // Try memory first (fastest)
+        if (this._memoryStore.firebase_user) {
+            const user = this._memoryStore.firebase_user;
+            if (Date.now() - user.timestamp < 60 * 60 * 1000) {
+                return user;
+            }
         }
+        
+        // Try IndexedDB
+        try {
+            const db = await this._getDB();
+            const transaction = db.transaction([this._storeName], 'readonly');
+            const store = transaction.objectStore(this._storeName);
+            const request = store.get('firebase_user');
+            
+            const user = await new Promise((resolve, reject) => {
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+            
+            if (user && Date.now() - user.timestamp < 60 * 60 * 1000) {
+                this._memoryStore.firebase_user = user;
+                return user;
+            }
+        } catch (e) {
+            console.warn('IndexedDB read failed:', e);
+        }
+        
+        // Fallback to sessionStorage
+        try {
+            const stored = sessionStorage.getItem('firebase_user');
+            if (stored) {
+                const user = JSON.parse(stored);
+                if (Date.now() - user.timestamp < 60 * 60 * 1000) {
+                    this._memoryStore.firebase_user = user;
+                    return user;
+                }
+            }
+        } catch (e) {
+            console.warn('sessionStorage read failed:', e);
+        }
+        
+        return null;
     },
     
     refreshTokenIfNeeded: async function() {
         if (!this.currentUser) return;
-        try {
-            const result = await window.storage.get('firebase_user');
-            if (!result) return;
-            const stored = JSON.parse(result.value);
-            if (Date.now() - stored.timestamp < 50 * 60 * 1000) return;
-        } catch (e) {
-            return;
-        }
+        
+        const stored = this._memoryStore.firebase_user;
+        if (!stored || Date.now() - stored.timestamp < 50 * 60 * 1000) return;
         
         const url = `https://securetoken.googleapis.com/v1/token?key=${this.config.apiKey}`;
         const response = await fetch(url, {
