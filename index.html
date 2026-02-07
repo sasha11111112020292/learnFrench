@@ -770,114 +770,6 @@
             opacity: 0.9;
         }
 
-        /* Auth Buttons - Elegant & Delicate */
-        .auth-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        #header-login-btn {
-            padding: 0.5rem 1.25rem !important;
-            font-size: 0.85rem !important;
-            font-weight: 400 !important;
-            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%) !important;
-            border: none !important;
-            color: white !important;
-            border-radius: 20px !important;
-            box-shadow: 0 2px 8px rgba(139, 38, 53, 0.15) !important;
-            transition: all 0.3s ease !important;
-            white-space: nowrap;
-        }
-
-        #header-login-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(139, 38, 53, 0.25) !important;
-        }
-
-        #header-user-profile {
-            background: var(--cream-dark);
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            box-shadow: 0 2px 6px rgba(27, 43, 58, 0.08);
-            border: 1px solid var(--whisper);
-        }
-
-        #header-user-avatar {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 500;
-            font-size: 0.75rem;
-            flex-shrink: 0;
-        }
-
-        #header-user-email {
-            color: var(--text);
-            font-size: 0.8rem;
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-weight: 400;
-        }
-
-        #header-logout-btn {
-            padding: 0.35rem 0.75rem !important;
-            font-size: 0.75rem !important;
-            font-weight: 400 !important;
-            background: transparent !important;
-            border: 1px solid var(--whisper) !important;
-            color: var(--text-soft) !important;
-            border-radius: 14px !important;
-            transition: all 0.2s ease !important;
-            white-space: nowrap;
-        }
-
-        #header-logout-btn:hover {
-            background: var(--whisper) !important;
-            color: var(--crimson) !important;
-            border-color: var(--crimson) !important;
-        }
-
-        /* Dark mode auth button styles */
-        body.dark-mode #header-login-btn {
-            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%) !important;
-            box-shadow: 0 2px 8px rgba(255, 107, 138, 0.2) !important;
-        }
-
-        body.dark-mode #header-login-btn:hover {
-            box-shadow: 0 4px 12px rgba(255, 107, 138, 0.3) !important;
-        }
-
-        body.dark-mode #header-user-profile {
-            background: rgba(22, 27, 34, 0.8);
-            border-color: rgba(232, 220, 200, 0.15);
-        }
-
-        body.dark-mode #header-user-avatar {
-            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%);
-        }
-
-        body.dark-mode #header-logout-btn {
-            border-color: rgba(232, 220, 200, 0.2) !important;
-            color: var(--text-soft) !important;
-        }
-
-        body.dark-mode #header-logout-btn:hover {
-            background: rgba(232, 220, 200, 0.1) !important;
-            color: var(--crimson) !important;
-            border-color: var(--crimson) !important;
-        }
-
         /* Navigation */
         .nav {
             max-width: 1100px;
@@ -2941,16 +2833,6 @@
                 padding: 1rem 1rem 0.75rem;
             }
 
-            .header-inner {
-                flex-wrap: wrap;
-                gap: 0.75rem;
-            }
-
-            .logo {
-                flex: 1;
-                min-width: 0;
-            }
-
             .logo-main {
                 font-size: 1.4rem;
             }
@@ -2960,45 +2842,8 @@
                 letter-spacing: 0.15em;
             }
 
-            .auth-section {
-                order: 3;
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 0.5rem;
-            }
-
             .signature {
                 font-size: 1.5rem;
-                order: 2;
-            }
-
-            #header-login-btn {
-                padding: 0.45rem 1rem !important;
-                font-size: 0.8rem !important;
-                flex: 1;
-                max-width: 200px;
-            }
-
-            #header-user-profile {
-                padding: 0.35rem 0.75rem;
-                gap: 0.5rem;
-                flex: 1;
-            }
-
-            #header-user-email {
-                font-size: 0.75rem;
-                max-width: 120px;
-            }
-
-            #header-user-avatar {
-                width: 24px;
-                height: 24px;
-                font-size: 0.7rem;
-            }
-
-            #header-logout-btn {
-                padding: 0.3rem 0.6rem !important;
-                font-size: 0.7rem !important;
             }
 
             .main {
@@ -3112,23 +2957,7 @@
                 <div class="logo-main" id="logo-main" style="cursor: pointer;">Ma Maison</div>
                 <div class="logo-sub" id="logo-sub" style="cursor: pointer;">Où chaque moment est doux</div>
             </div>
-            
             <div class="signature">apprendre</div>
-            
-            <!-- Auth Section -->
-            <div class="auth-section">
-                <!-- Login Button (shows when not logged in) -->
-                <button class="btn btn-primary" id="header-login-btn" onclick="openModal('auth-modal')">
-                    Se connecter
-                </button>
-                
-                <!-- User Profile (shows when logged in) -->
-                <div id="header-user-profile" style="display: none;">
-                    <div id="header-user-avatar"></div>
-                    <span id="header-user-email"></span>
-                    <button class="btn btn-secondary" id="header-logout-btn">Déconnexion</button>
-                </div>
-            </div>
         </div>
     </header>
 
@@ -3217,6 +3046,33 @@
                     <button class="btn btn-danger" id="reset-data">
                         Recommencer à zéro
                     </button>
+                </div>
+            </div>
+
+            <!-- Account Section -->
+            <div class="entrance-card">
+                <div class="entrance-sentence">Ton compte</div>
+                <div class="entrance-translation">
+                    Connecte-toi pour sauvegarder tes progrès dans le cloud.
+                </div>
+                
+                <!-- Login Button (shows when not logged in) -->
+                <div id="entrance-login-section" style="text-align: center; margin-top: 1.5rem;">
+                    <button class="btn btn-primary" id="entrance-login-btn" onclick="openModal('auth-modal')" style="padding: 0.75rem 2rem; font-size: 1rem;">
+                        Se connecter
+                    </button>
+                </div>
+                
+                <!-- User Profile (shows when logged in) -->
+                <div id="entrance-user-profile" style="display: none; text-align: center; margin-top: 1.5rem;">
+                    <div style="display: inline-flex; align-items: center; gap: 1rem; background: var(--cream-dark); padding: 1rem 1.5rem; border-radius: 24px; border: 1px solid var(--whisper);">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 1.1rem;" id="entrance-user-avatar"></div>
+                        <div style="text-align: left;">
+                            <div style="font-weight: 500; color: var(--navy); margin-bottom: 0.25rem;">Connecté</div>
+                            <div id="entrance-user-email" style="color: var(--text-soft); font-size: 0.9rem;"></div>
+                        </div>
+                        <button class="btn btn-secondary" id="entrance-logout-btn" style="margin-left: 1rem;">Déconnexion</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -8346,13 +8202,13 @@
                 if (user) {
                     currentUser = user;
                     
-                    // Show header user profile
-                    document.getElementById('header-user-profile').style.display = 'flex';
-                    document.getElementById('header-user-email').textContent = user.email;
-                    document.getElementById('header-user-avatar').textContent = user.email[0].toUpperCase();
+                    // Show entrance user profile
+                    document.getElementById('entrance-user-profile').style.display = 'block';
+                    document.getElementById('entrance-user-email').textContent = user.email;
+                    document.getElementById('entrance-user-avatar').textContent = user.email[0].toUpperCase();
                     
-                    // Hide login button
-                    document.getElementById('header-login-btn').style.display = 'none';
+                    // Hide entrance login section
+                    document.getElementById('entrance-login-section').style.display = 'none';
                     
                     // Old profile display (keeping for compatibility)
                     document.getElementById('user-profile').style.display = 'block';
@@ -8369,11 +8225,11 @@
                 } else {
                     currentUser = null;
                     
-                    // Hide header user profile
-                    document.getElementById('header-user-profile').style.display = 'none';
+                    // Hide entrance user profile
+                    document.getElementById('entrance-user-profile').style.display = 'none';
                     
-                    // Show login button
-                    document.getElementById('header-login-btn').style.display = 'block';
+                    // Show entrance login section
+                    document.getElementById('entrance-login-section').style.display = 'block';
                     
                     // Old profile display (keeping for compatibility)
                     document.getElementById('user-profile').style.display = 'none';
@@ -8473,7 +8329,7 @@
                 await signOut(window.firebaseAuth);
             });
             
-            document.getElementById('header-logout-btn').addEventListener('click', async () => {
+            document.getElementById('entrance-logout-btn').addEventListener('click', async () => {
                 await signOut(window.firebaseAuth);
             });
             
