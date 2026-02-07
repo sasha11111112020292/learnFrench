@@ -8,6 +8,70 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Work+Sans:wght@300;400;500&family=Allura&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5l89evtb8svRKoTVICAVwA4JbpoXjJKQ",
+            authDomain: "ma-maison-french.firebaseapp.com",
+            projectId: "ma-maison-french",
+            storageBucket: "ma-maison-french.firebasestorage.app",
+            messagingSenderId: "319573050083",
+            appId: "1:319573050083:web:11ff8453f39cce3160fbd6",
+            measurementId: "G-JP9BNPQX0B"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Make Firebase available globally
+        window.firebaseAuth = auth;
+        window.firebaseDB = db;
+        window.firebaseModules = {
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged,
+            GoogleAuthProvider,
+            signInWithPopup,
+            collection,
+            doc,
+            setDoc,
+            getDoc,
+            getDocs,
+            deleteDoc,
+            onSnapshot,
+            query,
+            where
+        };
+        
+        // Signal that Firebase is ready
+        window.firebaseReady = true;
+        console.log('✅ Firebase loaded and ready!');
+        
+        // Trigger initialization immediately if function exists
+        if (window.initFirebaseAuth) {
+            console.log('🚀 Calling initFirebaseAuth immediately');
+            window.initFirebaseAuth();
+        } else {
+            // Otherwise wait for DOM and try again
+            console.log('⏳ Waiting for initFirebaseAuth function...');
+            const checkInit = setInterval(() => {
+                if (window.initFirebaseAuth) {
+                    console.log('🚀 Found initFirebaseAuth, calling now');
+                    clearInterval(checkInit);
+                    window.initFirebaseAuth();
+                }
+            }, 100);
+        }
+    </script>
+    
     <style>
         :root {
             --cream: #FBF9F4;
@@ -102,92 +166,6 @@
             animation: floatUp 4s ease-in-out forwards;
             opacity: 0;
         }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            50% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(var(--drift)) rotate(var(--rotation));
-                opacity: 0;
-            }
-        }
-
-        /* Musical Notes */
-        .musical-note {
-            position: absolute;
-            animation: note-float 5s ease-in-out forwards;
-            opacity: 0;
-        }
-
-        @keyframes note-float {
-            0% {
-                transform: translateY(0) rotate(0deg) scale(0.5);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.9;
-            }
-            50% {
-                transform: translateY(-50vh) rotate(var(--rotation)) scale(1);
-                opacity: 0.7;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(var(--rotation)) scale(0.8);
-                opacity: 0;
-            }
-        }
-
-        /* Fireflies/Світлячки (Dark Mode) */
-        .firefly {
-            position: absolute;
-            animation: firefly-float 4s ease-in-out infinite;
-            opacity: 0;
-            filter: blur(0.5px) drop-shadow(0 0 8px rgba(244, 213, 141, 0.9)) drop-shadow(0 0 12px rgba(244, 213, 141, 0.6));
-            z-index: 9998;
-        }
-
-        @keyframes firefly-float {
-            0% {
-                opacity: 0;
-                transform: translate(0, 0);
-            }
-            10% {
-                opacity: 0.8;
-            }
-            25% {
-                opacity: 1;
-                transform: translate(var(--drift-x), calc(var(--drift-y) * 0.5));
-            }
-            50% {
-                opacity: 0.6;
-                transform: translate(calc(var(--drift-x) * 1.3), var(--drift-y));
-            }
-            75% {
-                opacity: 0.9;
-                transform: translate(calc(var(--drift-x) * 0.7), calc(var(--drift-y) * 1.2));
-            }
-            90% {
-                opacity: 0.5;
-            }
-            100% {
-                opacity: 0;
-                transform: translate(0, calc(var(--drift-y) * 0.3));
-            }
-        }
-
-        /* Hide fireflies in light mode */
-        body:not(.dark-mode) .firefly {
-            display: none;
-        }
-
         body.dark-mode .btn-primary {
             background: linear-gradient(135deg, #d4746f 0%, #b85d5d 100%);
             border-color: transparent;
@@ -790,6 +768,114 @@
 
         .signature:hover {
             opacity: 0.9;
+        }
+
+        /* Auth Buttons - Elegant & Delicate */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #header-login-btn {
+            padding: 0.5rem 1.25rem !important;
+            font-size: 0.85rem !important;
+            font-weight: 400 !important;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%) !important;
+            border: none !important;
+            color: white !important;
+            border-radius: 20px !important;
+            box-shadow: 0 2px 8px rgba(139, 38, 53, 0.15) !important;
+            transition: all 0.3s ease !important;
+            white-space: nowrap;
+        }
+
+        #header-login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 38, 53, 0.25) !important;
+        }
+
+        #header-user-profile {
+            background: var(--cream-dark);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 2px 6px rgba(27, 43, 58, 0.08);
+            border: 1px solid var(--whisper);
+        }
+
+        #header-user-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        #header-user-email {
+            color: var(--text);
+            font-size: 0.8rem;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 400;
+        }
+
+        #header-logout-btn {
+            padding: 0.35rem 0.75rem !important;
+            font-size: 0.75rem !important;
+            font-weight: 400 !important;
+            background: transparent !important;
+            border: 1px solid var(--whisper) !important;
+            color: var(--text-soft) !important;
+            border-radius: 14px !important;
+            transition: all 0.2s ease !important;
+            white-space: nowrap;
+        }
+
+        #header-logout-btn:hover {
+            background: var(--whisper) !important;
+            color: var(--crimson) !important;
+            border-color: var(--crimson) !important;
+        }
+
+        /* Dark mode auth button styles */
+        body.dark-mode #header-login-btn {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%) !important;
+            box-shadow: 0 2px 8px rgba(255, 107, 138, 0.2) !important;
+        }
+
+        body.dark-mode #header-login-btn:hover {
+            box-shadow: 0 4px 12px rgba(255, 107, 138, 0.3) !important;
+        }
+
+        body.dark-mode #header-user-profile {
+            background: rgba(22, 27, 34, 0.8);
+            border-color: rgba(232, 220, 200, 0.15);
+        }
+
+        body.dark-mode #header-user-avatar {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-soft) 100%);
+        }
+
+        body.dark-mode #header-logout-btn {
+            border-color: rgba(232, 220, 200, 0.2) !important;
+            color: var(--text-soft) !important;
+        }
+
+        body.dark-mode #header-logout-btn:hover {
+            background: rgba(232, 220, 200, 0.1) !important;
+            color: var(--crimson) !important;
+            border-color: var(--crimson) !important;
         }
 
         /* Navigation */
@@ -1522,6 +1608,30 @@
         .pdf-save-btn svg {
             width: 24px;
             height: 24px;
+        }
+        
+        /* Stack export buttons vertically */
+        #save-words-csv {
+            bottom: 6.5rem !important;
+            left: 2rem !important;
+            right: auto !important;
+            background: var(--navy);
+        }
+        
+        #save-words-csv:hover {
+            background: var(--navy-soft);
+        }
+        
+        #bulk-import-btn {
+            bottom: 11rem !important;
+            left: 2rem !important;
+            right: auto !important;
+            background: var(--gold);
+        }
+        
+        #bulk-import-btn:hover {
+            background: var(--gold-pale);
+            color: var(--text);
         }
 
         /* Transcript/Lyrics Button */
@@ -2828,7 +2938,67 @@
             }
 
             .header {
-                padding: 1.5rem 1rem 0.5rem;
+                padding: 1rem 1rem 0.75rem;
+            }
+
+            .header-inner {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .logo {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .logo-main {
+                font-size: 1.4rem;
+            }
+
+            .logo-sub {
+                font-size: 0.6rem;
+                letter-spacing: 0.15em;
+            }
+
+            .auth-section {
+                order: 3;
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 0.5rem;
+            }
+
+            .signature {
+                font-size: 1.5rem;
+                order: 2;
+            }
+
+            #header-login-btn {
+                padding: 0.45rem 1rem !important;
+                font-size: 0.8rem !important;
+                flex: 1;
+                max-width: 200px;
+            }
+
+            #header-user-profile {
+                padding: 0.35rem 0.75rem;
+                gap: 0.5rem;
+                flex: 1;
+            }
+
+            #header-user-email {
+                font-size: 0.75rem;
+                max-width: 120px;
+            }
+
+            #header-user-avatar {
+                width: 24px;
+                height: 24px;
+                font-size: 0.7rem;
+            }
+
+            #header-logout-btn {
+                padding: 0.3rem 0.6rem !important;
+                font-size: 0.7rem !important;
             }
 
             .main {
@@ -2942,7 +3112,23 @@
                 <div class="logo-main" id="logo-main" style="cursor: pointer;">Ma Maison</div>
                 <div class="logo-sub" id="logo-sub" style="cursor: pointer;">Où chaque moment est doux</div>
             </div>
+            
             <div class="signature">apprendre</div>
+            
+            <!-- Auth Section -->
+            <div class="auth-section">
+                <!-- Login Button (shows when not logged in) -->
+                <button class="btn btn-primary" id="header-login-btn" onclick="openModal('auth-modal')">
+                    Se connecter
+                </button>
+                
+                <!-- User Profile (shows when logged in) -->
+                <div id="header-user-profile" style="display: none;">
+                    <div id="header-user-avatar"></div>
+                    <span id="header-user-email"></span>
+                    <button class="btn btn-secondary" id="header-logout-btn">Déconnexion</button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -3256,7 +3442,7 @@
             </div>
 
             <div style="margin-bottom: 2rem; text-align: center;">
-                <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap;">
                     <button class="btn btn-secondary view-toggle active" data-view="grid">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="3" width="7" height="7"></rect>
@@ -3273,8 +3459,8 @@
                         </svg>
                         Cartes
                     </button>
+                    <button class="btn btn-primary" id="add-word-btn">+ Planter un nouveau mot</button>
                 </div>
-                <button class="btn btn-primary" id="add-word-btn">+ Planter un nouveau mot</button>
             </div>
 
             <!-- Flip Cards View -->
@@ -3309,10 +3495,20 @@
 
             <div class="word-grid" id="word-grid"></div>
 
-            <!-- PDF Save Button -->
+            <!-- Export/Import Buttons -->
             <button class="pdf-save-btn" id="save-words-pdf" title="Sauvegarder les mots en PDF" style="display: none;">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15.5h8v1H8v-1zm0-3h8v1H8v-1z"/>
+                </svg>
+            </button>
+            <button class="pdf-save-btn" id="save-words-csv" title="Exporter en CSV (Anki/Quizlet)" style="display: none;">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm8-10v2h2v-2h-2zm0 4v2h2v-2h-2zM8 14h2v2H8v-2zm0-4h2v2H8v-2z"/>
+                </svg>
+            </button>
+            <button class="pdf-save-btn" id="bulk-import-btn" title="Importer plusieurs mots" style="display: none;">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
                 </svg>
             </button>
         </section>
@@ -3804,6 +4000,103 @@
         </div>
     </div>
 
+    <!-- Bulk Import Modal -->
+    <div class="modal" id="bulk-import-modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Importer plusieurs mots</h2>
+                <button class="close-btn" onclick="closeModal('bulk-import-modal')">&times;</button>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <p style="margin-bottom: 1rem; color: var(--text-soft);">
+                    Colle tes mots dans le format suivant (une ligne par mot):
+                </p>
+                <div style="background: var(--cream-dark); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin-bottom: 1rem;">
+                    le chat | the cat | animaux<br>
+                    la maison | the house | logement<br>
+                    manger | to eat | verbes
+                </div>
+                <p style="color: var(--text-soft); font-size: 0.9rem;">
+                    <strong>Format:</strong> mot français | signification | thème (optionnel)<br>
+                    Sépare avec le symbole | (barre verticale)
+                </p>
+            </div>
+            
+            <form id="bulk-import-form">
+                <div class="form-group">
+                    <label class="form-label">Colle tes mots ici</label>
+                    <textarea 
+                        class="form-textarea" 
+                        id="bulk-import-text" 
+                        placeholder="le chat | the cat | animaux&#10;la maison | the house | logement&#10;manger | to eat | verbes"
+                        rows="10"
+                        required
+                        style="font-family: monospace;"
+                    ></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Semaine / Week (optionnel)</label>
+                        <select class="form-select" id="bulk-week">
+                            <option value="">—</option>
+                            <option value="1">Semaine 1</option>
+                            <option value="2">Semaine 2</option>
+                            <option value="3">Semaine 3</option>
+                            <option value="4">Semaine 4</option>
+                            <option value="5">Semaine 5</option>
+                            <option value="6">Semaine 6</option>
+                            <option value="7">Semaine 7</option>
+                            <option value="8">Semaine 8</option>
+                            <option value="9">Semaine 9</option>
+                            <option value="10">Semaine 10</option>
+                            <option value="11">Semaine 11</option>
+                            <option value="12">Semaine 12</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Trimestre / Quarter (optionnel)</label>
+                        <select class="form-select" id="bulk-quarter">
+                            <option value="">—</option>
+                            <option value="Q1">Q1</option>
+                            <option value="Q2">Q2</option>
+                            <option value="Q3">Q3</option>
+                            <option value="Q4">Q4</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Année / Year (optionnel)</label>
+                        <select class="form-select" id="bulk-year">
+                            <option value="">—</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Thème par défaut (optionnel)</label>
+                        <input type="text" class="form-input" id="bulk-theme" placeholder="ex: animaux">
+                    </div>
+                </div>
+
+                <p style="color: var(--text-soft); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                    💡 Ces champs s'appliquent à TOUS les mots importés. Si un mot a déjà un thème dans le fichier, il sera utilisé à la place.
+                </p>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('bulk-import-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Importer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Reading Modal -->
     <div class="modal" id="reading-modal">
         <div class="modal-content">
@@ -3924,6 +4217,7 @@
                         <option value="movie">Film</option>
                         <option value="series">Série</option>
                         <option value="podcast">Podcast</option>
+                        <option value="audio">Audio/MP3</option>
                         <option value="other">Autre</option>
                     </select>
                 </div>
@@ -3934,13 +4228,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Lien (optionnel)</label>
+                    <label class="form-label">🎵 Media URL (YouTube, MP3, etc.)</label>
+                    <input type="url" class="form-input" id="listening-media-url" placeholder="https://youtube.com/watch?v=... ou .mp3">
+                    <small style="color: var(--text-soft); font-size: 0.85rem;">Pour YouTube, copie l'URL complète. Pour audio, utilise un lien direct .mp3 ou .wav</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lien info/source (optionnel)</label>
                     <input type="url" class="form-input" id="listening-link" placeholder="https://...">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Lien paroles/transcription (optionnel)</label>
-                    <input type="url" class="form-input" id="listening-transcript" placeholder="https://...">
+                    <label class="form-label">📝 Transcription liée (optionnel)</label>
+                    <select class="form-select" id="listening-linked-transcript">
+                        <option value="">Aucune transcription</option>
+                    </select>
+                    <small style="color: var(--text-soft); font-size: 0.85rem;">Lie une transcription existante ou crée-en une nouvelle après</small>
                 </div>
 
                 <div class="form-group">
@@ -4267,8 +4570,29 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Transcription</label>
-                    <textarea class="form-textarea" id="reading-transcript-text" rows="12" placeholder="Colle le texte ici..." required></textarea>
+                    <label class="form-label">📝 Texte français</label>
+                    <textarea class="form-textarea" id="reading-transcript-text" rows="8" placeholder="Colle le texte français ici..." required></textarea>
+                </div>
+
+                <div style="text-align: center; margin: 1rem 0;">
+                    <button type="button" class="btn btn-secondary" id="translate-reading-btn" style="display: flex; align-items: center; gap: 0.5rem; margin: 0 auto;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8M10 14h4"></path>
+                        </svg>
+                        Traduire automatiquement
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🌍 Traduction anglaise (automatique)</label>
+                    <textarea class="form-textarea" id="reading-transcript-translation" rows="8" placeholder="La traduction apparaîtra ici..." readonly style="background: var(--cream-dark);"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🔗 Lier à un matériel de lecture (optionnel)</label>
+                    <select class="form-select" id="reading-transcript-linked-material">
+                        <option value="">Aucun lien</option>
+                    </select>
                 </div>
 
                 <div class="form-actions">
@@ -4294,8 +4618,29 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Transcription</label>
-                    <textarea class="form-textarea" id="listening-transcript-text" rows="12" placeholder="Colle les paroles ici..." required></textarea>
+                    <label class="form-label">📝 Texte français (paroles/transcription)</label>
+                    <textarea class="form-textarea" id="listening-transcript-text" rows="8" placeholder="Colle les paroles ici..." required></textarea>
+                </div>
+
+                <div style="text-align: center; margin: 1rem 0;">
+                    <button type="button" class="btn btn-secondary" id="translate-listening-btn" style="display: flex; align-items: center; gap: 0.5rem; margin: 0 auto;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8M10 14h4"></path>
+                        </svg>
+                        Traduire automatiquement
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🌍 Traduction anglaise (automatique)</label>
+                    <textarea class="form-textarea" id="listening-transcript-translation" rows="8" placeholder="La traduction apparaîtra ici..." readonly style="background: var(--cream-dark);"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🔗 Lier à un matériel d'écoute (optionnel)</label>
+                    <select class="form-select" id="listening-transcript-linked-material">
+                        <option value="">Aucun lien</option>
+                    </select>
                 </div>
 
                 <div class="form-actions">
@@ -4353,27 +4698,6 @@
             </svg>
         `;
 
-        const fireflySVG = `
-            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                <!-- Outer glow -->
-                <circle cx="8" cy="8" r="6" fill="#f4d58d" opacity="0.15">
-                    <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.1;0.2;0.1" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <!-- Mid glow -->
-                <circle cx="8" cy="8" r="4" fill="#f4d58d" opacity="0.4">
-                    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="1.5s" repeatCount="indefinite"/>
-                </circle>
-                <!-- Inner bright core -->
-                <circle cx="8" cy="8" r="2" fill="#fff9e6" opacity="0.95">
-                    <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite"/>
-                </circle>
-                <!-- Center bright point -->
-                <circle cx="8" cy="8" r="1" fill="#ffffff" opacity="1"/>
-            </svg>
-        `;
-
-        // Create floating hearts (when adding words or completing tasks)
         function createFloatingHeart() {
             const heart = document.createElement('div');
             heart.className = 'floating-heart';
@@ -4393,7 +4717,6 @@
         }
 
         // Animation triggers
-        let fireflyInterval = null;
         let musicNoteInterval = null;
 
         // Create musical note (when music is playing)
@@ -4415,66 +4738,6 @@
         }
 
         // Create firefly/світлячок (dark mode only)
-        function createFirefly() {
-            if (!document.body.classList.contains('dark-mode')) {
-                console.log('Not in dark mode, skipping firefly');
-                return;
-            }
-            
-            console.log('Creating firefly! ✨');
-            
-            const firefly = document.createElement('div');
-            firefly.className = 'firefly';
-            firefly.innerHTML = fireflySVG;
-            
-            const randomX = Math.random() * window.innerWidth;
-            const randomY = Math.random() * window.innerHeight;
-            const driftX = (Math.random() - 0.5) * 120;
-            const driftY = (Math.random() - 0.5) * 120;
-            
-            firefly.style.left = randomX + 'px';
-            firefly.style.top = randomY + 'px';
-            firefly.style.setProperty('--drift-x', driftX + 'px');
-            firefly.style.setProperty('--drift-y', driftY + 'px');
-            
-            animationContainer.appendChild(firefly);
-            console.log('Firefly added! Total:', animationContainer.children.length);
-            
-            setTimeout(() => firefly.remove(), 4000);
-        }
-
-        // Start firefly animations (dark mode only, every 1-2 seconds)
-        function startFireflyAnimations() {
-            console.log('startFireflyAnimations called, dark mode:', document.body.classList.contains('dark-mode'));
-            
-            if (!document.body.classList.contains('dark-mode')) {
-                stopFireflyAnimations();
-                return;
-            }
-            
-            if (fireflyInterval) {
-                console.log('Firefly interval already running');
-                return;
-            }
-            
-            console.log('Starting firefly interval ✨');
-            
-            function scheduleFirefly() {
-                createFirefly();
-                const nextDelay = 1000 + Math.random() * 1000; // 1-2 seconds
-                fireflyInterval = setTimeout(scheduleFirefly, nextDelay);
-            }
-            
-            scheduleFirefly();
-        }
-
-        function stopFireflyAnimations() {
-            if (fireflyInterval) {
-                clearTimeout(fireflyInterval);
-                fireflyInterval = null;
-            }
-        }
-
         // Start/stop music note animations
         function startMusicNoteAnimations() {
             if (musicNoteInterval) return;
@@ -4495,7 +4758,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Check dark mode and start sparkles if appropriate
             if (document.body.classList.contains('dark-mode')) {
-                startFireflyAnimations();
             }
         });
 
@@ -6316,12 +6578,14 @@
             const sortedListeningList = [...listeningList].sort((a, b) => b.id - a.id);
 
             grid.innerHTML = sortedListeningList.map(item => `
-                <div class="resource-card">
+                <div class="listening-card">
                     <div class="resource-info">
                         <div class="resource-type">${item.type}</div>
                         <div class="resource-title">${item.title}</div>
+                        ${item.mediaUrl ? getEmbeddedPlayer(item.mediaUrl) : ''}
                         ${item.link ? `<a href="${item.link}" class="resource-link" target="_blank" rel="noopener noreferrer">${item.link}</a>` : ''}
                         ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
+                        ${item.linkedTranscript ? `<div style="margin-top: 1rem;"><button class="btn btn-secondary" onclick="viewTranscript(${item.linkedTranscript}, 'listening')" style="font-size: 0.85rem; padding: 0.5rem 1rem;">📝 Voir la transcription</button></div>` : ''}
                     </div>
                     <div class="resource-actions">
                         ${item.transcriptLink ? `
@@ -6382,8 +6646,10 @@
                 id: Date.now(),
                 type: document.getElementById('listening-type').value,
                 title: document.getElementById('listening-title').value.trim(),
+                mediaUrl: document.getElementById('listening-media-url').value.trim(),
                 link: document.getElementById('listening-link').value.trim(),
-                transcriptLink: document.getElementById('listening-transcript').value.trim(),
+                transcriptLink: document.getElementById('listening-transcript')?.value.trim() || '',
+                linkedTranscript: document.getElementById('listening-linked-transcript')?.value || '',
                 note: document.getElementById('listening-note').value.trim() || '',
                 created: new Date().toISOString()
             };
@@ -6398,6 +6664,8 @@
             localStorage.setItem('listeningList', JSON.stringify(listeningList));
             renderListeningList();
             closeModal('listening-modal');
+            
+            document.getElementById('listening-form').reset();
         });
 
         // EDIT LISTENING FORM SUBMISSION
@@ -6973,17 +7241,38 @@
             
             const doc = new jsPDF();
             
+            // Helper function to convert text to Latin1 compatible format
+            function cleanText(text) {
+                if (!text) return '';
+                // Replace common French characters with their closest ASCII equivalents
+                const map = {
+                    'à': 'a', 'â': 'a', 'á': 'a', 'ä': 'a',
+                    'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
+                    'î': 'i', 'ï': 'i', 'ì': 'i', 'í': 'i',
+                    'ô': 'o', 'ö': 'o', 'ò': 'o', 'ó': 'o',
+                    'û': 'u', 'ù': 'u', 'ü': 'u', 'ú': 'u',
+                    'ç': 'c', 'ñ': 'n',
+                    'À': 'A', 'Â': 'A', 'Á': 'A', 'Ä': 'A',
+                    'É': 'E', 'È': 'E', 'Ê': 'E', 'Ë': 'E',
+                    'Î': 'I', 'Ï': 'I', 'Ì': 'I', 'Í': 'I',
+                    'Ô': 'O', 'Ö': 'O', 'Ò': 'O', 'Ó': 'O',
+                    'Û': 'U', 'Ù': 'U', 'Ü': 'U', 'Ú': 'U',
+                    'Ç': 'C', 'Ñ': 'N'
+                };
+                return text.split('').map(char => map[char] || char).join('');
+            }
+            
             // Title
             doc.setFontSize(22);
             doc.setTextColor(139, 38, 53); // crimson
-            doc.text('Mon Vocabulaire Français', 20, 20);
+            doc.text(cleanText('Mon Vocabulaire Français'), 20, 20);
             
             doc.setFontSize(10);
             doc.setTextColor(107, 97, 92); // text-soft
             const filterText = Object.values(activeFilters).filter(Boolean).length > 0 
-                ? `Filtres actifs: ${Object.entries(activeFilters).filter(([k,v]) => v).map(([k,v]) => `${k}:${v}`).join(', ')}` 
+                ? cleanText(`Filtres actifs: ${Object.entries(activeFilters).filter(([k,v]) => v).map(([k,v]) => `${k}:${v}`).join(', ')}`)
                 : '';
-            doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} ${filterText}`, 20, 28);
+            doc.text(cleanText(`Genere le ${new Date().toLocaleDateString('fr-FR')} ${filterText}`), 20, 28);
             
             let y = 40;
             const pageHeight = doc.internal.pageSize.height;
@@ -7003,7 +7292,7 @@
                 // Word number and French word
                 doc.setFontSize(14);
                 doc.setTextColor(27, 43, 58); // navy
-                const wordText = word.article ? `${index + 1}. ${word.article} ${word.french}` : `${index + 1}. ${word.french}`;
+                const wordText = word.article ? `${index + 1}. ${cleanText(word.article)} ${cleanText(word.french)}` : `${index + 1}. ${cleanText(word.french)}`;
                 doc.text(wordText, margin, y);
                 y += 7;
                 
@@ -7011,21 +7300,22 @@
                 if (word.meaning) {
                     doc.setFontSize(11);
                     doc.setTextColor(42, 37, 32); // text
-                    doc.text(`→ ${word.meaning}`, margin + 5, y);
-                    y += 6;
+                    const meaningText = doc.splitTextToSize(cleanText(`-> ${word.meaning}`), 170);
+                    doc.text(meaningText, margin + 5, y);
+                    y += meaningText.length * 5;
                 }
                 
                 // Categories on same line
                 const categories = [];
-                if (word.theme) categories.push(word.theme);
+                if (word.theme) categories.push(cleanText(word.theme));
                 if (word.week) categories.push(`S${word.week}`);
-                if (word.quarter) categories.push(word.quarter);
+                if (word.quarter) categories.push(cleanText(word.quarter));
                 if (word.year) categories.push(word.year);
                 
                 if (categories.length > 0) {
                     doc.setFontSize(8);
                     doc.setTextColor(107, 97, 92);
-                    doc.text(categories.join(' • '), margin + 5, y);
+                    doc.text(categories.join(' - '), margin + 5, y);
                     y += 5;
                 }
                 
@@ -7035,19 +7325,19 @@
                     doc.setTextColor(107, 97, 92);
                     
                     if (word.contexts[0]) {
-                        const contextText = doc.splitTextToSize(`Ex: ${word.contexts[0]}`, 170);
+                        const contextText = doc.splitTextToSize(cleanText(`Ex: ${word.contexts[0]}`), 170);
                         doc.text(contextText, margin + 5, y);
                         y += contextText.length * 4;
                     }
                     
                     if (word.contexts[1]) {
-                        const contextText = doc.splitTextToSize(`Émotionnel: ${word.contexts[1]}`, 170);
+                        const contextText = doc.splitTextToSize(cleanText(`Emotionnel: ${word.contexts[1]}`), 170);
                         doc.text(contextText, margin + 5, y);
                         y += contextText.length * 4;
                     }
                     
                     if (word.contexts[2]) {
-                        const contextText = doc.splitTextToSize(`Idiomatique: ${word.contexts[2]}`, 170);
+                        const contextText = doc.splitTextToSize(cleanText(`Idiomatique: ${word.contexts[2]}`), 170);
                         doc.text(contextText, margin + 5, y);
                         y += contextText.length * 4;
                     }
@@ -7057,7 +7347,7 @@
                 if (word.note) {
                     doc.setFontSize(9);
                     doc.setTextColor(107, 97, 92);
-                    const noteText = doc.splitTextToSize(`Note: ${word.note}`, 170);
+                    const noteText = doc.splitTextToSize(cleanText(`Note: ${word.note}`), 170);
                     doc.text(noteText, margin + 5, y);
                     y += noteText.length * 4;
                 }
@@ -7072,12 +7362,144 @@
         // PDF button visibility and click handler
         function updatePDFButtonVisibility() {
             const pdfBtn = document.getElementById('save-words-pdf');
-            if (pdfBtn) {
-                pdfBtn.style.display = getFilteredVocabulary().length > 0 ? 'flex' : 'none';
-            }
+            const csvBtn = document.getElementById('save-words-csv');
+            const bulkBtn = document.getElementById('bulk-import-btn');
+            const hasWords = getFilteredVocabulary().length > 0;
+            
+            if (pdfBtn) pdfBtn.style.display = hasWords ? 'flex' : 'none';
+            if (csvBtn) csvBtn.style.display = hasWords ? 'flex' : 'none';
+            if (bulkBtn) bulkBtn.style.display = 'flex'; // ALWAYS show import button!
         }
 
         document.getElementById('save-words-pdf').addEventListener('click', saveWordsAsPDF);
+
+        // ============================================
+        // CSV EXPORT FOR ANKI/QUIZLET
+        // ============================================
+        function saveWordsAsCSV() {
+            const filteredVocabulary = getFilteredVocabulary();
+            const sortedVocabulary = [...filteredVocabulary].sort((a, b) => b.id - a.id);
+            
+            // CSV Header
+            let csvContent = "French,Meaning,Example Sentence,Theme,Week,Notes\n";
+            
+            // Add each word
+            sortedVocabulary.forEach(word => {
+                const french = word.article ? `${word.article} ${word.french}` : word.french;
+                const meaning = word.meaning || '';
+                const example = word.contexts && word.contexts[0] ? word.contexts[0] : '';
+                const theme = word.theme || '';
+                const week = word.week ? `Week ${word.week}` : '';
+                const note = word.note || '';
+                
+                // Escape commas and quotes for CSV
+                const escapeCsv = (str) => {
+                    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                        return `"${str.replace(/"/g, '""')}"`;
+                    }
+                    return str;
+                };
+                
+                csvContent += `${escapeCsv(french)},${escapeCsv(meaning)},${escapeCsv(example)},${escapeCsv(theme)},${escapeCsv(week)},${escapeCsv(note)}\n`;
+            });
+            
+            // Create download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `vocabulaire-francais-${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.getElementById('save-words-csv').addEventListener('click', saveWordsAsCSV);
+
+        // ============================================
+        // BULK IMPORT
+        // ============================================
+        document.getElementById('bulk-import-btn').addEventListener('click', () => {
+            openModal('bulk-import-modal');
+        });
+
+        document.getElementById('bulk-import-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const text = document.getElementById('bulk-import-text').value.trim();
+            const week = document.getElementById('bulk-week').value;
+            const quarter = document.getElementById('bulk-quarter').value;
+            const year = document.getElementById('bulk-year').value;
+            const defaultTheme = document.getElementById('bulk-theme').value.trim();
+            
+            if (!text) return;
+            
+            const lines = text.split('\n').filter(line => line.trim());
+            let imported = 0;
+            let errors = [];
+            
+            lines.forEach((line, index) => {
+                const parts = line.split('|').map(p => p.trim());
+                
+                if (parts.length < 2) {
+                    errors.push(`Ligne ${index + 1}: Format invalide (besoin de au moins 2 parties)`);
+                    return;
+                }
+                
+                const french = parts[0];
+                const meaning = parts[1];
+                const lineTheme = parts[2] || ''; // Theme from the line itself
+                const finalTheme = lineTheme || defaultTheme; // Use line theme if present, otherwise default
+                
+                // Detect article
+                let article = '';
+                let frenchWord = french;
+                const articles = ['le ', 'la ', "l'", 'les ', 'un ', 'une ', 'des '];
+                for (const art of articles) {
+                    if (french.toLowerCase().startsWith(art)) {
+                        article = art.trim();
+                        frenchWord = french.substring(art.length).trim();
+                        break;
+                    }
+                }
+                
+                const word = {
+                    id: Date.now() + imported,
+                    french: frenchWord,
+                    article: article,
+                    meaning: meaning,
+                    theme: finalTheme,
+                    week: week,
+                    quarter: quarter,
+                    year: year,
+                    contexts: ['', '', ''],
+                    note: '',
+                    image: '',
+                    created: new Date().toISOString(),
+                    lastPracticed: null,
+                    confidence: 0,
+                    timesReviewed: 0
+                };
+                
+                vocabulary.push(word);
+                imported++;
+            });
+            
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            renderWords();
+            closeModal('bulk-import-modal');
+            
+            if (errors.length > 0) {
+                alert(`Importé ${imported} mots.\n\nErreurs:\n${errors.join('\n')}`);
+            } else {
+                alert(`✨ ${imported} mots importés avec succès!`);
+            }
+            
+            document.getElementById('bulk-import-form').reset();
+        });
 
         // ============================================
         // MUSIC PLAYER MODAL
@@ -7464,6 +7886,7 @@
 
             if (isDarkMode) {
                 document.body.classList.add('dark-mode');
+                // Start firefly animations if dark mode is enabled
             }
 
             if (darkModeToggle) {
@@ -7474,9 +7897,6 @@
                     
                     // Toggle firefly animations based on dark mode
                     if (isDark) {
-                        startFireflyAnimations();
-                    } else {
-                        stopFireflyAnimations();
                     }
                 });
             }
@@ -7857,6 +8277,8 @@
                     id: Date.now(),
                     title: document.getElementById('reading-transcript-title').value.trim(),
                     text: document.getElementById('reading-transcript-text').value.trim(),
+                    translation: document.getElementById('reading-transcript-translation')?.value.trim() || '',
+                    linkedMaterial: document.getElementById('reading-transcript-linked-material')?.value || '',
                     created: new Date().toISOString()
                 };
                 
@@ -7876,6 +8298,8 @@
                     id: Date.now(),
                     title: document.getElementById('listening-transcript-title').value.trim(),
                     text: document.getElementById('listening-transcript-text').value.trim(),
+                    translation: document.getElementById('listening-transcript-translation')?.value.trim() || '',
+                    linkedMaterial: document.getElementById('listening-transcript-linked-material')?.value || '',
                     created: new Date().toISOString()
                 };
                 
@@ -7891,6 +8315,475 @@
             renderTranscripts('reading');
             renderTranscripts('listening');
         }
+
+        // ============================================
+        // FIREBASE AUTHENTICATION & CLOUD SYNC
+        // ============================================
+        
+        let currentUser = null;
+        
+        // Wait for Firebase to load
+        window.initFirebaseAuth = function() {
+            console.log('🔍 initFirebaseAuth called');
+            console.log('firebaseReady:', window.firebaseReady);
+            console.log('firebaseAuth:', !!window.firebaseAuth);
+            console.log('firebaseDB:', !!window.firebaseDB);
+            
+            if (!window.firebaseReady || !window.firebaseAuth || !window.firebaseDB) {
+                console.log('⏳ Waiting for Firebase to load... retrying in 100ms');
+                setTimeout(window.initFirebaseAuth, 100);
+                return;
+            }
+            
+            console.log('🔥 Initializing Firebase Auth...');
+            
+            const { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } = window.firebaseModules;
+            
+            // Listen for auth state changes
+            onAuthStateChanged(window.firebaseAuth, (user) => {
+                console.log('👤 Auth state changed:', user ? user.email : 'Not logged in');
+                
+                if (user) {
+                    currentUser = user;
+                    
+                    // Show header user profile
+                    document.getElementById('header-user-profile').style.display = 'flex';
+                    document.getElementById('header-user-email').textContent = user.email;
+                    document.getElementById('header-user-avatar').textContent = user.email[0].toUpperCase();
+                    
+                    // Hide login button
+                    document.getElementById('header-login-btn').style.display = 'none';
+                    
+                    // Old profile display (keeping for compatibility)
+                    document.getElementById('user-profile').style.display = 'block';
+                    document.getElementById('user-email').textContent = user.email;
+                    document.getElementById('user-avatar').textContent = user.email[0].toUpperCase();
+                    
+                    closeModal('auth-modal');
+                    
+                    // Load data from Firestore
+                    loadDataFromFirebase(user.uid);
+                    
+                    // Setup real-time sync
+                    setupRealtimeSync(user.uid);
+                } else {
+                    currentUser = null;
+                    
+                    // Hide header user profile
+                    document.getElementById('header-user-profile').style.display = 'none';
+                    
+                    // Show login button
+                    document.getElementById('header-login-btn').style.display = 'block';
+                    
+                    // Old profile display (keeping for compatibility)
+                    document.getElementById('user-profile').style.display = 'none';
+                    
+                    // Show login modal when not authenticated
+                    setTimeout(() => {
+                        console.log('🔓 Not logged in - showing auth modal');
+                        openModal('auth-modal');
+                    }, 500);
+                }
+            });
+            
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Connexion...';
+                submitBtn.disabled = true;
+                
+                try {
+                    await signInWithEmailAndPassword(window.firebaseAuth, email, password);
+                    console.log('✅ Successfully logged in!');
+                    // Modal will close automatically via onAuthStateChanged
+                } catch (error) {
+                    console.error('❌ Login error:', error);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                    
+                    // Better error messages in French
+                    let errorMsg = 'Erreur de connexion';
+                    if (error.code === 'auth/user-not-found') {
+                        errorMsg = 'Aucun compte trouvé avec cet email. Voulez-vous créer un compte ?';
+                    } else if (error.code === 'auth/wrong-password') {
+                        errorMsg = 'Mot de passe incorrect. Réessayez.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMsg = 'Adresse email invalide.';
+                    } else if (error.code === 'auth/invalid-credential') {
+                        errorMsg = 'Email ou mot de passe incorrect.';
+                    } else {
+                        errorMsg = 'Erreur: ' + error.message;
+                    }
+                    alert(errorMsg);
+                }
+            });
+            
+            // Signup form
+            document.getElementById('signup-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Création...';
+                submitBtn.disabled = true;
+                
+                try {
+                    await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+                    console.log('✅ Account created successfully!');
+                    // Modal will close automatically via onAuthStateChanged
+                } catch (error) {
+                    console.error('❌ Signup error:', error);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                    
+                    // Better error messages in French
+                    let errorMsg = 'Erreur de création de compte';
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMsg = 'Cet email est déjà utilisé. Essayez de vous connecter.';
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMsg = 'Le mot de passe doit contenir au moins 6 caractères.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMsg = 'Adresse email invalide.';
+                    } else {
+                        errorMsg = 'Erreur: ' + error.message;
+                    }
+                    alert(errorMsg);
+                }
+            });
+            
+            // Google sign in
+            document.getElementById('google-signin-btn').addEventListener('click', async () => {
+                const provider = new GoogleAuthProvider();
+                try {
+                    await signInWithPopup(window.firebaseAuth, provider);
+                } catch (error) {
+                    alert('Erreur: ' + error.message);
+                }
+            });
+            
+            // Logout handlers (both old and new buttons)
+            document.getElementById('logout-btn').addEventListener('click', async () => {
+                await signOut(window.firebaseAuth);
+            });
+            
+            document.getElementById('header-logout-btn').addEventListener('click', async () => {
+                await signOut(window.firebaseAuth);
+            });
+            
+            // Toggle between login/signup
+            document.getElementById('show-signup').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('auth-login-view').style.display = 'none';
+                document.getElementById('auth-signup-view').style.display = 'block';
+                document.getElementById('auth-modal-title').textContent = 'Créer un compte';
+            });
+            
+            document.getElementById('show-login').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('auth-signup-view').style.display = 'none';
+                document.getElementById('auth-login-view').style.display = 'block';
+                document.getElementById('auth-modal-title').textContent = 'Connexion';
+            });
+        }
+        
+        // Load all data from Firebase
+        async function loadDataFromFirebase(userId) {
+            const { doc, getDoc } = window.firebaseModules;
+            
+            try {
+                const userDoc = await getDoc(doc(window.firebaseDB, 'users', userId));
+                
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    
+                    // Load all data
+                    if (data.vocabulary) {
+                        vocabulary = data.vocabulary;
+                        localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                        renderWords();
+                    }
+                    
+                    if (data.readingList) {
+                        readingList = data.readingList;
+                        localStorage.setItem('readingList', JSON.stringify(readingList));
+                        renderReadingList();
+                    }
+                    
+                    if (data.listeningList) {
+                        listeningList = data.listeningList;
+                        localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                        renderListeningList();
+                    }
+                    
+                    if (data.recordings) {
+                        recordings = data.recordings;
+                        localStorage.setItem('recordings', JSON.stringify(recordings));
+                        renderRecordings();
+                    }
+                    
+                    if (data.writings) {
+                        writings = data.writings;
+                        localStorage.setItem('writings', JSON.stringify(writings));
+                        renderWritingsArchive();
+                    }
+                    
+                    if (data.notes) {
+                        notes = data.notes;
+                        localStorage.setItem('notes', JSON.stringify(notes));
+                        renderNotes();
+                    }
+                    
+                    if (data.resourcesList) {
+                        resourcesList = data.resourcesList;
+                        localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                        renderResourcesList();
+                    }
+                    
+                    console.log('✅ Data loaded from Firebase!');
+                }
+            } catch (error) {
+                console.error('Error loading from Firebase:', error);
+            }
+        }
+        
+        // Save all data to Firebase
+        async function saveDataToFirebase() {
+            if (!currentUser) return;
+            
+            const { doc, setDoc } = window.firebaseModules;
+            
+            try {
+                await setDoc(doc(window.firebaseDB, 'users', currentUser.uid), {
+                    vocabulary,
+                    readingList,
+                    listeningList,
+                    recordings,
+                    writings,
+                    notes,
+                    resourcesList,
+                    lastUpdated: new Date().toISOString()
+                });
+                
+                console.log('💾 Data saved to Firebase!');
+            } catch (error) {
+                console.error('Error saving to Firebase:', error);
+            }
+        }
+        
+        // Setup real-time sync (debounced to avoid too many writes)
+        let saveTimeout;
+        function setupRealtimeSync(userId) {
+            // Debounced save function
+            window.syncToFirebase = function() {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    saveDataToFirebase();
+                }, 2000); // Wait 2 seconds after last change
+            };
+            
+            // Override localStorage.setItem to auto-sync
+            const originalSetItem = localStorage.setItem;
+            localStorage.setItem = function(key, value) {
+                originalSetItem.apply(this, arguments);
+                if (currentUser && ['vocabulary', 'readingList', 'listeningList', 'recordings', 'writings', 'notes', 'resourcesList'].includes(key)) {
+                    window.syncToFirebase();
+                }
+            };
+        }
+        
+        // ============================================
+        // EMBEDDED MEDIA PLAYERS
+        // ============================================
+        
+        function getEmbeddedPlayer(url) {
+            if (!url) return '';
+            
+            // YouTube
+            const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/;
+            const youtubeMatch = url.match(youtubeRegex);
+            if (youtubeMatch) {
+                const videoId = youtubeMatch[1];
+                return `<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 1rem 0;">
+                    <iframe 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                        src="https://www.youtube.com/embed/${videoId}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>`;
+            }
+            
+            // Audio files (MP3, WAV, OGG)
+            if (url.match(/\.(mp3|wav|ogg|m4a)(\?.*)?$/i)) {
+                return `<div style="margin: 1rem 0;">
+                    <audio controls style="width: 100%; max-width: 500px;">
+                        <source src="${url}" type="audio/mpeg">
+                        Votre navigateur ne supporte pas l'élément audio.
+                    </audio>
+                </div>`;
+            }
+            
+            // Video files (MP4, WEBM)
+            if (url.match(/\.(mp4|webm|mov)(\?.*)?$/i)) {
+                return `<div style="margin: 1rem 0;">
+                    <video controls style="width: 100%; max-width: 600px; border-radius: 8px;">
+                        <source src="${url}" type="video/mp4">
+                        Votre navigateur ne supporte pas l'élément vidéo.
+                    </video>
+                </div>`;
+            }
+            
+            return '';
+        }
+        
+        // ============================================
+        // AUTO-TRANSLATION (FREE API)
+        // ============================================
+        
+        async function translateText(frenchText) {
+            if (!frenchText.trim()) {
+                alert('Veuillez entrer du texte à traduire');
+                return null;
+            }
+            
+            try {
+                // Using MyMemory Translation API (FREE, no key needed!)
+                const response = await fetch(
+                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(frenchText)}&langpair=fr|en`
+                );
+                
+                const data = await response.json();
+                
+                if (data.responseStatus === 200 && data.responseData) {
+                    return data.responseData.translatedText;
+                } else {
+                    throw new Error('Translation failed');
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+                alert('Erreur de traduction. Vérifiez votre connexion internet.');
+                return null;
+            }
+        }
+        
+        // Translation button for reading transcripts
+        const translateReadingBtn = document.getElementById('translate-reading-btn');
+        if (translateReadingBtn) {
+            translateReadingBtn.addEventListener('click', async () => {
+                const frenchText = document.getElementById('reading-transcript-text').value;
+                const translationField = document.getElementById('reading-transcript-translation');
+                
+                translateReadingBtn.disabled = true;
+                translateReadingBtn.textContent = 'Traduction en cours...';
+                
+                const translation = await translateText(frenchText);
+                
+                if (translation) {
+                    translationField.value = translation;
+                }
+                
+                translateReadingBtn.disabled = false;
+                translateReadingBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8M10 14h4"></path>
+                    </svg>
+                    Traduire automatiquement
+                `;
+            });
+        }
+        
+        // Translation button for listening transcripts
+        const translateListeningBtn = document.getElementById('translate-listening-btn');
+        if (translateListeningBtn) {
+            translateListeningBtn.addEventListener('click', async () => {
+                const frenchText = document.getElementById('listening-transcript-text').value;
+                const translationField = document.getElementById('listening-transcript-translation');
+                
+                translateListeningBtn.disabled = true;
+                translateListeningBtn.textContent = 'Traduction en cours...';
+                
+                const translation = await translateText(frenchText);
+                
+                if (translation) {
+                    translationField.value = translation;
+                }
+                
+                translateListeningBtn.disabled = false;
+                translateListeningBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8M10 14h4"></path>
+                    </svg>
+                    Traduire automatiquement
+                `;
+            });
+        }
+        
+        // ============================================
+        // TRANSCRIPTION LINKING
+        // ============================================
+        
+        // Populate dropdowns with existing materials when opening transcript modals
+        function populateTranscriptLinkingDropdowns() {
+            // For reading transcripts - link to reading materials
+            const readingDropdown = document.getElementById('reading-transcript-linked-material');
+            if (readingDropdown && readingList) {
+                readingDropdown.innerHTML = '<option value="">Aucun lien</option>';
+                readingList.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.title;
+                    readingDropdown.appendChild(option);
+                });
+            }
+            
+            // For listening transcripts - link to listening materials
+            const listeningDropdown = document.getElementById('listening-transcript-linked-material');
+            if (listeningDropdown && listeningList) {
+                listeningDropdown.innerHTML = '<option value="">Aucun lien</option>';
+                listeningList.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.title;
+                    listeningDropdown.appendChild(option);
+                });
+            }
+        }
+        
+        // Populate listening form with existing transcripts
+        function populateListeningTranscriptDropdown() {
+            const dropdown = document.getElementById('listening-linked-transcript');
+            if (dropdown && listeningTranscripts) {
+                dropdown.innerHTML = '<option value="">Aucune transcription</option>';
+                listeningTranscripts.forEach(transcript => {
+                    const option = document.createElement('option');
+                    option.value = transcript.id;
+                    option.textContent = transcript.title;
+                    dropdown.appendChild(option);
+                });
+            }
+        }
+        
+        // Call these when opening modals
+        document.querySelectorAll('[onclick*="add-reading-transcript-modal"]').forEach(btn => {
+            btn.addEventListener('click', populateTranscriptLinkingDropdowns);
+        });
+        
+        document.querySelectorAll('[onclick*="add-listening-transcript-modal"]').forEach(btn => {
+            btn.addEventListener('click', populateTranscriptLinkingDropdowns);
+        });
+        
+        document.getElementById('add-listening-btn')?.addEventListener('click', populateListeningTranscriptDropdown);
+
+        // Initialize Firebase Auth (Firebase module will call this when ready)
+        console.log('📋 initFirebaseAuth function defined and ready');
 
     </script>
 
@@ -8051,6 +8944,78 @@
 
     <!-- Hidden audio element -->
     <audio id="background-music" loop></audio>
+
+    <!-- Firebase Auth Modal -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="auth-modal-title">Connexion</h2>
+                <button class="close-btn" onclick="closeModal('auth-modal')">&times;</button>
+            </div>
+            
+            <div id="auth-login-view">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" class="form-input" id="login-password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
+                    </div>
+                </form>
+                
+                <div style="text-align: center; margin: 1.5rem 0; color: var(--text-soft);">ou</div>
+                
+                <button class="btn btn-secondary" id="google-signin-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 18 18">
+                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                        <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/>
+                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                    </svg>
+                    Continuer avec Google
+                </button>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <a href="#" id="show-signup" style="color: var(--crimson); text-decoration: none;">Pas encore de compte ? S'inscrire</a>
+                </div>
+            </div>
+            
+            <div id="auth-signup-view" style="display: none;">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="signup-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" class="form-input" id="signup-password" required minlength="6">
+                        <small style="color: var(--text-soft);">Minimum 6 caractères</small>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Créer un compte</button>
+                    </div>
+                </form>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <a href="#" id="show-login" style="color: var(--crimson); text-decoration: none;">Déjà un compte ? Se connecter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Display -->
+    <div id="user-profile" style="position: fixed; top: 1rem; right: 1rem; z-index: 1000; display: none;">
+        <div style="background: var(--cream); padding: 0.75rem 1rem; border-radius: 24px; box-shadow: 0 2px 8px var(--shadow); display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--crimson); color: white; display: flex; align-items: center; justify-content: center; font-weight: 500;" id="user-avatar"></div>
+            <span id="user-email" style="color: var(--text); font-size: 0.9rem;"></span>
+            <button class="btn btn-secondary" id="logout-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Déconnexion</button>
+        </div>
+    </div>
 
 </body>
 </html>
