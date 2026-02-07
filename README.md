@@ -98,11 +98,21 @@ const FirebaseREST = {
     },
     
     setDocument: async function(collection, docId, data) {
-        if (!this.currentUser) throw new Error('Not authenticated');
+        if (!this.currentUser) {
+            console.error('❌ setDocument failed: Not authenticated');
+            throw new Error('Not authenticated');
+        }
         await this.refreshTokenIfNeeded();
         
         const url = `https://firestore.googleapis.com/v1/projects/${this.config.projectId}/databases/(default)/documents/${collection}/${docId}`;
         const firestoreData = this.toFirestoreFormat(data);
+        
+        console.log('🔥 Firestore PATCH request:', {
+            url,
+            collection,
+            docId,
+            dataKeys: Object.keys(data)
+        });
         
         const response = await fetch(url, {
             method: 'PATCH',
@@ -114,7 +124,12 @@ const FirebaseREST = {
         });
         
         const result = await response.json();
-        if (result.error) throw new Error(result.error.message);
+        console.log('🔥 Firestore response:', response.status, result);
+        
+        if (result.error) {
+            console.error('❌ Firestore error:', result.error);
+            throw new Error(result.error.message || JSON.stringify(result.error));
+        }
         return result;
     },
     
@@ -322,14 +337,19 @@ const firebaseConfig = {
             createUserWithEmailAndPassword: (auth, email, password) => FirebaseREST.signUp(email, password),
             signOut: (auth) => FirebaseREST.signOut(),
             onAuthStateChanged: async (auth, callback) => {
-                // Check stored user on load (async)
-                const storedUser = await FirebaseREST.getStoredUser();
-                if (storedUser) {
-                    FirebaseREST.currentUser = storedUser;
-                    console.log('👤 Restored user from storage:', storedUser.email);
-                    callback(storedUser);
-                } else {
-                    console.log('👤 No stored user found');
+                // Check stored user on load (async) with error handling
+                try {
+                    const storedUser = await FirebaseREST.getStoredUser();
+                    if (storedUser) {
+                        FirebaseREST.currentUser = storedUser;
+                        console.log('👤 Restored user from storage:', storedUser.email);
+                        callback(storedUser);
+                    } else {
+                        console.log('👤 No stored user found');
+                        callback(null);
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Error checking stored user:', error);
                     callback(null);
                 }
                 
@@ -345,21 +365,29 @@ const firebaseConfig = {
     };
     
     console.log('✅ Firebase modules configured');
+    } catch (error) {
+        console.error('❌ Firebase initialization failed:', error);
+        alert('Firebase initialization failed. Check console for details.');
+    }
     
-    // Call initFirebaseAuth when ready
+    // Call initFirebaseAuth when ready (outside try/catch so errors don't break Firebase)
     if (window.initFirebaseAuth) {
-        window.initFirebaseAuth();
+        try {
+            window.initFirebaseAuth();
+        } catch (e) {
+            console.error('❌ initFirebaseAuth error:', e);
+        }
     } else {
         const checkInit = setInterval(() => {
             if (window.initFirebaseAuth) {
                 clearInterval(checkInit);
-                window.initFirebaseAuth();
+                try {
+                    window.initFirebaseAuth();
+                } catch (e) {
+                    console.error('❌ initFirebaseAuth error:', e);
+                }
             }
         }, 100);
-    }
-    } catch (error) {
-        console.error('❌ Firebase initialization failed:', error);
-        alert('Firebase initialization failed. Check console for details.');
     }
 })(); // Close async IIFE
     </script>
