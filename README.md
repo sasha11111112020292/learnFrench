@@ -308,44 +308,59 @@ const firebaseConfig = {
 
 // Initialize Firebase (must be async now)
 (async () => {
-    await FirebaseREST.init(firebaseConfig);
+    try {
+        console.log('🔄 Initializing Firebase REST...');
+        await FirebaseREST.init(firebaseConfig);
+        console.log('✅ Firebase initialized successfully');
+        
+        // Make compatible with existing code
+        window.firebaseAuth = FirebaseREST;
+        window.firebaseDB = FirebaseREST;
+        window.firebaseReady = true;
+        window.firebaseModules = {
+            signInWithEmailAndPassword: (auth, email, password) => FirebaseREST.signIn(email, password),
+            createUserWithEmailAndPassword: (auth, email, password) => FirebaseREST.signUp(email, password),
+            signOut: (auth) => FirebaseREST.signOut(),
+            onAuthStateChanged: async (auth, callback) => {
+                // Check stored user on load (async)
+                const storedUser = await FirebaseREST.getStoredUser();
+                if (storedUser) {
+                    FirebaseREST.currentUser = storedUser;
+                    console.log('👤 Restored user from storage:', storedUser.email);
+                    callback(storedUser);
+                } else {
+                    console.log('👤 No stored user found');
+                    callback(null);
+                }
+                
+                // Listen for changes
+                window._authCallback = callback;
+            },
+        doc: (db, collection, docId) => ({ collection, docId }),
+        setDoc: (ref, data) => FirebaseREST.setDocument(ref.collection, ref.docId, data),
+        getDoc: (ref) => FirebaseREST.getDocument(ref.collection, ref.docId).then(data => ({
+            exists: () => data !== null,
+            data: () => data
+        }))
+    };
     
-    // Make compatible with existing code
-    window.firebaseAuth = FirebaseREST;
-    window.firebaseDB = FirebaseREST;
-    window.firebaseReady = true;
-    window.firebaseModules = {
-        signInWithEmailAndPassword: (auth, email, password) => FirebaseREST.signIn(email, password),
-        createUserWithEmailAndPassword: (auth, email, password) => FirebaseREST.signUp(email, password),
-        signOut: (auth) => FirebaseREST.signOut(),
-        onAuthStateChanged: (auth, callback) => {
-            // Check on load
-            const user = FirebaseREST.getCurrentUser();
-            if (user) callback(user);
-            else callback(null);
-            
-            // Listen for changes
-            window._authCallback = callback;
-        },
-    doc: (db, collection, docId) => ({ collection, docId }),
-    setDoc: (ref, data) => FirebaseREST.setDocument(ref.collection, ref.docId, data),
-    getDoc: (ref) => FirebaseREST.getDocument(ref.collection, ref.docId).then(data => ({
-        exists: () => data !== null,
-        data: () => data
-    }))
-};
-
-// Call initFirebaseAuth when ready
-if (window.initFirebaseAuth) {
-    window.initFirebaseAuth();
-} else {
-    const checkInit = setInterval(() => {
-        if (window.initFirebaseAuth) {
-            clearInterval(checkInit);
-            window.initFirebaseAuth();
-        }
-    }, 100);
-}
+    console.log('✅ Firebase modules configured');
+    
+    // Call initFirebaseAuth when ready
+    if (window.initFirebaseAuth) {
+        window.initFirebaseAuth();
+    } else {
+        const checkInit = setInterval(() => {
+            if (window.initFirebaseAuth) {
+                clearInterval(checkInit);
+                window.initFirebaseAuth();
+            }
+        }, 100);
+    }
+    } catch (error) {
+        console.error('❌ Firebase initialization failed:', error);
+        alert('Firebase initialization failed. Check console for details.');
+    }
 })(); // Close async IIFE
     </script>
     
