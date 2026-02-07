@@ -17,9 +17,9 @@ const FirebaseREST = {
     config: null,
     currentUser: null,
     
-    init: function(config) {
+    init: async function(config) {
         this.config = config;
-        this.currentUser = this.getStoredUser();
+        this.currentUser = await this.getStoredUser();
         return this;
     },
     
@@ -39,7 +39,7 @@ const FirebaseREST = {
             token: data.idToken,
             refreshToken: data.refreshToken
         };
-        this.storeUser(this.currentUser);
+        await this.storeUser(this.currentUser);
         // Trigger auth callback
         if (window._authCallback) window._authCallback(this.currentUser);
         return this.currentUser;
@@ -61,15 +61,15 @@ const FirebaseREST = {
             token: data.idToken,
             refreshToken: data.refreshToken
         };
-        this.storeUser(this.currentUser);
+        await this.storeUser(this.currentUser);
         // Trigger auth callback
         if (window._authCallback) window._authCallback(this.currentUser);
         return this.currentUser;
     },
     
-    signOut: function() {
+    signOut: async function() {
         this.currentUser = null;
-        localStorage.removeItem('firebase_user');
+        await window.storage.delete('firebase_user');
         // Trigger auth callback
         if (window._authCallback) window._authCallback(null);
         return Promise.resolve();
@@ -164,22 +164,32 @@ const FirebaseREST = {
         return result;
     },
     
-    storeUser: function(user) {
-        localStorage.setItem('firebase_user', JSON.stringify({ ...user, timestamp: Date.now() }));
+    storeUser: async function(user) {
+        await window.storage.set('firebase_user', JSON.stringify({ ...user, timestamp: Date.now() }));
     },
     
-    getStoredUser: function() {
-        const stored = localStorage.getItem('firebase_user');
-        if (!stored) return null;
-        const user = JSON.parse(stored);
-        if (Date.now() - user.timestamp > 60 * 60 * 1000) return null;
-        return user;
+    getStoredUser: async function() {
+        try {
+            const result = await window.storage.get('firebase_user');
+            if (!result) return null;
+            const user = JSON.parse(result.value);
+            if (Date.now() - user.timestamp > 60 * 60 * 1000) return null;
+            return user;
+        } catch (e) {
+            return null;
+        }
     },
     
     refreshTokenIfNeeded: async function() {
         if (!this.currentUser) return;
-        const stored = JSON.parse(localStorage.getItem('firebase_user'));
-        if (!stored || Date.now() - stored.timestamp < 50 * 60 * 1000) return;
+        try {
+            const result = await window.storage.get('firebase_user');
+            if (!result) return;
+            const stored = JSON.parse(result.value);
+            if (Date.now() - stored.timestamp < 50 * 60 * 1000) return;
+        } catch (e) {
+            return;
+        }
         
         const url = `https://securetoken.googleapis.com/v1/token?key=${this.config.apiKey}`;
         const response = await fetch(url, {
@@ -189,26 +199,17 @@ const FirebaseREST = {
         });
         const data = await response.json();
         if (data.error) {
-            this.signOut();
+            await this.signOut();
             throw new Error('Session expired');
         }
         this.currentUser.token = data.id_token;
         this.currentUser.refreshToken = data.refresh_token;
-        this.storeUser(this.currentUser);
+        await this.storeUser(this.currentUser);
     }
 };
 
-// Initialize Firebase REST
-const statusBar = document.getElementById('firebase-status');
-function showStatus(msg, color) {
-    if (statusBar) {
-        statusBar.style.background = color;
-        statusBar.textContent = msg;
-    }
-    console.log(msg);
-}
-
-showStatus('✅ Firebase REST prêt!', '#4caf50');
+// Initialize Firebase REST - no status bar needed
+console.log('✅ Firebase REST ready!');
 
 const firebaseConfig = {
     apiKey: "AIzaSyD5l89evtb8svRKoTVICAVwA4JbpoXjJKQ",
@@ -220,25 +221,27 @@ const firebaseConfig = {
     measurementId: "G-JP9BNPQX0B"
 };
 
-FirebaseREST.init(firebaseConfig);
-
-// Make compatible with existing code
-window.firebaseAuth = FirebaseREST;
-window.firebaseDB = FirebaseREST;
-window.firebaseReady = true;
-window.firebaseModules = {
-    signInWithEmailAndPassword: (auth, email, password) => FirebaseREST.signIn(email, password),
-    createUserWithEmailAndPassword: (auth, email, password) => FirebaseREST.signUp(email, password),
-    signOut: (auth) => FirebaseREST.signOut(),
-    onAuthStateChanged: (auth, callback) => {
-        // Check on load
-        const user = FirebaseREST.getCurrentUser();
-        if (user) callback(user);
-        else callback(null);
-        
-        // Listen for changes
-        window._authCallback = callback;
-    },
+// Initialize Firebase (must be async now)
+(async () => {
+    await FirebaseREST.init(firebaseConfig);
+    
+    // Make compatible with existing code
+    window.firebaseAuth = FirebaseREST;
+    window.firebaseDB = FirebaseREST;
+    window.firebaseReady = true;
+    window.firebaseModules = {
+        signInWithEmailAndPassword: (auth, email, password) => FirebaseREST.signIn(email, password),
+        createUserWithEmailAndPassword: (auth, email, password) => FirebaseREST.signUp(email, password),
+        signOut: (auth) => FirebaseREST.signOut(),
+        onAuthStateChanged: (auth, callback) => {
+            // Check on load
+            const user = FirebaseREST.getCurrentUser();
+            if (user) callback(user);
+            else callback(null);
+            
+            // Listen for changes
+            window._authCallback = callback;
+        },
     doc: (db, collection, docId) => ({ collection, docId }),
     setDoc: (ref, data) => FirebaseREST.setDocument(ref.collection, ref.docId, data),
     getDoc: (ref) => FirebaseREST.getDocument(ref.collection, ref.docId).then(data => ({
@@ -246,11 +249,6 @@ window.firebaseModules = {
         data: () => data
     }))
 };
-
-// Hide status bar immediately
-setTimeout(() => {
-    if (statusBar) statusBar.style.display = 'none';
-}, 1000); // Just 1 second
 
 // Call initFirebaseAuth when ready
 if (window.initFirebaseAuth) {
@@ -263,6 +261,7 @@ if (window.initFirebaseAuth) {
         }
     }, 100);
 }
+})(); // Close async IIFE
     </script>
     
     <style>
@@ -8928,10 +8927,6 @@ if (window.initFirebaseAuth) {
     </script>
 
     <!-- Firebase Status Bar (visible on screen for mobile debugging) -->
-    <div id="firebase-status" style="position: fixed; top: 0; left: 0; right: 0; background: #ff9800; color: white; padding: 12px; text-align: center; z-index: 99999; font-weight: 600; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-        ⏳ Chargement de Firebase...
-    </div>
-
     <!-- Floating Quick Actions -->
     <div class="floating-actions" id="floating-actions">
         <button class="floating-btn-main" id="floating-main" aria-label="Quick actions">
