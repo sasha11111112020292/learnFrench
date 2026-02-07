@@ -8756,6 +8756,14 @@ const firebaseConfig = {
         // Load all data from Firebase
         async function loadDataFromFirebase(userId) {
             console.log('🔍 loadDataFromFirebase called for userId:', userId);
+            
+            // Wait for render functions to be defined
+            if (typeof renderWords === 'undefined') {
+                console.log('⏳ Render functions not ready yet, waiting...');
+                setTimeout(() => loadDataFromFirebase(userId), 100);
+                return;
+            }
+            
             const { doc, getDoc } = window.firebaseModules;
             
             try {
