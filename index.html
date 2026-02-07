@@ -10,104 +10,259 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- Firebase SDK -->
-    <script type="module">
-        console.log('🔄 Starting Firebase module load...');
+    <!-- Firebase REST API - No CDN needed! -->
+    <script>
+// Firebase REST API Implementation - Embedded directly in HTML
+const FirebaseREST = {
+    config: null,
+    currentUser: null,
+    
+    init: function(config) {
+        this.config = config;
+        this.currentUser = this.getStoredUser();
+        return this;
+    },
+    
+    signUp: async function(email, password) {
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.config.apiKey}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, returnSecureToken: true })
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error.message);
         
-        try {
-            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-            console.log('✅ Firebase app module loaded');
-            
-            const { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
-            console.log('✅ Firebase auth module loaded');
-            
-            const { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, query, where } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-            console.log('✅ Firebase firestore module loaded');
-
-            const firebaseConfig = {
-                apiKey: "AIzaSyD5l89evtb8svRKoTVICAVwA4JbpoXjJKQ",
-                authDomain: "ma-maison-french.firebaseapp.com",
-                projectId: "ma-maison-french",
-                storageBucket: "ma-maison-french.firebasestorage.app",
-                messagingSenderId: "319573050083",
-                appId: "1:319573050083:web:11ff8453f39cce3160fbd6",
-                measurementId: "G-JP9BNPQX0B"
-            };
-
-            console.log('🔧 Initializing Firebase app...');
-            console.log('📝 Project ID:', firebaseConfig.projectId);
-            
-            const app = initializeApp(firebaseConfig);
-            console.log('✅ Firebase app created');
-            
-            const auth = getAuth(app);
-            console.log('✅ Firebase auth initialized');
-            
-            const db = getFirestore(app);
-            console.log('✅ Firebase firestore initialized');ma-maison-french.firebaseapp.com",
-                projectId: "ma-maison-french",
-                storageBucket: "ma-maison-french.firebasestorage.app",
-                messagingSenderId: "319573050083",
-                appId: "1:319573050083:web:11ff8453f39cce3160fbd6",
-                measurementId: "G-JP9BNPQX0B"
-            };
-
-            console.log('🔧 Initializing Firebase app...');
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-            console.log('✅ Firebase initialized successfully');
-
-            // Make Firebase available globally
-            window.firebaseAuth = auth;
-            window.firebaseDB = db;
-            window.firebaseModules = {
-                signInWithEmailAndPassword,
-                createUserWithEmailAndPassword,
-                signOut,
-                onAuthStateChanged,
-                GoogleAuthProvider,
-                signInWithPopup,
-                collection,
-                doc,
-                setDoc,
-                getDoc,
-                getDocs,
-                deleteDoc,
-                onSnapshot,
-                query,
-                where
-            };
-            
-            // Signal that Firebase is ready
-            window.firebaseReady = true;
-            console.log('✅ Firebase loaded and ready!');
-            
-            // Trigger initialization immediately if function exists
-            if (window.initFirebaseAuth) {
-                console.log('🚀 Calling initFirebaseAuth immediately');
-                window.initFirebaseAuth();
-            } else {
-                // Otherwise wait for DOM and try again
-                console.log('⏳ Waiting for initFirebaseAuth function...');
-                const checkInit = setInterval(() => {
-                    if (window.initFirebaseAuth) {
-                        console.log('🚀 Found initFirebaseAuth, calling now');
-                        clearInterval(checkInit);
-                        window.initFirebaseAuth();
-                    }
-                }, 100);
-            }
-        } catch (error) {
-            console.error('❌ Firebase module load FAILED:', error);
-            console.error('Error details:', error.message);
-            console.error('Make sure you are running this file from a web server (http://), not as a file:// URL');
-            
-            // Display error to user
-            setTimeout(() => {
-                alert('⚠️ Firebase n\'a pas pu se charger.\n\nAssurez-vous que:\n1. Vous êtes connecté à Internet\n2. Vous ouvrez ce fichier depuis un serveur web (http://)\n   et non depuis le système de fichiers (file://)\n\nErreur: ' + error.message);
-            }, 1000);
+        this.currentUser = {
+            uid: data.localId,
+            email: data.email,
+            token: data.idToken,
+            refreshToken: data.refreshToken
+        };
+        this.storeUser(this.currentUser);
+        // Trigger auth callback
+        if (window._authCallback) window._authCallback(this.currentUser);
+        return this.currentUser;
+    },
+    
+    signIn: async function(email, password) {
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.config.apiKey}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, returnSecureToken: true })
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error.message);
+        
+        this.currentUser = {
+            uid: data.localId,
+            email: data.email,
+            token: data.idToken,
+            refreshToken: data.refreshToken
+        };
+        this.storeUser(this.currentUser);
+        // Trigger auth callback
+        if (window._authCallback) window._authCallback(this.currentUser);
+        return this.currentUser;
+    },
+    
+    signOut: function() {
+        this.currentUser = null;
+        localStorage.removeItem('firebase_user');
+        // Trigger auth callback
+        if (window._authCallback) window._authCallback(null);
+        return Promise.resolve();
+    },
+    
+    getCurrentUser: function() {
+        return this.currentUser;
+    },
+    
+    setDocument: async function(collection, docId, data) {
+        if (!this.currentUser) throw new Error('Not authenticated');
+        await this.refreshTokenIfNeeded();
+        
+        const url = `https://firestore.googleapis.com/v1/projects/${this.config.projectId}/databases/(default)/documents/${collection}/${docId}`;
+        const firestoreData = this.toFirestoreFormat(data);
+        
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.currentUser.token}`
+            },
+            body: JSON.stringify({ fields: firestoreData })
+        });
+        
+        const result = await response.json();
+        if (result.error) throw new Error(result.error.message);
+        return result;
+    },
+    
+    getDocument: async function(collection, docId) {
+        if (!this.currentUser) throw new Error('Not authenticated');
+        await this.refreshTokenIfNeeded();
+        
+        const url = `https://firestore.googleapis.com/v1/projects/${this.config.projectId}/databases/(default)/documents/${collection}/${docId}`;
+        const response = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${this.currentUser.token}` }
+        });
+        
+        const result = await response.json();
+        if (result.error) {
+            if (result.error.code === 404) return null;
+            throw new Error(result.error.message);
         }
+        return this.fromFirestoreFormat(result.fields);
+    },
+    
+    toFirestoreFormat: function(obj) {
+        const result = {};
+        for (const [key, value] of Object.entries(obj)) {
+            if (value === null) result[key] = { nullValue: null };
+            else if (typeof value === 'string') result[key] = { stringValue: value };
+            else if (typeof value === 'number') result[key] = { doubleValue: value };
+            else if (typeof value === 'boolean') result[key] = { booleanValue: value };
+            else if (Array.isArray(value)) {
+                result[key] = {
+                    arrayValue: {
+                        values: value.map(item => {
+                            if (typeof item === 'object') return { mapValue: { fields: this.toFirestoreFormat(item) } };
+                            if (typeof item === 'string') return { stringValue: item };
+                            if (typeof item === 'number') return { doubleValue: item };
+                            if (typeof item === 'boolean') return { booleanValue: item };
+                            return { stringValue: String(item) };
+                        })
+                    }
+                };
+            } else if (typeof value === 'object') result[key] = { mapValue: { fields: this.toFirestoreFormat(value) } };
+            else result[key] = { stringValue: String(value) };
+        }
+        return result;
+    },
+    
+    fromFirestoreFormat: function(fields) {
+        if (!fields) return null;
+        const result = {};
+        for (const [key, value] of Object.entries(fields)) {
+            if (value.stringValue !== undefined) result[key] = value.stringValue;
+            else if (value.doubleValue !== undefined) result[key] = value.doubleValue;
+            else if (value.integerValue !== undefined) result[key] = parseInt(value.integerValue);
+            else if (value.booleanValue !== undefined) result[key] = value.booleanValue;
+            else if (value.nullValue !== undefined) result[key] = null;
+            else if (value.arrayValue) {
+                result[key] = value.arrayValue.values ? value.arrayValue.values.map(item => {
+                    if (item.mapValue) return this.fromFirestoreFormat(item.mapValue.fields);
+                    if (item.stringValue !== undefined) return item.stringValue;
+                    if (item.doubleValue !== undefined) return item.doubleValue;
+                    if (item.booleanValue !== undefined) return item.booleanValue;
+                    return item;
+                }) : [];
+            } else if (value.mapValue) result[key] = this.fromFirestoreFormat(value.mapValue.fields);
+        }
+        return result;
+    },
+    
+    storeUser: function(user) {
+        localStorage.setItem('firebase_user', JSON.stringify({ ...user, timestamp: Date.now() }));
+    },
+    
+    getStoredUser: function() {
+        const stored = localStorage.getItem('firebase_user');
+        if (!stored) return null;
+        const user = JSON.parse(stored);
+        if (Date.now() - user.timestamp > 60 * 60 * 1000) return null;
+        return user;
+    },
+    
+    refreshTokenIfNeeded: async function() {
+        if (!this.currentUser) return;
+        const stored = JSON.parse(localStorage.getItem('firebase_user'));
+        if (!stored || Date.now() - stored.timestamp < 50 * 60 * 1000) return;
+        
+        const url = `https://securetoken.googleapis.com/v1/token?key=${this.config.apiKey}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ grant_type: 'refresh_token', refresh_token: this.currentUser.refreshToken })
+        });
+        const data = await response.json();
+        if (data.error) {
+            this.signOut();
+            throw new Error('Session expired');
+        }
+        this.currentUser.token = data.id_token;
+        this.currentUser.refreshToken = data.refresh_token;
+        this.storeUser(this.currentUser);
+    }
+};
+
+// Initialize Firebase REST
+const statusBar = document.getElementById('firebase-status');
+function showStatus(msg, color) {
+    if (statusBar) {
+        statusBar.style.background = color;
+        statusBar.textContent = msg;
+    }
+    console.log(msg);
+}
+
+showStatus('✅ Firebase REST prêt!', '#4caf50');
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD5l89evtb8svRKoTVICAVwA4JbpoXjJKQ",
+    authDomain: "ma-maison-french.firebaseapp.com",
+    projectId: "ma-maison-french",
+    storageBucket: "ma-maison-french.firebasestorage.app",
+    messagingSenderId: "319573050083",
+    appId: "1:319573050083:web:11ff8453f39cce3160fbd6",
+    measurementId: "G-JP9BNPQX0B"
+};
+
+FirebaseREST.init(firebaseConfig);
+
+// Make compatible with existing code
+window.firebaseAuth = FirebaseREST;
+window.firebaseDB = FirebaseREST;
+window.firebaseReady = true;
+window.firebaseModules = {
+    signInWithEmailAndPassword: (auth, email, password) => FirebaseREST.signIn(email, password),
+    createUserWithEmailAndPassword: (auth, email, password) => FirebaseREST.signUp(email, password),
+    signOut: (auth) => FirebaseREST.signOut(),
+    onAuthStateChanged: (auth, callback) => {
+        // Check on load
+        const user = FirebaseREST.getCurrentUser();
+        if (user) callback(user);
+        else callback(null);
+        
+        // Listen for changes
+        window._authCallback = callback;
+    },
+    doc: (db, collection, docId) => ({ collection, docId }),
+    setDoc: (ref, data) => FirebaseREST.setDocument(ref.collection, ref.docId, data),
+    getDoc: (ref) => FirebaseREST.getDocument(ref.collection, ref.docId).then(data => ({
+        exists: () => data !== null,
+        data: () => data
+    }))
+};
+
+// Hide status bar immediately
+setTimeout(() => {
+    if (statusBar) statusBar.style.display = 'none';
+}, 1000); // Just 1 second
+
+// Call initFirebaseAuth when ready
+if (window.initFirebaseAuth) {
+    window.initFirebaseAuth();
+} else {
+    const checkInit = setInterval(() => {
+        if (window.initFirebaseAuth) {
+            clearInterval(checkInit);
+            window.initFirebaseAuth();
+        }
+    }, 100);
+}
     </script>
     
     <style>
@@ -8769,36 +8924,13 @@
 
         // Initialize Firebase Auth (Firebase module will call this when ready)
         console.log('📋 initFirebaseAuth function defined and ready');
-        
-        // Function to try initializing with retries
-        function tryInitFirebase() {
-            console.log('🔍 Checking Firebase status...');
-            console.log('  firebaseReady:', window.firebaseReady);
-            console.log('  firebaseAuth:', !!window.firebaseAuth);
-            console.log('  firebaseDB:', !!window.firebaseDB);
-            
-            if (window.firebaseReady && window.firebaseAuth && window.firebaseDB) {
-                console.log('✅ Firebase is ready! Calling initFirebaseAuth...');
-                window.initFirebaseAuth();
-            } else {
-                console.log('⏳ Firebase not ready yet, retrying in 100ms...');
-                setTimeout(tryInitFirebase, 100);
-            }
-        }
-        
-        // Make sure to call initFirebaseAuth when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                console.log('📄 DOM loaded, starting Firebase check...');
-                tryInitFirebase();
-            });
-        } else {
-            // DOM already loaded
-            console.log('📄 DOM already loaded, starting Firebase check...');
-            tryInitFirebase();
-        }
 
     </script>
+
+    <!-- Firebase Status Bar (visible on screen for mobile debugging) -->
+    <div id="firebase-status" style="position: fixed; top: 0; left: 0; right: 0; background: #ff9800; color: white; padding: 12px; text-align: center; z-index: 99999; font-weight: 600; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+        ⏳ Chargement de Firebase...
+    </div>
 
     <!-- Floating Quick Actions -->
     <div class="floating-actions" id="floating-actions">
