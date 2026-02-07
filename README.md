@@ -8611,7 +8611,7 @@ const firebaseConfig = {
             const { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } = window.firebaseModules;
             
             // Listen for auth state changes
-            onAuthStateChanged(window.firebaseAuth, (user) => {
+            onAuthStateChanged(window.firebaseAuth, async (user) => {
                 console.log('👤 Auth state changed:', user ? user.email : 'Not logged in');
                 
                 if (user) {
@@ -8628,7 +8628,8 @@ const firebaseConfig = {
                     closeModal('auth-modal');
                     
                     // Load data from Firestore
-                    loadDataFromFirebase(user.uid);
+                    console.log('📥 Loading data for user:', user.uid);
+                    await loadDataFromFirebase(user.uid);
                     
                     // Setup real-time sync
                     setupRealtimeSync(user.uid);
