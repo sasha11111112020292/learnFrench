@@ -1346,6 +1346,12 @@ const firebaseConfig = {
         .icon-btn.favorite-active:hover {
             transform: scale(1.1);
         }
+        
+        /* Elegant icon buttons in reading passage header */
+        .reading-passage-header .icon-btn:hover {
+            opacity: 1 !important;
+            background: rgba(190, 31, 46, 0.08);
+        }
 
         .word-image {
             width: 100%;
@@ -4002,159 +4008,7 @@ const firebaseConfig = {
                 height: 18px;
             }
         }
-    
-        /* Interactive Text Detail with Copy and Edit */
-        .interactive-text-detail {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 3rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px var(--shadow-soft);
-        }
-
-        .interactive-text-detail-header {
-            margin-bottom: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-        }
-
-        .interactive-text-detail-title {
-            font-size: 2.5rem;
-            color: var(--burgundy);
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .interactive-text-actions {
-            display: flex;
-            gap: 0.8rem;
-            margin-left: 1rem;
-            flex-shrink: 0;
-        }
-
-        .copy-btn, .edit-btn {
-            padding: 0.6rem 0.8rem;
-            background-color: var(--sage);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .copy-btn:hover {
-            background-color: var(--sage-light);
-            transform: translateY(-2px);
-        }
-
-        .edit-btn {
-            background-color: var(--burgundy);
-        }
-
-        .edit-btn:hover {
-            background-color: var(--burgundy-dark);
-            transform: translateY(-2px);
-        }
-
-        .copy-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
-        .interactive-text-content {
-            font-size: 1.1rem;
-            line-height: 1.9;
-            color: var(--text);
-            white-space: pre-wrap;
-        }
-
-        .interactive-text-content.editable {
-            border: 2px dashed var(--sage);
-            padding: 1.5rem;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .interactive-text-content.editable:focus {
-            border-color: var(--burgundy);
-            background-color: #fffef8;
-        }
-
-        .save-cancel-buttons {
-            display: none;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .save-cancel-buttons.active {
-            display: flex;
-        }
-
-        .save-btn, .cancel-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .save-btn {
-            background-color: var(--crimson);
-            color: white;
-        }
-
-        .save-btn:hover {
-            background-color: var(--crimson-hover);
-        }
-
-        .cancel-btn {
-            background-color: var(--cream-dark);
-            color: var(--text);
-        }
-
-        .cancel-btn:hover {
-            background-color: var(--cream);
-        }
-
-        /* Link to Interactive Text Button - appears on article pages */
-        .link-to-interactive {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background-color: var(--gold);
-            color: white;
-            padding: 0.7rem 1.3rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            margin: 1.5rem 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(184, 152, 74, 0.3);
-        }
-
-        .link-to-interactive:hover {
-            background-color: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(184, 152, 74, 0.4);
-        }
-
-        .link-to-interactive svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-</style>
+    </style>
 </head>
 <body>
     <!-- Animation Container for SVG effects -->
@@ -8473,10 +8327,28 @@ Ils seront préservés lors de l'affichage !"></textarea>
             // Sort by most recent first
             const sortedReadingList = [...readingList].sort((a, b) => b.id - a.id);
 
-            grid.innerHTML = sortedReadingList.map(item => `
+            grid.innerHTML = sortedReadingList.map(item => {
+                // Check if there's a linked interactive text
+                const linkedPassage = readingPassages.find(p => p.linkedReadingId === item.id);
+                
+                return `
                 <div class="resource-card">
                     <div class="resource-info">
-                        <div class="resource-type">${item.type}</div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                            <div class="resource-type">${item.type}</div>
+                            ${linkedPassage ? `
+                                <button onclick="viewLinkedPassage(${item.id})" 
+                                    style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.6rem; background: var(--crimson); color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: all 0.2s;"
+                                    onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 2px 8px rgba(190, 31, 46, 0.3)';"
+                                    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';"
+                                    title="Voir le texte interactif">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
+                                        <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                    </svg>
+                                    Texte interactif
+                                </button>
+                            ` : ''}
+                        </div>
                         <div class="resource-title">${item.title}</div>
                         ${item.link ? `<a href="${item.link}" class="resource-link" target="_blank" rel="noopener noreferrer">${item.link}</a>` : ''}
                         ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
@@ -8500,7 +8372,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         window.createInteractiveTextFromReading = function(readingId) {
@@ -8908,22 +8781,41 @@ Ils seront préservés lors de l'affichage !"></textarea>
             e.preventDefault();
             
             const linkedReadingId = document.getElementById('passage-linked-reading').value;
+            const modal = document.getElementById('add-passage-modal');
+            const editingId = modal.dataset.editingId;
             
-            const passage = {
-                id: Date.now(),
-                title: document.getElementById('passage-title').value.trim(),
-                source: document.getElementById('passage-source').value.trim(),
-                text: document.getElementById('passage-text').value.trim(),
-                linkedReadingId: linkedReadingId ? parseInt(linkedReadingId) : null,
-                created: new Date().toISOString(),
-                unknownWords: []
-            };
-            
-            readingPassages.push(passage);
-            syncToFirebase();
-            
-            // Log reading action
-            logAction(ACTION_TYPES.READING);
+            if (editingId) {
+                // EDIT existing passage
+                const passage = readingPassages.find(p => p.id === parseInt(editingId));
+                if (passage) {
+                    passage.title = document.getElementById('passage-title').value.trim();
+                    passage.source = document.getElementById('passage-source').value.trim();
+                    passage.text = document.getElementById('passage-text').value.trim();
+                    passage.linkedReadingId = linkedReadingId ? parseInt(linkedReadingId) : null;
+                    
+                    syncToFirebase();
+                    showToast('✓ Texte modifié avec succès !');
+                }
+                // Clear editing mode
+                delete modal.dataset.editingId;
+            } else {
+                // CREATE new passage
+                const passage = {
+                    id: Date.now(),
+                    title: document.getElementById('passage-title').value.trim(),
+                    source: document.getElementById('passage-source').value.trim(),
+                    text: document.getElementById('passage-text').value.trim(),
+                    linkedReadingId: linkedReadingId ? parseInt(linkedReadingId) : null,
+                    created: new Date().toISOString(),
+                    unknownWords: []
+                };
+                
+                readingPassages.push(passage);
+                syncToFirebase();
+                
+                // Log reading action
+                logAction(ACTION_TYPES.READING);
+            }
             
             document.getElementById('add-passage-form').reset();
             closeModal('add-passage-modal');
@@ -8972,36 +8864,67 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 return `
                     <div class="reading-passage-card" id="passage-card-${passage.id}">
                         <div class="reading-passage-header">
-                            <div>
-                                <div class="reading-passage-title">${passage.title}</div>
-                                ${passage.source ? `<div class="reading-passage-meta">Source: ${passage.source}</div>` : ''}
-                                ${passage.linkedReadingId ? `<div class="reading-passage-meta" style="color: var(--crimson);">
-                                    📚 Lié à: ${getLinkedReadingTitle(passage.linkedReadingId)}
-                                    <button onclick="viewLinkedReading(${passage.linkedReadingId})" style="margin-left: 0.5rem; font-size: 0.85em; padding: 0.2rem 0.5rem; background: var(--crimson); color: white; border: none; border-radius: 4px; cursor: pointer;">Voir</button>
-                                </div>` : ''}
-                                <div class="reading-passage-meta">${new Date(passage.created).toLocaleDateString('fr-FR', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                })}</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                    <div class="reading-passage-title">${passage.title}</div>
+                                    <div style="display: flex; gap: 0.3rem;">
+                                        <button class="icon-btn" onclick="copyPassageText(${passage.id})" title="Copier le texte" style="opacity: 0.5; transition: opacity 0.2s;">
+                                            <svg class="svg-icon" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+                                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="icon-btn" onclick="editPassage(${passage.id})" title="Éditer" style="opacity: 0.5; transition: opacity 0.2s;">
+                                            <svg class="svg-icon" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+                                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="icon-btn" onclick="deletePassage(${passage.id})" title="Supprimer" style="opacity: 0.5; transition: opacity 0.2s;">
+                                            <svg class="svg-icon" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+                                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                                    ${passage.source ? `<div class="reading-passage-meta" style="font-style: italic; color: var(--text-soft);">${passage.source}</div>` : ''}
+                                    ${passage.linkedReadingId ? `
+                                        <button onclick="viewLinkedReading(${passage.linkedReadingId})" 
+                                            style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.7rem; background: var(--crimson); color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s;"
+                                            onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 2px 8px rgba(190, 31, 46, 0.3)';"
+                                            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;">
+                                                <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+                                            </svg>
+                                            ${getLinkedReadingTitle(passage.linkedReadingId)}
+                                        </button>
+                                    ` : ''}
+                                    <div class="reading-passage-meta" style="color: var(--text-soft); font-size: 0.85rem;">${new Date(passage.created).toLocaleDateString('fr-FR', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}</div>
+                                </div>
                             </div>
-                            <div style="display: flex; gap: 1.5rem; align-items: start;">
-                                <div class="reading-passage-stats">
-                                    <div class="reading-stat">
-                                        <div class="reading-stat-value">${totalWords}</div>
-                                        <div class="reading-stat-label">Mots</div>
+                            <div style="display: flex; gap: 2rem; align-items: center;">
+                                <div style="display: flex; gap: 1.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, rgba(26, 35, 64, 0.03) 0%, rgba(190, 31, 46, 0.03) 100%); border-radius: 12px; border: 1px solid rgba(26, 35, 64, 0.08);">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.5rem; font-weight: 600; font-family: 'Cormorant Garamond', serif; color: var(--navy);">${totalWords}</div>
+                                        <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-soft); margin-top: 2px;">mots</div>
                                     </div>
-                                    <div class="reading-stat">
-                                        <div class="reading-stat-value" style="color: #4CAF50;">${wordsInVocab}</div>
-                                        <div class="reading-stat-label">Vocabulaire</div>
+                                    <div style="width: 1px; background: rgba(26, 35, 64, 0.1);"></div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.5rem; font-weight: 600; font-family: 'Cormorant Garamond', serif; color: #4CAF50;">${wordsInVocab}</div>
+                                        <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-soft); margin-top: 2px;">jardin</div>
                                     </div>
-                                    <div class="reading-stat">
-                                        <div class="reading-stat-value" style="color: #FFD700;">${unknownCount}</div>
-                                        <div class="reading-stat-label">Inconnus</div>
+                                    <div style="width: 1px; background: rgba(26, 35, 64, 0.1);"></div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.5rem; font-weight: 600; font-family: 'Cormorant Garamond', serif; color: #FFB74D;">${unknownCount}</div>
+                                        <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-soft); margin-top: 2px;">inconnus</div>
                                     </div>
-                                    <div class="reading-stat">
-                                        <div class="reading-stat-value">${knownPercent}%</div>
-                                        <div class="reading-stat-label">Compris</div>
+                                    <div style="width: 1px; background: rgba(26, 35, 64, 0.1);"></div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.5rem; font-weight: 600; font-family: 'Cormorant Garamond', serif; color: var(--crimson);">${knownPercent}<span style="font-size: 0.9rem;">%</span></div>
+                                        <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-soft); margin-top: 2px;">compris</div>
                                     </div>
                                 </div>
                                 <button class="btn btn-secondary" onclick="togglePassageExpansion(${passage.id})" style="padding: 0.5rem 1rem; white-space: nowrap;">
@@ -9026,17 +8949,11 @@ Ils seront préservés lors de l'affichage !"></textarea>
                             </div>
                             
                             <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                                <button class="btn btn-primary" onclick="toggleMultiWordSelection(${passage.id})" style="flex: 1; min-width: 200px;">
+                                <button class="btn btn-primary" onclick="toggleMultiWordSelection(${passage.id})" style="flex: 1;">
                                     <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
                                         <path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/>
                                     </svg>
                                     Rechercher une expression
-                                </button>
-                                <button class="btn btn-secondary" onclick="deletePassage(${passage.id})" style="flex: 1; min-width: 150px;">
-                                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                    </svg>
-                                    Supprimer
                                 </button>
                             </div>
                         </div>
@@ -9370,6 +9287,30 @@ Ils seront préservés lors de l'affichage !"></textarea>
             }, 500);
         };
         
+        // View interactive text linked to a reading list item
+        window.viewLinkedPassage = function(readingId) {
+            const linkedPassage = readingPassages.find(p => p.linkedReadingId === readingId);
+            if (!linkedPassage) {
+                showToast('Aucun texte interactif lié à cet élément');
+                return;
+            }
+            
+            // Scroll to the passage
+            document.getElementById('lire').scrollIntoView({ behavior: 'smooth' });
+            
+            setTimeout(() => {
+                const passageCard = document.getElementById(`passage-card-${linkedPassage.id}`);
+                if (passageCard) {
+                    passageCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Highlight it briefly
+                    passageCard.style.boxShadow = '0 0 0 3px var(--crimson)';
+                    setTimeout(() => {
+                        passageCard.style.boxShadow = '';
+                    }, 2000);
+                }
+            }, 500);
+        };
+        
         // Populate linked reading dropdown when modal opens
         function populateLinkedReadingDropdown() {
             const select = document.getElementById('passage-linked-reading');
@@ -9419,6 +9360,37 @@ Ils seront préservés lors de l'affichage !"></textarea>
             readingPassages = readingPassages.filter(p => p.id !== passageId);
             syncToFirebase();
             renderReadingPassages();
+        };
+        
+        // Copy passage text to clipboard
+        window.copyPassageText = function(passageId) {
+            const passage = readingPassages.find(p => p.id === passageId);
+            if (!passage) return;
+            
+            navigator.clipboard.writeText(passage.text).then(() => {
+                showToast('✓ Texte copié dans le presse-papier !');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                showToast('❌ Erreur lors de la copie');
+            });
+        };
+        
+        // Edit passage
+        window.editPassage = function(passageId) {
+            const passage = readingPassages.find(p => p.id === passageId);
+            if (!passage) return;
+            
+            // Pre-fill the form with existing data
+            document.getElementById('passage-title').value = passage.title;
+            document.getElementById('passage-source').value = passage.source || '';
+            document.getElementById('passage-text').value = passage.text;
+            document.getElementById('passage-linked-reading').value = passage.linkedReadingId || '';
+            
+            // Store the passage ID for updating
+            document.getElementById('add-passage-modal').dataset.editingId = passageId;
+            
+            // Open modal
+            openModal('add-passage-modal');
         };
 
         // ============================================
@@ -12239,109 +12211,4 @@ Ils seront préservés lors de l'affichage !"></textarea>
     </div>
 
 </body>
-</html>        // Populate linked text select in article form
-        function populateLinkedTextSelect(texts) {
-            const select = document.getElementById('article-linked-text');
-            select.innerHTML = '<option value="">Aucun</option>';
-            
-            texts.forEach((text, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = text.title;
-                select.appendChild(option);
-            });
-        }
-
-                // Show interactive text detail
-        async function showInteractiveTextDetail(index) {
-            const user = db.getCurrentUser();
-            if (!user) return;
-            
-            const textsData = await db.getDocument('users', `${user.uid}_texts`);
-            const text = textsData.texts[index];
-            currentInteractiveTextId = index;
-            
-            document.getElementById('interactive-text-title').textContent = text.title;
-            document.getElementById('interactive-text-content').textContent = text.content;
-            originalTextContent = text.content;
-            
-            // Reset edit mode
-            isEditMode = false;
-            document.getElementById('interactive-text-content').contentEditable = 'false';
-            document.getElementById('interactive-text-content').classList.remove('editable');
-            document.getElementById('edit-btn-text').textContent = 'Éditer';
-            document.getElementById('save-cancel-buttons').classList.remove('active');
-            
-            showSection('interactive-text-detail-section');
-        }
-
-        // Copy interactive text to clipboard
-        function copyInteractiveText() {
-            const content = document.getElementById('interactive-text-content').textContent;
-            navigator.clipboard.writeText(content).then(() => {
-                showToast('Texte copié dans le presse-papier !');
-            }).catch(err => {
-                console.error('Copy failed:', err);
-                showToast('Erreur lors de la copie');
-            });
-        }
-
-        // Toggle edit mode for interactive text
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
-            const contentEl = document.getElementById('interactive-text-content');
-            const editBtnText = document.getElementById('edit-btn-text');
-            const saveCancelBtns = document.getElementById('save-cancel-buttons');
-            
-            if (isEditMode) {
-                contentEl.contentEditable = 'true';
-                contentEl.classList.add('editable');
-                contentEl.focus();
-                editBtnText.textContent = 'Annuler';
-                saveCancelBtns.classList.add('active');
-            } else {
-                contentEl.contentEditable = 'false';
-                contentEl.classList.remove('editable');
-                contentEl.textContent = originalTextContent;
-                editBtnText.textContent = 'Éditer';
-                saveCancelBtns.classList.remove('active');
-            }
-        }
-
-        // Save edited interactive text
-        async function saveInteractiveText() {
-            try {
-                const user = db.getCurrentUser();
-                if (!user) return;
-                
-                const newContent = document.getElementById('interactive-text-content').textContent;
-                
-                const textsData = await db.getDocument('users', `${user.uid}_texts`);
-                textsData.texts[currentInteractiveTextId].content = newContent;
-                
-                await db.setDocument('users', `${user.uid}_texts`, textsData);
-                
-                originalTextContent = newContent;
-                isEditMode = false;
-                
-                document.getElementById('interactive-text-content').contentEditable = 'false';
-                document.getElementById('interactive-text-content').classList.remove('editable');
-                document.getElementById('edit-btn-text').textContent = 'Éditer';
-                document.getElementById('save-cancel-buttons').classList.remove('active');
-                
-                showToast('Texte sauvegardé avec succès !');
-                
-                // Reload the texts list
-                displayInteractiveTexts(textsData.texts);
-            } catch (error) {
-                console.error('Error saving text:', error);
-                showToast('Erreur lors de la sauvegarde');
-            }
-        }
-
-        // Cancel edit
-        function cancelEdit() {
-            toggleEditMode();
-        }
-
-        
+</html>
