@@ -4002,7 +4002,159 @@ const firebaseConfig = {
                 height: 18px;
             }
         }
-    </style>
+    
+        /* Interactive Text Detail with Copy and Edit */
+        .interactive-text-detail {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-soft);
+        }
+
+        .interactive-text-detail-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .interactive-text-detail-title {
+            font-size: 2.5rem;
+            color: var(--burgundy);
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .interactive-text-actions {
+            display: flex;
+            gap: 0.8rem;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+
+        .copy-btn, .edit-btn {
+            padding: 0.6rem 0.8rem;
+            background-color: var(--sage);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--sage-light);
+            transform: translateY(-2px);
+        }
+
+        .edit-btn {
+            background-color: var(--burgundy);
+        }
+
+        .edit-btn:hover {
+            background-color: var(--burgundy-dark);
+            transform: translateY(-2px);
+        }
+
+        .copy-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .interactive-text-content {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+
+        .interactive-text-content.editable {
+            border: 2px dashed var(--sage);
+            padding: 1.5rem;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .interactive-text-content.editable:focus {
+            border-color: var(--burgundy);
+            background-color: #fffef8;
+        }
+
+        .save-cancel-buttons {
+            display: none;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .save-cancel-buttons.active {
+            display: flex;
+        }
+
+        .save-btn, .cancel-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background-color: var(--crimson);
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: var(--crimson-hover);
+        }
+
+        .cancel-btn {
+            background-color: var(--cream-dark);
+            color: var(--text);
+        }
+
+        .cancel-btn:hover {
+            background-color: var(--cream);
+        }
+
+        /* Link to Interactive Text Button - appears on article pages */
+        .link-to-interactive {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--gold);
+            color: white;
+            padding: 0.7rem 1.3rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(184, 152, 74, 0.3);
+        }
+
+        .link-to-interactive:hover {
+            background-color: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(184, 152, 74, 0.4);
+        }
+
+        .link-to-interactive svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+</style>
 </head>
 <body>
     <!-- Animation Container for SVG effects -->
@@ -12087,4 +12239,109 @@ Ils seront préservés lors de l'affichage !"></textarea>
     </div>
 
 </body>
-</html>
+</html>        // Populate linked text select in article form
+        function populateLinkedTextSelect(texts) {
+            const select = document.getElementById('article-linked-text');
+            select.innerHTML = '<option value="">Aucun</option>';
+            
+            texts.forEach((text, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = text.title;
+                select.appendChild(option);
+            });
+        }
+
+                // Show interactive text detail
+        async function showInteractiveTextDetail(index) {
+            const user = db.getCurrentUser();
+            if (!user) return;
+            
+            const textsData = await db.getDocument('users', `${user.uid}_texts`);
+            const text = textsData.texts[index];
+            currentInteractiveTextId = index;
+            
+            document.getElementById('interactive-text-title').textContent = text.title;
+            document.getElementById('interactive-text-content').textContent = text.content;
+            originalTextContent = text.content;
+            
+            // Reset edit mode
+            isEditMode = false;
+            document.getElementById('interactive-text-content').contentEditable = 'false';
+            document.getElementById('interactive-text-content').classList.remove('editable');
+            document.getElementById('edit-btn-text').textContent = 'Éditer';
+            document.getElementById('save-cancel-buttons').classList.remove('active');
+            
+            showSection('interactive-text-detail-section');
+        }
+
+        // Copy interactive text to clipboard
+        function copyInteractiveText() {
+            const content = document.getElementById('interactive-text-content').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showToast('Texte copié dans le presse-papier !');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                showToast('Erreur lors de la copie');
+            });
+        }
+
+        // Toggle edit mode for interactive text
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const contentEl = document.getElementById('interactive-text-content');
+            const editBtnText = document.getElementById('edit-btn-text');
+            const saveCancelBtns = document.getElementById('save-cancel-buttons');
+            
+            if (isEditMode) {
+                contentEl.contentEditable = 'true';
+                contentEl.classList.add('editable');
+                contentEl.focus();
+                editBtnText.textContent = 'Annuler';
+                saveCancelBtns.classList.add('active');
+            } else {
+                contentEl.contentEditable = 'false';
+                contentEl.classList.remove('editable');
+                contentEl.textContent = originalTextContent;
+                editBtnText.textContent = 'Éditer';
+                saveCancelBtns.classList.remove('active');
+            }
+        }
+
+        // Save edited interactive text
+        async function saveInteractiveText() {
+            try {
+                const user = db.getCurrentUser();
+                if (!user) return;
+                
+                const newContent = document.getElementById('interactive-text-content').textContent;
+                
+                const textsData = await db.getDocument('users', `${user.uid}_texts`);
+                textsData.texts[currentInteractiveTextId].content = newContent;
+                
+                await db.setDocument('users', `${user.uid}_texts`, textsData);
+                
+                originalTextContent = newContent;
+                isEditMode = false;
+                
+                document.getElementById('interactive-text-content').contentEditable = 'false';
+                document.getElementById('interactive-text-content').classList.remove('editable');
+                document.getElementById('edit-btn-text').textContent = 'Éditer';
+                document.getElementById('save-cancel-buttons').classList.remove('active');
+                
+                showToast('Texte sauvegardé avec succès !');
+                
+                // Reload the texts list
+                displayInteractiveTexts(textsData.texts);
+            } catch (error) {
+                console.error('Error saving text:', error);
+                showToast('Erreur lors de la sauvegarde');
+            }
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            toggleEditMode();
+        }
+
+        
