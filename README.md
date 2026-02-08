@@ -8700,12 +8700,15 @@ const firebaseConfig = {
                     currentUser = user;
                     
                     // Show entrance user profile
-                    document.getElementById('entrance-user-profile').style.display = 'block';
-                    document.getElementById('entrance-user-email').textContent = user.email;
-                    document.getElementById('entrance-user-avatar').textContent = user.email[0].toUpperCase();
+                    const userProfile = document.getElementById('entrance-user-profile');
+                    const userEmail = document.getElementById('entrance-user-email');
+                    const userAvatar = document.getElementById('entrance-user-avatar');
+                    const loginSection = document.getElementById('entrance-login-section');
                     
-                    // Hide entrance login section
-                    document.getElementById('entrance-login-section').style.display = 'none';
+                    if (userProfile) userProfile.style.display = 'block';
+                    if (userEmail) userEmail.textContent = user.email;
+                    if (userAvatar) userAvatar.textContent = user.email[0].toUpperCase();
+                    if (loginSection) loginSection.style.display = 'none';
                     
                     closeModal('auth-modal');
                     
@@ -8719,10 +8722,11 @@ const firebaseConfig = {
                     currentUser = null;
                     
                     // Hide entrance user profile
-                    document.getElementById('entrance-user-profile').style.display = 'none';
+                    const userProfile = document.getElementById('entrance-user-profile');
+                    const loginSection = document.getElementById('entrance-login-section');
                     
-                    // Show entrance login section
-                    document.getElementById('entrance-login-section').style.display = 'block';
+                    if (userProfile) userProfile.style.display = 'none';
+                    if (loginSection) loginSection.style.display = 'block';
                     
                     // Show login modal when not authenticated
                     setTimeout(() => {
@@ -8733,7 +8737,9 @@ const firebaseConfig = {
             });
             
             // Login form
-            document.getElementById('login-form').addEventListener('submit', async (e) => {
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
@@ -8768,9 +8774,12 @@ const firebaseConfig = {
                     alert(errorMsg);
                 }
             });
+            }
             
             // Signup form
-            document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            const signupForm = document.getElementById('signup-form');
+            if (signupForm) {
+                signupForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('signup-email').value;
                 const password = document.getElementById('signup-password').value;
@@ -8803,9 +8812,12 @@ const firebaseConfig = {
                     alert(errorMsg);
                 }
             });
+            }
             
             // Google sign in
-            document.getElementById('google-signin-btn').addEventListener('click', async () => {
+            const googleSigninBtn = document.getElementById('google-signin-btn');
+            if (googleSigninBtn) {
+                googleSigninBtn.addEventListener('click', async () => {
                 const provider = new GoogleAuthProvider();
                 try {
                     await signInWithPopup(window.firebaseAuth, provider);
@@ -8813,26 +8825,36 @@ const firebaseConfig = {
                     alert('Erreur: ' + error.message);
                 }
             });
+            }
             
             // Logout handler
-            document.getElementById('entrance-logout-btn').addEventListener('click', async () => {
+            const logoutBtn = document.getElementById('entrance-logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
                 await signOut(window.firebaseAuth);
             });
+            }
             
             // Toggle between login/signup
-            document.getElementById('show-signup').addEventListener('click', (e) => {
+            const showSignupBtn = document.getElementById('show-signup');
+            if (showSignupBtn) {
+                showSignupBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 document.getElementById('auth-login-view').style.display = 'none';
                 document.getElementById('auth-signup-view').style.display = 'block';
                 document.getElementById('auth-modal-title').textContent = 'Créer un compte';
             });
+            }
             
-            document.getElementById('show-login').addEventListener('click', (e) => {
+            const showLoginBtn = document.getElementById('show-login');
+            if (showLoginBtn) {
+                showLoginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 document.getElementById('auth-signup-view').style.display = 'none';
                 document.getElementById('auth-login-view').style.display = 'block';
                 document.getElementById('auth-modal-title').textContent = 'Connexion';
             });
+            }
         }
         
         // Load all data from Firebase
