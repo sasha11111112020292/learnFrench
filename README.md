@@ -480,12 +480,7 @@ const firebaseConfig = {
         }
 
         /* Floating Hearts */
-        .floating-heart {
-            position: absolute;
-            bottom: -50px;
-            animation: floatUp 4s ease-in-out forwards;
-            opacity: 0;
-        }
+        /* Removed floating heart animation styles - no longer needed */
         body.dark-mode .btn-primary {
             background: linear-gradient(135deg, #d4746f 0%, #b85d5d 100%);
             border-color: transparent;
@@ -846,9 +841,14 @@ const firebaseConfig = {
             color: var(--text-soft);
         }
 
-        /* Floating Heart */
-        .floating-heart {
-            display: none; /* Now incorporated into floating button */
+        /* Floating Heart Button - HIDDEN (not needed) */
+        #floating-heart {
+            display: none !important;
+        }
+        
+        /* Animated floating hearts - DISABLED */
+        .floating-heart:not(#floating-heart) {
+            display: none;
         }
 
         /* Dark Mode Toggle Button */
@@ -918,17 +918,14 @@ const firebaseConfig = {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             filter: drop-shadow(0 4px 20px rgba(166, 66, 83, 0.4));
+            outline: none !important;
         }
         
-        .floating-btn-main::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: #A64253;
-            clip-path: path('M35,65 C15,52 3,42 3,27 C3,15 11,7 20,7 C26,7 31,10 35,15 C39,10 44,7 50,7 C59,7 67,15 67,27 C67,42 55,52 35,65Z');
-            z-index: -1;
+        .floating-btn-main:focus {
+            outline: none !important;
         }
+        
+        /* REMOVED - No more square background or ::before pseudo-element */
 
         .floating-btn-main:hover {
             transform: scale(1.1);
@@ -936,9 +933,8 @@ const firebaseConfig = {
         }
 
         .floating-btn-main svg {
-            width: 24px;
-            height: 24px;
-            stroke: white;
+            width: 50px;
+            height: 50px;
             position: absolute;
             transition: all 0.3s ease;
         }
@@ -946,6 +942,9 @@ const firebaseConfig = {
         .floating-btn-main .close-icon {
             opacity: 0;
             transform: rotate(-90deg);
+            stroke: #A64253;
+            width: 30px;
+            height: 30px;
         }
 
         .floating-actions.active .floating-btn-main .plus-icon {
@@ -992,6 +991,11 @@ const firebaseConfig = {
             font-family: 'Work Sans', sans-serif;
             font-size: 0.9rem;
             color: var(--navy);
+            outline: none !important;
+        }
+        
+        .floating-btn-action:focus {
+            outline: none !important;
         }
 
         .floating-btn-action:hover {
@@ -1009,16 +1013,16 @@ const firebaseConfig = {
         }
 
         body.dark-mode .floating-btn-main {
-            background: var(--gold);
-            box-shadow: 0 4px 20px rgba(244, 213, 141, 0.4);
+            background: transparent;
+            box-shadow: none;
         }
 
         body.dark-mode .floating-btn-main:hover {
-            box-shadow: 0 6px 28px rgba(244, 213, 141, 0.6);
+            box-shadow: none;
         }
 
         body.dark-mode .floating-btn-main svg {
-            stroke: var(--navy);
+            /* Heart stays the same burgundy color in dark mode */
         }
 
         body.dark-mode .floating-btn-action {
@@ -1961,6 +1965,14 @@ const firebaseConfig = {
             background: var(--gold-pale);
             border-bottom-color: var(--gold);
             color: var(--navy);
+        }
+        
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        #transcript-chevron {
+            transition: transform 0.3s ease;
         }
 
         body.dark-mode .clickable-word:hover {
@@ -4761,8 +4773,8 @@ const firebaseConfig = {
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">🌍 Traduction anglaise (automatique)</label>
-                    <textarea class="form-textarea" id="reading-transcript-translation" rows="8" placeholder="La traduction apparaîtra ici..." readonly style="background: var(--cream-dark);"></textarea>
+                    <label class="form-label">🌍 Traduction anglaise (éditable)</label>
+                    <textarea class="form-textarea" id="reading-transcript-translation" rows="8" placeholder="Traduction automatique ou manuelle..." style="background: var(--cream-light);"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -4809,8 +4821,16 @@ const firebaseConfig = {
                 
                 <!-- Display Area with Clickable Words -->
                 <div class="form-group" id="listening-clickable-transcript-area" style="display: none;">
-                    <label class="form-label">✨ Clique sur les mots pour chercher dans les dictionnaires</label>
-                    <div id="listening-clickable-transcript" style="background: var(--cream-dark); padding: 1.5rem; border-radius: 12px; line-height: 1.8; font-size: 1.1rem; max-height: 400px; overflow-y: auto; cursor: text; user-select: text;"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label class="form-label" style="margin: 0;">✨ Clique sur les mots pour chercher</label>
+                        <button type="button" id="toggle-transcript-btn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="transcript-chevron">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                            <span id="transcript-toggle-text">Replier</span>
+                        </button>
+                    </div>
+                    <div id="listening-clickable-transcript" style="background: var(--cream-dark); padding: 1.5rem; border-radius: 12px; line-height: 1.8; font-size: 1.1rem; max-height: 400px; overflow-y: auto; cursor: text; user-select: text; transition: max-height 0.3s ease, padding 0.3s ease;"></div>
                 </div>
 
                 <div style="text-align: center; margin: 1rem 0;">
@@ -4823,8 +4843,8 @@ const firebaseConfig = {
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">🌍 Traduction anglaise (automatique)</label>
-                    <textarea class="form-textarea" id="listening-transcript-translation" rows="8" placeholder="La traduction apparaîtra ici..." readonly style="background: var(--cream-dark);"></textarea>
+                    <label class="form-label">🌍 Traduction anglaise (éditable)</label>
+                    <textarea class="form-textarea" id="listening-transcript-translation" rows="8" placeholder="Traduction automatique ou manuelle..." style="background: var(--cream-light);"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -4846,8 +4866,16 @@ const firebaseConfig = {
     <div class="modal" id="word-lookup-modal" style="z-index: 10000;">
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 class="modal-title" id="lookup-word-title">...</h2>
+                <h2 class="modal-title">🔍 Définition du mot</h2>
                 <button class="close-btn" onclick="closeModal('word-lookup-modal')">&times;</button>
+            </div>
+            
+            <!-- Editable Word Field -->
+            <div style="padding: 1.5rem; padding-bottom: 0;">
+                <div class="form-group">
+                    <label class="form-label">Mot (éditable)</label>
+                    <input type="text" class="form-input" id="lookup-word-input" style="font-size: 1.3rem; font-weight: 600; color: var(--burgundy);">
+                </div>
             </div>
             
             <div id="lookup-content" style="padding: 1.5rem;">
@@ -4856,9 +4884,40 @@ const firebaseConfig = {
                 </div>
             </div>
 
+            <!-- Dictionary Buttons -->
+            <div style="padding: 0 1.5rem 1rem;">
+                <label class="form-label">Ou chercher dans un dictionnaire</label>
+                <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+                    <button onclick="openDictionaryFromLookup('collins')" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; font-size: 0.9rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <span>Collins</span>
+                    </button>
+                    
+                    <button onclick="openDictionaryFromLookup('reverso')" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; font-size: 0.9rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                        <span>Reverso</span>
+                    </button>
+                    
+                    <button onclick="openDictionaryFromLookup('linguee')" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; font-size: 0.9rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        <span>Linguee</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="form-actions" id="lookup-actions" style="display: none;">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('word-lookup-modal')">Annuler</button>
-                <button type="button" class="btn btn-primary" id="save-lookup-word">Sauvegarder</button>
+                <button type="button" class="btn btn-primary" id="save-lookup-word">Ajouter à Le Jardin</button>
             </div>
         </div>
     </div>
@@ -4867,29 +4926,46 @@ const firebaseConfig = {
     <div class="modal" id="dictionary-lookup-modal" style="z-index: 10001;">
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 class="modal-title">🔍 Chercher dans les dictionnaires</h2>
+                <h2 class="modal-title">🔍 Mot cliqué</h2>
                 <button class="close-btn" onclick="closeDictionaryLookup()">&times;</button>
             </div>
             
             <div style="padding: 1.5rem;">
                 <div class="form-group">
-                    <label class="form-label">Mot à chercher (éditable)</label>
+                    <label class="form-label">Mot (éditable)</label>
                     <input type="text" class="form-input" id="dictionary-word-input" style="font-size: 1.3rem; font-weight: 600; color: var(--burgundy);">
                 </div>
                 
+                <!-- Translation Display -->
+                <div class="form-group" id="translation-display" style="display: none; padding: 1rem; background: var(--cream-light); border-radius: 8px; margin-top: 1rem;">
+                    <label class="form-label" style="font-size: 0.9rem; margin-bottom: 0.5rem;">Traduction</label>
+                    <div id="translation-text" style="font-size: 1.1rem; color: var(--burgundy); font-weight: 500;"></div>
+                    <div id="translation-loading" style="font-size: 0.9rem; color: var(--text-soft); font-style: italic;">Chargement...</div>
+                </div>
+                
+                <!-- Add to Le Jardin Button -->
                 <div class="form-group">
-                    <label class="form-label">Choisir un dictionnaire</label>
+                    <button onclick="addWordToJardinFromLookup()" class="btn btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        <span>Ajouter à Le Jardin</span>
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Ou chercher dans un dictionnaire</label>
                     <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-                        <button onclick="openDictionary('collins')" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <button onclick="openDictionary('collins')" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                             </svg>
                             <span>Collins</span>
                         </button>
                         
-                        <button onclick="openDictionary('reverso')" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <button onclick="openDictionary('reverso')" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <line x1="2" y1="12" x2="22" y2="12"></line>
                                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
@@ -4897,8 +4973,8 @@ const firebaseConfig = {
                             <span>Reverso</span>
                         </button>
                         
-                        <button onclick="openDictionary('linguee')" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <button onclick="openDictionary('linguee')" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                             </svg>
@@ -5041,21 +5117,8 @@ const firebaseConfig = {
         `;
 
         function createFloatingHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'floating-heart';
-            heart.innerHTML = heartSVG;
-            
-            const randomX = Math.random() * window.innerWidth;
-            const drift = (Math.random() - 0.5) * 200;
-            const rotation = (Math.random() - 0.5) * 360;
-            
-            heart.style.left = randomX + 'px';
-            heart.style.setProperty('--drift', drift + 'px');
-            heart.style.setProperty('--rotation', rotation + 'deg');
-            
-            animationContainer.appendChild(heart);
-            
-            setTimeout(() => heart.remove(), 4000);
+            // DISABLED - No floating hearts animation
+            return;
         }
 
         // Animation triggers
@@ -8435,15 +8498,28 @@ const firebaseConfig = {
             
             container.innerHTML = transcripts.map(t => `
                 <div class="transcript-card" data-transcript-id="${t.id}">
-                    <div class="transcript-header">
+                    <div class="transcript-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <h3 class="transcript-title">${t.title}</h3>
-                        <button class="icon-btn" onclick="deleteTranscript('${type}', ${t.id})" title="Supprimer">
-                            <svg class="svg-icon" viewBox="0 0 24 24">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
-                        </button>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <button class="icon-btn" onclick="copyTranscript('${t.text.replace(/'/g, "\\'")}', this)" title="Copier">
+                                <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <button class="icon-btn transcript-fold-btn" onclick="toggleTranscript(${t.id})" title="Replier/Déplier">
+                                <svg class="svg-icon chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                            <button class="icon-btn" onclick="deleteTranscript('${type}', ${t.id})" title="Supprimer">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <div class="transcript-body">
+                    <div class="transcript-body" data-id="${t.id}" style="transition: max-height 0.3s ease, padding 0.3s ease; max-height: 500px; overflow: hidden;">
                         ${makeTranscriptClickable(t.text, t.id)}
                     </div>
                 </div>
@@ -8492,7 +8568,7 @@ const firebaseConfig = {
             
             // Open popup immediately
             openModal('word-lookup-modal');
-            document.getElementById('lookup-word-title').textContent = word;
+            document.getElementById('lookup-word-input').value = word;
             document.getElementById('lookup-content').innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-soft);">Chargement...</div>';
             document.getElementById('lookup-actions').style.display = 'none';
             
@@ -8618,7 +8694,7 @@ const firebaseConfig = {
             
             const word = {
                 id: Date.now(),
-                french: currentLookup.lemma || currentLookup.word || document.getElementById('lookup-word-title').textContent,
+                french: currentLookup.lemma || currentLookup.word || document.getElementById('lookup-word-input').value,
                 meaning: translation,
                 article: '',
                 gender: '',
@@ -8661,6 +8737,39 @@ const firebaseConfig = {
             
             setTimeout(() => closeModal('word-lookup-modal'), 1500);
         });
+
+        // Toggle transcript fold/unfold
+        function toggleTranscript(id) {
+            const body = document.querySelector(`.transcript-body[data-id="${id}"]`);
+            const chevron = event.target.closest('.transcript-fold-btn').querySelector('.chevron-icon');
+            
+            if (body.style.maxHeight === '0px' || body.style.maxHeight === '0') {
+                // Unfold
+                body.style.maxHeight = '500px';
+                body.style.padding = '';
+                chevron.style.transform = 'rotate(0deg)';
+            } else {
+                // Fold
+                body.style.maxHeight = '0px';
+                body.style.padding = '0';
+                chevron.style.transform = 'rotate(-90deg)';
+            }
+        }
+
+        // Copy transcript to clipboard
+        function copyTranscript(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                button.style.color = 'var(--sage)';
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.style.color = '';
+                }, 2000);
+            }).catch(() => {
+                alert('Erreur lors de la copie');
+            });
+        }
 
         // Delete transcript
         function deleteTranscript(type, id) {
@@ -9260,10 +9369,10 @@ const firebaseConfig = {
         
         // Make transcript text clickable when user pastes/loads it
         document.getElementById('listening-transcript-text')?.addEventListener('input', function() {
-            makeTranscriptClickable();
+            makeListeningTranscriptClickable();
         });
         
-        function makeTranscriptClickable() {
+        function makeListeningTranscriptClickable() {
             const text = document.getElementById('listening-transcript-text').value.trim();
             if (!text) {
                 document.getElementById('listening-clickable-transcript-area').style.display = 'none';
@@ -9276,13 +9385,28 @@ const firebaseConfig = {
             const clickableHTML = words.map(word => {
                 // If it's a word (not whitespace/punctuation), make it clickable
                 if (word.trim() && /[a-zA-ZÀ-ÿ]/.test(word)) {
-                    return `<span class="clickable-word" onclick="openDictionaryLookup('${escapeForJS(word.trim())}')" style="cursor: pointer; padding: 2px 4px; border-radius: 3px; transition: background 0.2s;" onmouseover="this.style.background='#ffd700'" onmouseout="this.style.background='transparent'">${word}</span>`;
+                    const cleanWord = word.trim();
+                    return `<span class="clickable-word" data-word="${cleanWord}" style="cursor: pointer; padding: 2px 4px; border-radius: 3px; transition: background 0.2s;">${word}</span>`;
                 }
                 return word;
             }).join('');
             
             document.getElementById('listening-clickable-transcript').innerHTML = clickableHTML;
             document.getElementById('listening-clickable-transcript-area').style.display = 'block';
+            
+            // Add event listeners to all clickable words
+            document.querySelectorAll('#listening-clickable-transcript .clickable-word').forEach(span => {
+                span.addEventListener('click', function() {
+                    const word = this.getAttribute('data-word');
+                    openDictionaryLookup(word);
+                });
+                span.addEventListener('mouseover', function() {
+                    this.style.background = '#ffd700';
+                });
+                span.addEventListener('mouseout', function() {
+                    this.style.background = 'transparent';
+                });
+            });
         }
         
         function escapeForJS(str) {
@@ -9296,16 +9420,126 @@ const firebaseConfig = {
             selectedWordForLookup = cleanWord;
             document.getElementById('dictionary-word-input').value = cleanWord;
             
-            // Open the modal
+            // Show the modal
             document.getElementById('dictionary-lookup-modal').classList.add('active');
+            
+            // Fetch translation
+            fetchTranslationForLookup(cleanWord);
+        }
+        
+        async function fetchTranslationForLookup(word) {
+            const translationDisplay = document.getElementById('translation-display');
+            const translationText = document.getElementById('translation-text');
+            const translationLoading = document.getElementById('translation-loading');
+            
+            // Show loading
+            translationDisplay.style.display = 'block';
+            translationLoading.style.display = 'block';
+            translationText.style.display = 'none';
+            
+            try {
+                const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=fr|en`);
+                const data = await response.json();
+                
+                if (data.responseData && data.responseData.translatedText) {
+                    translationText.textContent = data.responseData.translatedText;
+                    translationText.style.display = 'block';
+                    translationLoading.style.display = 'none';
+                } else {
+                    translationText.textContent = 'Traduction non disponible';
+                    translationText.style.display = 'block';
+                    translationLoading.style.display = 'none';
+                }
+            } catch (error) {
+                translationText.textContent = 'Erreur de traduction';
+                translationText.style.display = 'block';
+                translationLoading.style.display = 'none';
+            }
+        }
+        
+        function addWordToJardinFromLookup() {
+            const word = document.getElementById('dictionary-word-input').value.trim();
+            const translation = document.getElementById('translation-text').textContent;
+            
+            if (!word) {
+                alert('Veuillez entrer un mot');
+                return;
+            }
+            
+            // Close the dictionary modal
+            closeDictionaryLookup();
+            
+            // Open the add word modal with pre-filled data
+            document.getElementById('add-word-modal').classList.add('active');
+            document.getElementById('word-french').value = word;
+            document.getElementById('word-english').value = translation && translation !== 'Chargement...' && translation !== 'Traduction non disponible' && translation !== 'Erreur de traduction' ? translation : '';
+            
+            // Focus on the English input if translation didn't work
+            if (!document.getElementById('word-english').value) {
+                document.getElementById('word-english').focus();
+            }
         }
         
         function closeDictionaryLookup() {
             document.getElementById('dictionary-lookup-modal').classList.remove('active');
         }
         
+        // Toggle transcript collapse/expand
+        let transcriptExpanded = true;
+        document.getElementById('toggle-transcript-btn')?.addEventListener('click', function() {
+            const transcript = document.getElementById('listening-clickable-transcript');
+            const chevron = document.getElementById('transcript-chevron');
+            const toggleText = document.getElementById('transcript-toggle-text');
+            
+            if (transcriptExpanded) {
+                // Collapse
+                transcript.style.maxHeight = '0px';
+                transcript.style.padding = '0 1.5rem';
+                transcript.style.overflow = 'hidden';
+                chevron.style.transform = 'rotate(-90deg)';
+                toggleText.textContent = 'Déplier';
+                transcriptExpanded = false;
+            } else {
+                // Expand
+                transcript.style.maxHeight = '400px';
+                transcript.style.padding = '1.5rem';
+                transcript.style.overflow = 'auto';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.textContent = 'Replier';
+                transcriptExpanded = true;
+            }
+        });
+        
         function openDictionary(type) {
             const word = document.getElementById('dictionary-word-input').value.trim();
+            
+            if (!word) {
+                alert('Veuillez entrer un mot');
+                return;
+            }
+            
+            let url = '';
+            
+            switch(type) {
+                case 'collins':
+                    url = `https://www.collinsdictionary.com/dictionary/french-english/${encodeURIComponent(word)}`;
+                    break;
+                case 'reverso':
+                    url = `https://context.reverso.net/translation/french-english/${encodeURIComponent(word)}`;
+                    break;
+                case 'linguee':
+                    url = `https://www.linguee.com/french-english/search?query=${encodeURIComponent(word)}`;
+                    break;
+            }
+            
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+        
+        // Open dictionary from word lookup modal
+        function openDictionaryFromLookup(type) {
+            const word = document.getElementById('lookup-word-input').value.trim();
             
             if (!word) {
                 alert('Veuillez entrer un mot');
@@ -9338,11 +9572,11 @@ const firebaseConfig = {
             }
         });
         
-        // Also trigger makeTranscriptClickable when modal is opened
+        // Also trigger makeListeningTranscriptClickable when modal is opened
         const listeningTranscriptModal = document.querySelector('[onclick*="add-listening-transcript-modal"]');
         if (listeningTranscriptModal) {
             listeningTranscriptModal.addEventListener('click', function() {
-                setTimeout(makeTranscriptClickable, 100);
+                setTimeout(makeListeningTranscriptClickable, 100);
             });
         }
 
@@ -9352,11 +9586,10 @@ const firebaseConfig = {
     <!-- Floating Quick Actions -->
     <div class="floating-actions" id="floating-actions">
         <button class="floating-btn-main" id="floating-main" aria-label="Quick actions">
-            <svg class="plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
+            <svg class="plus-icon" viewBox="0 0 24 24" fill="#A64253" stroke="none">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
-            <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="#A64253" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
