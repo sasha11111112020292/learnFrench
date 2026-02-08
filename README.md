@@ -848,18 +848,7 @@ const firebaseConfig = {
 
         /* Floating Heart */
         .floating-heart {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            opacity: 0.2;
-            z-index: 1;
-            animation: heartPulse 4s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes heartPulse {
-            0%, 100% { transform: scale(1); opacity: 0.2; }
-            50% { transform: scale(1.08); opacity: 0.3; }
+            display: none; /* Now incorporated into floating button */
         }
 
         /* Dark Mode Toggle Button */
@@ -918,23 +907,32 @@ const firebaseConfig = {
         }
 
         .floating-btn-main {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--crimson);
+            width: 70px;
+            height: 70px;
             border: none;
+            background: transparent;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px rgba(139, 38, 53, 0.4);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            filter: drop-shadow(0 4px 20px rgba(166, 66, 83, 0.4));
+        }
+        
+        .floating-btn-main::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #A64253;
+            clip-path: path('M35,65 C15,52 3,42 3,27 C3,15 11,7 20,7 C26,7 31,10 35,15 C39,10 44,7 50,7 C59,7 67,15 67,27 C67,42 55,52 35,65Z');
+            z-index: -1;
         }
 
         .floating-btn-main:hover {
-            transform: scale(1.08);
-            box-shadow: 0 6px 28px rgba(139, 38, 53, 0.6);
+            transform: scale(1.1);
+            filter: drop-shadow(0 6px 28px rgba(166, 66, 83, 0.6));
         }
 
         .floating-btn-main svg {
@@ -4798,7 +4796,21 @@ const firebaseConfig = {
                 
                 <div class="form-group">
                     <label class="form-label">📝 Texte français (paroles/transcription)</label>
+                    <div style="margin-bottom: 0.5rem;">
+                        <a href="https://downsub.com/" target="_blank" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                            📄 Get Transcript (DownSub)
+                        </a>
+                    </div>
                     <textarea class="form-textarea" id="listening-transcript-text" rows="8" placeholder="Colle les paroles ici..." required></textarea>
+                </div>
+                
+                <!-- Display Area with Clickable Words -->
+                <div class="form-group" id="listening-clickable-transcript-area" style="display: none;">
+                    <label class="form-label">✨ Clique sur les mots pour chercher dans les dictionnaires</label>
+                    <div id="listening-clickable-transcript" style="background: var(--cream-dark); padding: 1.5rem; border-radius: 12px; line-height: 1.8; font-size: 1.1rem; max-height: 400px; overflow-y: auto; cursor: text; user-select: text;"></div>
                 </div>
 
                 <div style="text-align: center; margin: 1rem 0;">
@@ -4847,6 +4859,57 @@ const firebaseConfig = {
             <div class="form-actions" id="lookup-actions" style="display: none;">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('word-lookup-modal')">Annuler</button>
                 <button type="button" class="btn btn-primary" id="save-lookup-word">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dictionary Lookup Modal -->
+    <div class="modal" id="dictionary-lookup-modal" style="z-index: 10001;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title">🔍 Chercher dans les dictionnaires</h2>
+                <button class="close-btn" onclick="closeDictionaryLookup()">&times;</button>
+            </div>
+            
+            <div style="padding: 1.5rem;">
+                <div class="form-group">
+                    <label class="form-label">Mot à chercher (éditable)</label>
+                    <input type="text" class="form-input" id="dictionary-word-input" style="font-size: 1.3rem; font-weight: 600; color: var(--burgundy);">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Choisir un dictionnaire</label>
+                    <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                        <button onclick="openDictionary('collins')" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span>Collins</span>
+                        </button>
+                        
+                        <button onclick="openDictionary('reverso')" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <span>Reverso</span>
+                        </button>
+                        
+                        <button onclick="openDictionary('linguee')" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>Linguee</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeDictionaryLookup()">Fermer</button>
             </div>
         </div>
     </div>
@@ -9189,6 +9252,100 @@ const firebaseConfig = {
         // Initialize Firebase Auth (Firebase module will call this when ready)
         console.log('📋 initFirebaseAuth function defined and ready');
 
+        // ============================================
+        // DICTIONARY LOOKUP FUNCTIONALITY
+        // ============================================
+        
+        let selectedWordForLookup = '';
+        
+        // Make transcript text clickable when user pastes/loads it
+        document.getElementById('listening-transcript-text')?.addEventListener('input', function() {
+            makeTranscriptClickable();
+        });
+        
+        function makeTranscriptClickable() {
+            const text = document.getElementById('listening-transcript-text').value.trim();
+            if (!text) {
+                document.getElementById('listening-clickable-transcript-area').style.display = 'none';
+                return;
+            }
+            
+            // Split text into words while preserving punctuation
+            const words = text.split(/(\s+|[.,!?;:…—\-\n]+)/);
+            
+            const clickableHTML = words.map(word => {
+                // If it's a word (not whitespace/punctuation), make it clickable
+                if (word.trim() && /[a-zA-ZÀ-ÿ]/.test(word)) {
+                    return `<span class="clickable-word" onclick="openDictionaryLookup('${escapeForJS(word.trim())}')" style="cursor: pointer; padding: 2px 4px; border-radius: 3px; transition: background 0.2s;" onmouseover="this.style.background='#ffd700'" onmouseout="this.style.background='transparent'">${word}</span>`;
+                }
+                return word;
+            }).join('');
+            
+            document.getElementById('listening-clickable-transcript').innerHTML = clickableHTML;
+            document.getElementById('listening-clickable-transcript-area').style.display = 'block';
+        }
+        
+        function escapeForJS(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, ' ');
+        }
+        
+        function openDictionaryLookup(word) {
+            // Clean the word (remove punctuation)
+            const cleanWord = word.replace(/[.,!?;:…—\-"'«»]/g, '').trim();
+            
+            selectedWordForLookup = cleanWord;
+            document.getElementById('dictionary-word-input').value = cleanWord;
+            
+            // Open the modal
+            document.getElementById('dictionary-lookup-modal').classList.add('active');
+        }
+        
+        function closeDictionaryLookup() {
+            document.getElementById('dictionary-lookup-modal').classList.remove('active');
+        }
+        
+        function openDictionary(type) {
+            const word = document.getElementById('dictionary-word-input').value.trim();
+            
+            if (!word) {
+                alert('Veuillez entrer un mot');
+                return;
+            }
+            
+            let url = '';
+            
+            switch(type) {
+                case 'collins':
+                    url = `https://www.collinsdictionary.com/dictionary/french-english/${encodeURIComponent(word)}`;
+                    break;
+                case 'reverso':
+                    url = `https://context.reverso.net/translation/french-english/${encodeURIComponent(word)}`;
+                    break;
+                case 'linguee':
+                    url = `https://www.linguee.com/french-english/search?query=${encodeURIComponent(word)}`;
+                    break;
+            }
+            
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('dictionary-lookup-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDictionaryLookup();
+            }
+        });
+        
+        // Also trigger makeTranscriptClickable when modal is opened
+        const listeningTranscriptModal = document.querySelector('[onclick*="add-listening-transcript-modal"]');
+        if (listeningTranscriptModal) {
+            listeningTranscriptModal.addEventListener('click', function() {
+                setTimeout(makeTranscriptClickable, 100);
+            });
+        }
+
     </script>
 
     <!-- Firebase Status Bar (visible on screen for mobile debugging) -->
@@ -9412,1217 +9569,6 @@ const firebaseConfig = {
             </div>
         </div>
     </div>
-
-    <!-- ============================================ -->
-    <!-- NEW LEARNING TOOLS - ADDED FEATURES -->
-    <!-- ============================================ -->
-
-    <style>
-        /* Quick Access FAB */
-        .learning-tools-fab {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--crimson);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 1.75rem;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(139, 38, 53, 0.3);
-            transition: all 0.3s;
-            z-index: 999;
-        }
-        
-        .learning-tools-fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(139, 38, 53, 0.4);
-        }
-
-        /* Tools Panel */
-        .tools-panel {
-            position: fixed;
-            top: 0;
-            right: -450px;
-            width: 450px;
-            height: 100vh;
-            background: white;
-            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
-            transition: right 0.3s ease;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .tools-panel.open {
-            right: 0;
-        }
-
-        .tools-header {
-            padding: 1.5rem;
-            background: var(--cream);
-            border-bottom: 2px solid var(--sage);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .tools-header h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.75rem;
-            color: var(--charcoal);
-            margin: 0;
-        }
-
-        .tools-close {
-            background: none;
-            border: none;
-            font-size: 1.75rem;
-            cursor: pointer;
-            color: var(--text-soft);
-            line-height: 1;
-        }
-
-        .tools-tabs {
-            display: flex;
-            background: var(--cream);
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-
-        .tools-tab {
-            flex: 1;
-            padding: 1rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--text-soft);
-            transition: all 0.2s;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tools-tab:hover {
-            background: rgba(139, 38, 53, 0.05);
-        }
-
-        .tools-tab.active {
-            color: var(--crimson);
-            border-bottom-color: var(--crimson);
-        }
-
-        .tools-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1.5rem;
-        }
-
-        /* Transcript Fetcher */
-        .tool-section {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-
-        .tool-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .input-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--charcoal);
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--cream);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--sage);
-        }
-
-        .textarea-field {
-            width: 100%;
-            min-height: 200px;
-            padding: 0.75rem;
-            border: 2px solid var(--cream);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-family: 'Work Sans', sans-serif;
-            resize: vertical;
-            transition: border-color 0.2s;
-        }
-
-        .textarea-field:focus {
-            outline: none;
-            border-color: var(--sage);
-        }
-
-        .tool-btn {
-            width: 100%;
-            padding: 0.875rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .tool-btn-primary {
-            background: var(--crimson);
-            color: white;
-        }
-
-        .tool-btn-primary:hover {
-            background: #6d1d2a;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(139, 38, 53, 0.2);
-        }
-
-        .tool-btn-secondary {
-            background: var(--sage);
-            color: white;
-        }
-
-        .tool-btn-secondary:hover {
-            background: #9bb0a5;
-        }
-
-        .tool-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        /* Material Card */
-        .material-card {
-            background: var(--cream);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .material-card:hover {
-            border-color: var(--sage);
-        }
-
-        .material-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.5rem;
-        }
-
-        .material-title {
-            font-weight: 600;
-            color: var(--charcoal);
-            flex: 1;
-        }
-
-        .material-type {
-            background: var(--sage);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-        }
-
-        .material-meta {
-            font-size: 0.875rem;
-            color: var(--text-soft);
-            margin-bottom: 0.5rem;
-        }
-
-        .material-stats {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.875rem;
-            color: var(--text-soft);
-        }
-
-        .material-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.75rem;
-        }
-
-        .material-btn {
-            flex: 1;
-            padding: 0.5rem;
-            border: none;
-            border-radius: 6px;
-            background: white;
-            color: var(--charcoal);
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .material-btn:hover {
-            background: var(--crimson);
-            color: white;
-        }
-
-        /* Flashcard Creator */
-        .word-item {
-            background: white;
-            padding: 1rem;
-            border: 2px solid var(--cream);
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            transition: border-color 0.2s;
-        }
-
-        .word-item:hover {
-            border-color: var(--sage);
-        }
-
-        .word-input-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .word-input {
-            padding: 0.5rem;
-            border: 1px solid var(--cream);
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-
-        .word-source {
-            font-size: 0.8rem;
-            color: var(--text-soft);
-            padding: 0.5rem;
-            background: var(--cream);
-            border-radius: 6px;
-            margin-top: 0.5rem;
-        }
-
-        .word-delete {
-            background: none;
-            border: none;
-            color: var(--crimson);
-            cursor: pointer;
-            float: right;
-        }
-
-        /* AI Prompt Templates */
-        .template-card {
-            background: var(--cream);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .template-card:hover {
-            border-color: var(--sage);
-        }
-
-        .template-card.selected {
-            border-color: var(--crimson);
-            background: rgba(139, 38, 53, 0.05);
-        }
-
-        .template-name {
-            font-weight: 600;
-            color: var(--charcoal);
-            margin-bottom: 0.25rem;
-        }
-
-        .template-desc {
-            font-size: 0.875rem;
-            color: var(--text-soft);
-        }
-
-        /* Toast Notifications */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--charcoal);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 2000;
-            opacity: 0;
-            transition: all 0.3s;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success {
-            background: #27ae60;
-        }
-
-        .toast.error {
-            background: #e74c3c;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-soft);
-        }
-
-        .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .tools-panel {
-                width: 100%;
-                right: -100%;
-            }
-            
-            .learning-tools-fab {
-                bottom: 1rem;
-                right: 1rem;
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-        }
-
-        /* Clickable Words in Transcript */
-        .word-clickable {
-            cursor: pointer;
-            padding: 2px 4px;
-            border-radius: 3px;
-            transition: all 0.2s;
-            display: inline-block;
-        }
-
-        .word-clickable:hover {
-            background: rgba(180, 197, 185, 0.3);
-        }
-
-        .word-clickable.selected {
-            background: var(--crimson);
-            color: white;
-            font-weight: 500;
-        }
-
-        .word-clickable.already-added {
-            background: var(--gold);
-            color: var(--charcoal);
-            opacity: 0.6;
-        }
-    </style>
-
-    <!-- Quick Access Button -->
-    <button class="learning-tools-fab" onclick="toggleToolsPanel()" title="Learning Tools (Ctrl+Shift+T)">
-        📚
-    </button>
-
-    <!-- Tools Panel -->
-    <div class="tools-panel" id="tools-panel">
-        <div class="tools-header">
-            <h2>Learning Tools</h2>
-            <button class="tools-close" onclick="toggleToolsPanel()">&times;</button>
-        </div>
-
-        <div class="tools-tabs">
-            <button class="tools-tab active" onclick="switchTab('transcript')">Transcript</button>
-            <button class="tools-tab" onclick="switchTab('flashcards')">Flashcards</button>
-            <button class="tools-tab" onclick="switchTab('library')">Library</button>
-        </div>
-
-        <div class="tools-content">
-            <!-- Transcript Fetcher -->
-            <div id="tab-transcript" class="tool-section active">
-                <div class="input-group">
-                    <label class="input-label">Material Title</label>
-                    <input type="text" class="input-field" id="material-title" placeholder="e.g., Inner French EP 142">
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">YouTube URL or Article Link (optional)</label>
-                    <input type="url" class="input-field" id="youtube-url" placeholder="https://youtube.com/watch?v=... or any URL">
-                </div>
-
-                <button class="tool-btn tool-btn-primary" onclick="fetchTranscript()">
-                    <span>🎬</span> Open Transcript Tool
-                </button>
-
-                <div class="input-group" style="margin-top: 1.5rem;">
-                    <label class="input-label">Paste Transcript Below</label>
-                    <textarea class="textarea-field" id="transcript-input" placeholder="Paste French text here..." style="min-height: 100px;"></textarea>
-                </div>
-
-                <button class="tool-btn tool-btn-primary" onclick="processTranscript()">
-                    <span>✨</span> Make Words Clickable
-                </button>
-
-                <div id="transcript-display-section" style="display: none; margin-top: 1.5rem;">
-                    <div class="input-group">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            <label class="input-label" style="margin: 0;">Click Words to Add to Flashcards</label>
-                            <div style="font-size: 0.875rem; color: var(--text-soft);">
-                                <span id="selected-count">0</span> words selected
-                            </div>
-                        </div>
-                        <div id="transcript-display" style="
-                            padding: 1rem;
-                            background: white;
-                            border: 2px solid var(--cream);
-                            border-radius: 8px;
-                            line-height: 1.8;
-                            max-height: 400px;
-                            overflow-y: auto;
-                            cursor: text;
-                        "></div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="tool-btn tool-btn-secondary" onclick="sendToAI()">
-                            <span>🤖</span> Send to AI
-                        </button>
-                        <button class="tool-btn tool-btn-secondary" onclick="saveSelectedWords()">
-                            <span>💾</span> Save & Continue
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Flashcard Creator -->
-            <div id="tab-flashcards" class="tool-section">
-                <div style="margin-bottom: 1rem;">
-                    <button class="tool-btn tool-btn-primary" onclick="addFlashcard()">
-                        <span>➕</span> Add Single Word
-                    </button>
-                </div>
-
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--cream); border-radius: 8px;">
-                    <div style="font-weight: 500; margin-bottom: 0.5rem; color: var(--charcoal);">
-                        💡 Bulk Import
-                    </div>
-                    <div style="font-size: 0.875rem; color: var(--text-soft); margin-bottom: 0.75rem;">
-                        Paste multiple words (one per line):<br>
-                        <code style="background: white; padding: 2px 4px; border-radius: 3px;">mot français | signification | thème</code>
-                    </div>
-                    <textarea id="bulk-import-text" placeholder="le chat | the cat | animaux
-la maison | the house | logement
-manger | to eat | verbes" 
-                        style="width: 100%; min-height: 100px; padding: 0.75rem; border: 2px solid white; border-radius: 6px; font-size: 0.9rem; font-family: monospace;"></textarea>
-                    <button class="tool-btn tool-btn-secondary" onclick="bulkImportWords()" style="margin-top: 0.5rem;">
-                        <span>⚡</span> Import All
-                    </button>
-                </div>
-
-                <div id="flashcards-container">
-                    <div class="empty-state">
-                        <div class="empty-icon">📇</div>
-                        <p>No flashcards yet. Click words in transcripts or use bulk import!</p>
-                    </div>
-                </div>
-
-                <div style="margin-top: 1.5rem;" id="flashcard-actions" style="display: none;">
-                    <div class="btn-group">
-                        <button class="tool-btn tool-btn-secondary" onclick="translateAllWords()">
-                            <span>🤖</span> Translate All
-                        </button>
-                        <button class="tool-btn tool-btn-secondary" onclick="exportFlashcards()">
-                            <span>📤</span> Export
-                        </button>
-                    </div>
-                    <button class="tool-btn tool-btn-secondary" onclick="clearAllFlashcards()" style="margin-top: 0.5rem; background: white; color: var(--crimson); border: 1px solid var(--crimson);">
-                        <span>🗑️</span> Clear All Cards
-                    </button>
-                </div>
-            </div>
-
-            <!-- Material Library -->
-            <div id="tab-library" class="tool-section">
-                <div style="margin-bottom: 1rem;">
-                    <input type="text" class="input-field" id="library-search" placeholder="🔍 Search materials...">
-                </div>
-
-                <div id="library-container">
-                    <div class="empty-state">
-                        <div class="empty-icon">📚</div>
-                        <p>Your material library is empty. Save transcripts to start tracking.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Export Modal -->
-    <div class="modal" id="export-modal" style="display: none;">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h3 style="margin: 0;">Export Flashcards</h3>
-                <button class="close-btn" onclick="closeExportModal()">&times;</button>
-            </div>
-
-            <div style="padding: 1.5rem;">
-                <div class="template-card" onclick="selectExportFormat('anki')">
-                    <div class="template-name">📇 Anki Format</div>
-                    <div class="template-desc">CSV with: Word | Translation | Context | Source Link</div>
-                </div>
-
-                <div class="template-card" onclick="selectExportFormat('quizlet')">
-                    <div class="template-name">📚 Quizlet Format</div>
-                    <div class="template-desc">Tab-separated: Word [tab] Translation</div>
-                </div>
-
-                <div class="template-card" onclick="selectExportFormat('json')">
-                    <div class="template-name">💾 JSON</div>
-                    <div class="template-desc">Complete data with all metadata</div>
-                </div>
-
-                <div class="template-card" onclick="selectExportFormat('markdown')">
-                    <div class="template-name">📝 Markdown</div>
-                    <div class="template-desc">Readable format with links</div>
-                </div>
-
-                <button class="tool-btn tool-btn-primary" onclick="downloadExport()" style="margin-top: 1rem;">
-                    <span>⬇️</span> Download
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast"></div>
-
-    <script>
-        // ============================================
-        // LEARNING TOOLS JAVASCRIPT
-        // ============================================
-
-        // State Management
-        let flashcardsData = [];
-        let materialsLibrary = [];
-        let selectedExportFormat = 'anki';
-        let selectedWords = new Set();
-        let currentTranscript = '';
-
-        // Load from localStorage on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            renderFlashcards();
-            renderLibrary();
-        });
-
-        function loadData() {
-            const savedFlashcards = localStorage.getItem('flashcardsData');
-            const savedMaterials = localStorage.getItem('materialsLibrary');
-            
-            if (savedFlashcards) flashcardsData = JSON.parse(savedFlashcards);
-            if (savedMaterials) materialsLibrary = JSON.parse(savedMaterials);
-        }
-
-        function saveData() {
-            localStorage.setItem('flashcardsData', JSON.stringify(flashcardsData));
-            localStorage.setItem('materialsLibrary', JSON.stringify(materialsLibrary));
-        }
-
-        // Panel Toggle
-        function toggleToolsPanel() {
-            const panel = document.getElementById('tools-panel');
-            panel.classList.toggle('open');
-        }
-
-        // Tab Switching
-        function switchTab(tabName) {
-            // Update tab buttons
-            document.querySelectorAll('.tools-tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Update content sections
-            document.querySelectorAll('.tool-section').forEach(section => section.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-        }
-
-        // Toast Notifications
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast show ' + type;
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // ============================================
-        // TRANSCRIPT PROCESSING
-        // ============================================
-
-        function processTranscript() {
-            const transcript = document.getElementById('transcript-input').value.trim();
-            
-            if (!transcript) {
-                showToast('Please paste some text first', 'error');
-                return;
-            }
-
-            currentTranscript = transcript;
-            selectedWords.clear();
-
-            // Split into words while preserving punctuation
-            const display = document.getElementById('transcript-display');
-            const words = transcript.split(/(\s+|[.!?,;:])/);
-
-            // Get already added words for highlighting
-            const existingWords = new Set(flashcardsData.map(card => card.word.toLowerCase()));
-
-            display.innerHTML = words.map((word, index) => {
-                // Skip whitespace and punctuation
-                if (/^\s+$/.test(word) || /^[.!?,;:]$/.test(word)) {
-                    return word;
-                }
-
-                // Check if it's a real French word (has letters)
-                const cleanWord = word.replace(/[^\wàâäéèêëïîôùûüÿçœæ]/gi, '');
-                if (cleanWord.length < 2) {
-                    return word;
-                }
-
-                const alreadyAdded = existingWords.has(cleanWord.toLowerCase());
-                const className = alreadyAdded ? 'word-clickable already-added' : 'word-clickable';
-
-                return `<span class="${className}" data-word="${cleanWord}" data-original="${word}" onclick="toggleWordSelection(this)">${word}</span>`;
-            }).join('');
-
-            document.getElementById('transcript-display-section').style.display = 'block';
-            updateSelectedCount();
-            showToast('Click words to add them as flashcards!', 'success');
-        }
-
-        function toggleWordSelection(element) {
-            const word = element.dataset.word;
-            
-            if (element.classList.contains('already-added')) {
-                showToast('Word already in flashcards', 'error');
-                return;
-            }
-
-            if (selectedWords.has(word)) {
-                selectedWords.delete(word);
-                element.classList.remove('selected');
-            } else {
-                selectedWords.add(word);
-                element.classList.add('selected');
-            }
-
-            updateSelectedCount();
-        }
-
-        function updateSelectedCount() {
-            const counter = document.getElementById('selected-count');
-            if (counter) {
-                counter.textContent = selectedWords.size;
-            }
-        }
-
-        function saveSelectedWords() {
-            if (selectedWords.size === 0) {
-                showToast('No words selected. Click on words in the transcript.', 'error');
-                return;
-            }
-
-            const materialTitle = document.getElementById('material-title').value.trim() || 'Untitled';
-            const youtubeUrl = document.getElementById('youtube-url').value.trim();
-
-            // Find context for each word
-            const sentences = currentTranscript.split(/[.!?]+/);
-
-            selectedWords.forEach(word => {
-                const contextSentence = sentences.find(s => 
-                    s.toLowerCase().includes(word.toLowerCase())
-                ) || '';
-
-                addFlashcard(word, '', contextSentence.trim(), materialTitle, youtubeUrl);
-            });
-
-            // Save material to library
-            const material = {
-                id: Date.now(),
-                title: materialTitle,
-                url: youtubeUrl,
-                transcript: currentTranscript,
-                type: youtubeUrl.includes('youtube') || youtubeUrl.includes('youtu.be') ? 'video' : 
-                      youtubeUrl.includes('podcast') ? 'podcast' : 
-                      youtubeUrl ? 'article' : 'note',
-                dateAdded: new Date().toISOString(),
-                wordCount: selectedWords.size
-            };
-
-            materialsLibrary.unshift(material);
-            saveData();
-            renderLibrary();
-
-            showToast(`✅ Added ${selectedWords.size} words! Check Flashcards tab.`, 'success');
-
-            // Clear selection and reset
-            selectedWords.clear();
-            document.getElementById('transcript-input').value = '';
-            document.getElementById('transcript-display-section').style.display = 'none';
-            
-            // Switch to flashcards tab
-            switchTab('flashcards');
-            document.querySelectorAll('.tools-tab').forEach((tab, i) => {
-                tab.classList.toggle('active', i === 1);
-            });
-        }
-
-        async function fetchTranscript() {
-            const url = document.getElementById('youtube-url').value.trim();
-            
-            if (!url) {
-                showToast('For YouTube: Enter URL first', 'error');
-                return;
-            }
-
-            const videoId = extractVideoId(url);
-            if (videoId) {
-                window.open(`https://tactiq.io/tools/youtube-transcript?v=${videoId}`, '_blank');
-                showToast('Opening transcript tool... Copy transcript and paste back here!', 'success');
-            } else {
-                window.open('https://tactiq.io/tools/youtube-transcript', '_blank');
-                showToast('Opening transcript tool...', 'success');
-            }
-        }
-
-        function extractVideoId(url) {
-            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-            const match = url.match(regex);
-            return match ? match[1] : null;
-        }
-
-        // ============================================
-        // AI PROMPT GENERATION
-        // ============================================
-
-        function sendToAI() {
-            const transcript = currentTranscript || document.getElementById('transcript-input').value.trim();
-            const youtubeUrl = document.getElementById('youtube-url').value.trim();
-            const materialTitle = document.getElementById('material-title').value.trim() || 'French Content';
-
-            if (!transcript) {
-                showToast('No transcript to send', 'error');
-                return;
-            }
-
-            const selectedWordsText = selectedWords.size > 0 
-                ? `\n\nI've selected these words to focus on: ${Array.from(selectedWords).join(', ')}\n`
-                : '';
-
-            const prompt = `I'm learning French. Here's a transcript from "${materialTitle}":
-${youtubeUrl ? `\nSource: ${youtubeUrl}\n` : ''}${selectedWordsText}
----
-${transcript}
----
-
-Please:
-1. Translate this full transcript to English
-2. For ${selectedWords.size > 0 ? 'the words I selected' : '15-20 difficult/useful words'}, provide:
-   - French word
-   - English translation
-   - Example sentence from the transcript
-   - Brief explanation of usage
-
-3. Format the word list ready for Anki import (tab-separated):
-French Word [TAB] English [TAB] Example Sentence [TAB] Source: ${materialTitle}${youtubeUrl ? ' - ' + youtubeUrl : ''}
-
-Thank you!`;
-
-            navigator.clipboard.writeText(prompt).then(() => {
-                showToast('✅ Prompt copied! Paste into ChatGPT/Claude', 'success');
-            }).catch(() => {
-                alert('Prompt ready:\n\n' + prompt);
-            });
-        }
-
-        // ============================================
-        // FLASHCARD MANAGEMENT
-        // ============================================
-
-        function addFlashcard(word = '', translation = '', context = '', source = '', sourceUrl = '') {
-            const flashcard = {
-                id: Date.now() + Math.random(),
-                word: word,
-                translation: translation,
-                context: context,
-                source: source || 'Manual Entry',
-                sourceUrl: sourceUrl,
-                dateAdded: new Date().toISOString()
-            };
-
-            flashcardsData.push(flashcard);
-            saveData();
-            renderFlashcards();
-        }
-
-        function renderFlashcards() {
-            const container = document.getElementById('flashcards-container');
-            const actions = document.getElementById('flashcard-actions');
-
-            if (flashcardsData.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📇</div>
-                        <p>No flashcards yet. Click words in transcripts or use bulk import!</p>
-                    </div>
-                `;
-                actions.style.display = 'none';
-                return;
-            }
-
-            actions.style.display = 'block';
-
-            container.innerHTML = flashcardsData.map((card, index) => `
-                <div class="word-item">
-                    <button class="word-delete" onclick="deleteFlashcard(${index})" title="Delete">✕</button>
-                    <div class="word-input-group">
-                        <input type="text" class="word-input" placeholder="French word" 
-                            value="${card.word}" onchange="updateFlashcard(${index}, 'word', this.value)">
-                        <input type="text" class="word-input" placeholder="English translation" 
-                            value="${card.translation || ''}" onchange="updateFlashcard(${index}, 'translation', this.value)">
-                    </div>
-                    <input type="text" class="word-input" placeholder="Theme or context (optional)" 
-                        value="${card.context || ''}" onchange="updateFlashcard(${index}, 'context', this.value)" 
-                        style="width: 100%; margin-bottom: 0.5rem;">
-                    ${card.source && card.source !== 'Manual Entry' && card.source !== 'Bulk Import' ? `
-                        <div class="word-source">
-                            📚 ${card.source}
-                            ${card.sourceUrl ? `<br><a href="${card.sourceUrl}" target="_blank" style="color: var(--crimson); text-decoration: none;">🔗 ${card.sourceUrl}</a>` : ''}
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
-
-        function updateFlashcard(index, field, value) {
-            flashcardsData[index][field] = value;
-            saveData();
-        }
-
-        function deleteFlashcard(index) {
-            if (confirm('Delete this flashcard?')) {
-                flashcardsData.splice(index, 1);
-                saveData();
-                renderFlashcards();
-                showToast('Flashcard deleted', 'success');
-            }
-        }
-
-        function translateAllWords() {
-            const words = flashcardsData.map(card => card.word).filter(w => w).join(', ');
-            
-            if (!words) {
-                showToast('No words to translate', 'error');
-                return;
-            }
-
-            const prompt = `Please translate these French words to English with brief definitions:
-
-${words}
-
-Format each as:
-[French word] - [English translation] - [definition/usage note]`;
-
-            navigator.clipboard.writeText(prompt).then(() => {
-                showToast('✅ Copied! Paste into AI, then update your flashcards with the translations', 'success');
-            }).catch(() => {
-                alert('Words to translate:\n\n' + words);
-            });
-        }
-
-        function bulkImportWords() {
-            const text = document.getElementById('bulk-import-text').value.trim();
-            
-            if (!text) {
-                showToast('Paste some words first!', 'error');
-                return;
-            }
-
-            const lines = text.split('\n').filter(line => line.trim());
-            let imported = 0;
-
-            lines.forEach(line => {
-                const parts = line.split('|').map(p => p.trim());
-                
-                if (parts.length >= 2) {
-                    const word = parts[0];
-                    const translation = parts[1];
-                    const theme = parts[2] || '';
-
-                    addFlashcard(word, translation, theme, 'Bulk Import', '');
-                    imported++;
-                }
-            });
-
-            if (imported > 0) {
-                showToast(`✅ Imported ${imported} words!`, 'success');
-                document.getElementById('bulk-import-text').value = '';
-            } else {
-                showToast('No valid words found. Format: mot | translation | theme', 'error');
-            }
-        }
-
-        function clearAllFlashcards() {
-            if (confirm(`Delete ALL ${flashcardsData.length} flashcards? This cannot be undone!`)) {
-                flashcardsData = [];
-                saveData();
-                renderFlashcards();
-                showToast('All flashcards deleted', 'success');
-            }
-        }
-
-        // ============================================
-        // EXPORT FUNCTIONALITY
-        // ============================================
-
-        function exportFlashcards() {
-            if (flashcardsData.length === 0) {
-                showToast('No flashcards to export', 'error');
-                return;
-            }
-
-            document.getElementById('export-modal').style.display = 'flex';
-        }
-
-        function closeExportModal() {
-            document.getElementById('export-modal').style.display = 'none';
-        }
-
-        function selectExportFormat(format) {
-            selectedExportFormat = format;
-            document.querySelectorAll('.template-card').forEach(card => card.classList.remove('selected'));
-            event.target.closest('.template-card').classList.add('selected');
-        }
-
-        function downloadExport() {
-            let content, filename, type;
-
-            switch(selectedExportFormat) {
-                case 'anki':
-                    content = flashcardsData.map(card => 
-                        `${card.word}\t${card.translation}\t${card.context}\t${card.source}${card.sourceUrl ? ' - ' + card.sourceUrl : ''}`
-                    ).join('\n');
-                    filename = 'flashcards-anki.txt';
-                    type = 'text/plain';
-                    break;
-
-                case 'quizlet':
-                    content = flashcardsData.map(card => 
-                        `${card.word}\t${card.translation}`
-                    ).join('\n');
-                    filename = 'flashcards-quizlet.txt';
-                    type = 'text/plain';
-                    break;
-
-                case 'json':
-                    content = JSON.stringify(flashcardsData, null, 2);
-                    filename = 'flashcards.json';
-                    type = 'application/json';
-                    break;
-
-                case 'markdown':
-                    content = `# French Flashcards\n\n` + flashcardsData.map(card => 
-                        `## ${card.word}\n**Translation:** ${card.translation}\n**Context:** ${card.context}\n**Source:** ${card.source}${card.sourceUrl ? ` ([link](${card.sourceUrl}))` : ''}\n**Added:** ${new Date(card.dateAdded).toLocaleDateString()}\n`
-                    ).join('\n');
-                    filename = 'flashcards.md';
-                    type = 'text/markdown';
-                    break;
-            }
-
-            // Download
-            const blob = new Blob([content], { type });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
-
-            showToast('✅ Flashcards exported!', 'success');
-            closeExportModal();
-        }
-
-        // ============================================
-        // MATERIAL LIBRARY
-        // ============================================
-
-        function saveToLibrary() {
-            const title = document.getElementById('material-title').value.trim();
-            const url = document.getElementById('youtube-url').value.trim();
-            const transcript = document.getElementById('transcript-text').value.trim();
-
-            if (!title && !url && !transcript) {
-                showToast('Please add a title, URL, or transcript', 'error');
-                return;
-            }
-
-            const material = {
-                id: Date.now(),
-                title: title || 'Untitled Material',
-                url: url,
-                transcript: transcript,
-                type: url.includes('youtube') || url.includes('youtu.be') ? 'video' : 
-                      url.includes('podcast') ? 'podcast' : 
-                      url ? 'article' : 'note',
-                dateAdded: new Date().toISOString(),
-                wordCount: flashcardsData.filter(card => card.source === title).length
-            };
-
-            materialsLibrary.unshift(material); // Add to beginning
-            saveData();
-            renderLibrary();
-            showToast('✅ Saved to library!', 'success');
-
-            // Switch to library tab
-            switchTab('library');
-            document.querySelectorAll('.tools-tab').forEach((tab, i) => {
-                tab.classList.toggle('active', i === 2);
-            });
-        }
-
-        function renderLibrary() {
-            const container = document.getElementById('library-container');
-
-            if (materialsLibrary.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📚</div>
-                        <p>Your material library is empty. Save transcripts to start tracking.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = materialsLibrary.map((material, index) => `
-                <div class="material-card">
-                    <div class="material-header">
-                        <div class="material-title">${material.title}</div>
-                        <div class="material-type">${material.type}</div>
-                    </div>
-                    <div class="material-meta">
-                        Added: ${new Date(material.dateAdded).toLocaleDateString()}
-                    </div>
-                    <div class="material-stats">
-                        <span>📇 ${material.wordCount} cards</span>
-                        ${material.transcript ? `<span>📄 ${Math.ceil(material.transcript.split(' ').length / 100)} min read</span>` : ''}
-                    </div>
-                    <div class="material-actions">
-                        ${material.url ? `<button class="material-btn" onclick="window.open('${material.url}', '_blank')">🔗 Open</button>` : ''}
-                        <button class="material-btn" onclick="loadMaterial(${index})">📝 Load</button>
-                        <button class="material-btn" onclick="viewMaterialCards(${index})">📇 Cards</button>
-                        <button class="material-btn" onclick="deleteMaterial(${index})">🗑️ Delete</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadMaterial(index) {
-            const material = materialsLibrary[index];
-            
-            document.getElementById('material-title').value = material.title;
-            document.getElementById('youtube-url').value = material.url || '';
-            document.getElementById('transcript-text').value = material.transcript || '';
-
-            switchTab('transcript');
-            document.querySelectorAll('.tools-tab').forEach((tab, i) => {
-                tab.classList.toggle('active', i === 0);
-            });
-
-            showToast('Material loaded!', 'success');
-        }
-
-        function viewMaterialCards(index) {
-            const material = materialsLibrary[index];
-            const cards = flashcardsData.filter(card => card.source === material.title);
-
-            if (cards.length === 0) {
-                showToast('No cards from this material yet', 'error');
-                return;
-            }
-
-            switchTab('flashcards');
-            document.querySelectorAll('.tools-tab').forEach((tab, i) => {
-                tab.classList.toggle('active', i === 1);
-            });
-            
-            showToast(`Showing ${cards.length} cards from ${material.title}`, 'success');
-        }
-
-        function deleteMaterial(index) {
-            if (confirm('Delete this material? (Flashcards will remain)')) {
-                materialsLibrary.splice(index, 1);
-                saveData();
-                renderLibrary();
-                showToast('Material deleted', 'success');
-            }
-        }
-
-        // Search functionality
-        document.getElementById('library-search')?.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const materials = document.querySelectorAll('.material-card');
-            
-            materials.forEach(card => {
-                const title = card.querySelector('.material-title').textContent.toLowerCase();
-                card.style.display = title.includes(query) ? 'block' : 'none';
-            });
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            // Ctrl/Cmd + Shift + T = Toggle tools panel
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
-                e.preventDefault();
-                toggleToolsPanel();
-            }
-        });
-    </script>
 
 </body>
 </html>
