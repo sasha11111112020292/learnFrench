@@ -6257,12 +6257,14 @@ const firebaseConfig = {
                 let classes = ['calendar-day'];
                 if (isToday) classes.push('today');
                 
-                if (dayData && dayData.totalActions > 0) {
+                // Only mark as active if date is today or in the past (no future predictions!)
+                if (dayData && dayData.totalActions > 0 && date <= today) {
                     const intensity = Math.min(dayData.totalActions, 5);
                     classes.push(`active-${intensity}`);
                 }
                 
-                const actionIcons = dayData ? Object.entries(dayData.actions)
+                // Only show activity icons for dates that have actually happened
+                const actionIcons = (dayData && date <= today) ? Object.entries(dayData.actions)
                     .filter(([_, active]) => active)
                     .map(([action]) => {
                         return `<span class="calendar-action-icon">${svgIcons[action]}</span>`;
