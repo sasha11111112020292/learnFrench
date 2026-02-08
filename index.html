@@ -8558,6 +8558,7 @@ const firebaseConfig = {
                 const unknownCount = passage.unknownWords.length;
                 
                 // Calculate comprehension: assume you know all words EXCEPT the ones marked as unknown
+                // This way you don't have to mark every word you know!
                 const knownWords = uniqueWords.length - unknownCount;
                 const knownPercent = uniqueWords.length > 0 ? Math.round((knownWords / uniqueWords.length) * 100) : 0;
                 
