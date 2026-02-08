@@ -2925,6 +2925,188 @@ const firebaseConfig = {
             fill: white;
         }
 
+        /* INTERACTIVE READING */
+        .reading-passage-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            margin-bottom: 2rem;
+            border: 1px solid var(--whisper);
+            transition: all 0.3s ease;
+        }
+
+        .reading-passage-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .reading-passage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--whisper);
+        }
+
+        .reading-passage-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .reading-passage-meta {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+        }
+
+        .reading-passage-stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .reading-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .reading-stat-value {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--crimson);
+        }
+
+        .reading-stat-label {
+            color: var(--text-soft);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .reading-passage-text {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: var(--text);
+            user-select: none;
+            cursor: text;
+        }
+
+        .reading-passage-text .word {
+            cursor: pointer;
+            padding: 2px 0;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .reading-passage-text .word:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .reading-passage-text .word.unknown {
+            background: rgba(255, 215, 0, 0.3);
+            border-bottom: 2px solid #FFD700;
+        }
+
+        .reading-passage-text .word.known {
+            background: rgba(144, 238, 144, 0.2);
+        }
+
+        .word-popup {
+            position: fixed;
+            background: white;
+            border: 2px solid var(--crimson);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            min-width: 200px;
+            animation: popIn 0.2s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .word-popup-word {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+        }
+
+        .word-popup-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .word-popup-btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        .word-popup-btn.primary {
+            background: var(--crimson);
+            color: white;
+        }
+
+        .word-popup-btn.primary:hover {
+            background: #b71c1c;
+            transform: translateY(-1px);
+        }
+
+        .word-popup-btn.secondary {
+            background: var(--cream-dark);
+            color: var(--navy);
+        }
+
+        .word-popup-btn.secondary:hover {
+            background: #e0ddd5;
+        }
+
+        .reading-progress-bar {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--whisper);
+        }
+
+        .reading-progress-label {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            margin-bottom: 0.5rem;
+        }
+
+        .reading-progress-track {
+            height: 8px;
+            background: var(--whisper);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .reading-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9999, #ff7777);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
         /* GROWTH TREE VISUALIZATION */
         .growth-tree-container {
             background: linear-gradient(180deg, #fdfcfb 0%, #f7f6f4 100%);
@@ -4152,16 +4334,51 @@ const firebaseConfig = {
             <div class="room-intro">
                 <h1 class="room-title">Le Coin Lecture</h1>
                 <p class="room-description">
-                    Garde une trace de ce que tu lis ou veux lire.
+                    Garde une trace de ce que tu lis et pratique avec des textes interactifs.
                 </p>
             </div>
 
-            <div style="margin-bottom: 2rem; text-align: center;">
-                <button class="btn btn-primary" id="add-reading-btn">+ Ajouter un article ou livre</button>
-                <button class="btn btn-secondary" id="add-reading-transcript-btn">+ Ajouter une transcription</button>
-            </div>
+            <!-- Reading List Section -->
+            <div style="margin-bottom: 3rem;">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 0.5rem;">Ma Liste de Lecture</h3>
+                <p style="color: var(--text-soft); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                    Articles, livres, et contenus que tu veux lire ou as déjà lu.
+                </p>
 
-            <div class="resource-grid" id="reading-grid"></div>
+                <div style="margin-bottom: 2rem; text-align: center;">
+                    <button class="btn btn-primary" id="add-reading-btn">+ Ajouter un article ou livre</button>
+                </div>
+
+                <div class="resource-grid" id="reading-grid"></div>
+            </div>
+            
+            <!-- Decorative Divider -->
+            <div style="margin: 3rem 0; border-top: 2px solid var(--whisper); position: relative;">
+                <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--cream); padding: 0 1rem;">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px; color: var(--crimson); opacity: 0.5;">
+                        <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Interactive Reading Passages Section -->
+            <div style="margin-top: 3rem;">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 0.5rem;">Lecture Interactive</h3>
+                <p style="color: var(--text-soft); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                    Importe des textes français et clique sur les mots que tu ne connais pas. Les mots que tu as déjà appris (dans Le Jardin) apparaîtront en vert.
+                </p>
+                
+                <div style="margin-bottom: 2rem;">
+                    <button class="btn btn-primary" onclick="openModal('add-passage-modal')">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Ajouter un texte interactif
+                    </button>
+                </div>
+                
+                <div id="reading-passages-container"></div>
+            </div>
             
             <!-- Transcripts Section -->
             <div id="reading-transcripts-section" style="margin-top: 3rem; display: none;">
@@ -4834,6 +5051,39 @@ const firebaseConfig = {
         </div>
     </div>
 
+    <!-- Add Passage Modal -->
+    <div class="modal" id="add-passage-modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter un texte</h2>
+                <button class="close-btn" onclick="closeModal('add-passage-modal')">&times;</button>
+            </div>
+            
+            <form id="add-passage-form">
+                <div class="form-group">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-input" id="passage-title" required placeholder="Ex: Article du Monde, Chapitre 1...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Source (optionnel)</label>
+                    <input type="text" class="form-input" id="passage-source" placeholder="Ex: Le Monde, L'Étranger par Camus...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Texte</label>
+                    <textarea class="form-textarea" id="passage-text" required style="min-height: 300px; font-size: 1.05rem; line-height: 1.8;" placeholder="Colle ton texte français ici..."></textarea>
+                    <small style="color: var(--text-soft);">Astuce: Colle n'importe quel texte français ici. Après l'avoir ajouté, tu pourras cliquer sur les mots pour les ajouter à ton vocabulaire.</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('add-passage-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Listening Modal -->
     <div class="modal" id="listening-modal">
         <div class="modal-content">
@@ -5383,9 +5633,10 @@ const firebaseConfig = {
                 
                 <!-- Translation Display -->
                 <div class="form-group" id="translation-display" style="display: none; padding: 1rem; background: var(--cream-light); border-radius: 8px; margin-top: 1rem;">
-                    <label class="form-label" style="font-size: 0.9rem; margin-bottom: 0.5rem;">Traduction</label>
-                    <div id="translation-text" style="font-size: 1.1rem; color: var(--burgundy); font-weight: 500;"></div>
-                    <div id="translation-loading" style="font-size: 0.9rem; color: var(--text-soft); font-style: italic;">Chargement...</div>
+                    <label class="form-label" style="font-size: 0.9rem; margin-bottom: 0.5rem;">Traduction (éditable)</label>
+                    <input type="text" class="form-input" id="translation-text" style="font-size: 1.1rem; color: var(--burgundy); font-weight: 500; border: 1px solid var(--whisper);">
+                    <div id="translation-loading" style="font-size: 0.9rem; color: var(--text-soft); font-style: italic; margin-top: 0.5rem;">Chargement...</div>
+                    <small style="color: var(--text-soft); font-size: 0.85rem; margin-top: 0.5rem; display: block;">Tu peux éditer la traduction avant de l'ajouter</small>
                 </div>
                 
                 <!-- Add to Le Jardin Button -->
@@ -5395,6 +5646,14 @@ const firebaseConfig = {
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                         </svg>
                         <span>Ajouter à Le Jardin</span>
+                    </button>
+                </div>
+                
+                <!-- Reading Passage Quick Actions (only shown when from passage) -->
+                <div class="form-group" id="reading-passage-quick-actions" style="display: none;">
+                    <label class="form-label" style="font-size: 0.9rem; color: var(--text-soft);">Marquer ce mot dans le texte:</label>
+                    <button onclick="markWordAsUnknownInPassageFromModal()" class="btn btn-secondary" style="width: 100%; font-size: 0.9rem; padding: 0.6rem; background: rgba(255, 215, 0, 0.2); border-color: #FFD700;">
+                        ⭐ Marquer comme mot inconnu
                     </button>
                 </div>
                 
@@ -5492,6 +5751,7 @@ const firebaseConfig = {
             console.log('   - resourcesList:', resourcesList.length, 'items');
             console.log('   - readingTranscripts:', readingTranscripts.length, 'items');
             console.log('   - listeningTranscripts:', listeningTranscripts.length, 'items');
+            console.log('   - readingPassages:', readingPassages.length, 'items');
             console.log('   - presenceData:', Object.keys(presenceData).length, 'days');
             
             // Show sync indicator
@@ -5509,6 +5769,7 @@ const firebaseConfig = {
                     resourcesList,
                     readingTranscripts,
                     listeningTranscripts,
+                    readingPassages,
                     presenceData,
                     lastUpdated: new Date().toISOString()
                 });
@@ -5628,8 +5889,10 @@ const firebaseConfig = {
         let recordings = [];
         let resourcesList = [];
         let notes = [];
+        let readingPassages = []; // Interactive reading passages
 
         let currentRecording = null;
+        let activeWordPopup = null; // Track current word popup
 
         // Easter egg click counters
         let logoSubClicks = 0;
@@ -5752,6 +6015,98 @@ const firebaseConfig = {
                 savePresenceData();
                 updatePresenceUI();
             }
+        }
+
+        // NEW: Rebuild presenceData from existing entries
+        function rebuildPresenceDataFromEntries() {
+            console.log('🔄 Rebuilding presence data from existing entries...');
+            
+            // Keep existing presenceData structure, just add missing dates
+            const newPresenceData = {...presenceData};
+            
+            // Helper to add action to a date
+            function addActionToDate(dateStr, actionType) {
+                if (!newPresenceData[dateStr]) {
+                    newPresenceData[dateStr] = {
+                        date: dateStr,
+                        actions: {
+                            writing: false,
+                            speaking: false,
+                            listening: false,
+                            reading: false,
+                            new_word: false
+                        },
+                        totalActions: 0
+                    };
+                }
+                if (!newPresenceData[dateStr].actions[actionType]) {
+                    newPresenceData[dateStr].actions[actionType] = true;
+                    newPresenceData[dateStr].totalActions = Object.values(newPresenceData[dateStr].actions).filter(Boolean).length;
+                }
+            }
+            
+            // Scan vocabulary (new words)
+            if (vocabulary && vocabulary.length > 0) {
+                vocabulary.forEach(word => {
+                    if (word.created) {
+                        const dateStr = word.created.split('T')[0];
+                        addActionToDate(dateStr, 'new_word');
+                    }
+                });
+                console.log(`  ✅ Processed ${vocabulary.length} vocabulary words`);
+            }
+            
+            // Scan writings
+            if (writings && writings.length > 0) {
+                writings.forEach(writing => {
+                    if (writing.created) {
+                        const dateStr = writing.created.split('T')[0];
+                        addActionToDate(dateStr, 'writing');
+                    }
+                });
+                console.log(`  ✅ Processed ${writings.length} writings`);
+            }
+            
+            // Scan readings
+            if (readingList && readingList.length > 0) {
+                readingList.forEach(reading => {
+                    if (reading.created) {
+                        const dateStr = reading.created.split('T')[0];
+                        addActionToDate(dateStr, 'reading');
+                    }
+                });
+                console.log(`  ✅ Processed ${readingList.length} readings`);
+            }
+            
+            // Scan listening
+            if (listeningList && listeningList.length > 0) {
+                listeningList.forEach(listening => {
+                    if (listening.created) {
+                        const dateStr = listening.created.split('T')[0];
+                        addActionToDate(dateStr, 'listening');
+                    }
+                });
+                console.log(`  ✅ Processed ${listeningList.length} listening entries`);
+            }
+            
+            // Scan recordings (speaking)
+            if (recordings && recordings.length > 0) {
+                recordings.forEach(recording => {
+                    if (recording.created) {
+                        const dateStr = recording.created.split('T')[0];
+                        addActionToDate(dateStr, 'speaking');
+                    }
+                });
+                console.log(`  ✅ Processed ${recordings.length} recordings`);
+            }
+            
+            // Update presenceData
+            presenceData = newPresenceData;
+            console.log(`✅ Rebuilt presence data for ${Object.keys(presenceData).length} days`);
+            
+            // Save and update UI
+            savePresenceData();
+            updatePresenceUI();
         }
 
         function savePresenceData() {
@@ -8141,6 +8496,230 @@ const firebaseConfig = {
         }
 
         // ============================================
+        // INTERACTIVE READING PASSAGES
+        // ============================================
+        
+        // Add new passage
+        document.getElementById('add-passage-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const passage = {
+                id: Date.now(),
+                title: document.getElementById('passage-title').value.trim(),
+                source: document.getElementById('passage-source').value.trim(),
+                text: document.getElementById('passage-text').value.trim(),
+                created: new Date().toISOString(),
+                unknownWords: [],
+                knownWords: []
+            };
+            
+            readingPassages.push(passage);
+            syncToFirebase();
+            
+            // Log reading action
+            logAction(ACTION_TYPES.READING);
+            
+            document.getElementById('add-passage-form').reset();
+            closeModal('add-passage-modal');
+            renderReadingPassages();
+        });
+        
+        function renderReadingPassages() {
+            const container = document.getElementById('reading-passages-container');
+            if (!container) return;
+            
+            if (readingPassages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">
+                            <svg class="svg-icon-lg" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.3;">
+                                <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+                            </svg>
+                        </div>
+                        <div class="empty-text">Ajoute ton premier texte pour commencer</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortedPassages = [...readingPassages].sort((a, b) => b.id - a.id);
+            
+            container.innerHTML = sortedPassages.map(passage => {
+                const words = passage.text.split(/\s+/);
+                const totalWords = words.length;
+                const uniqueWords = [...new Set(words.map(w => w.toLowerCase().replace(/[.,!?;:…—\-"'«»]/g, '')))];
+                
+                // Count words in vocabulary
+                const wordsInVocab = uniqueWords.filter(word => 
+                    vocabulary.some(v => v.french.toLowerCase() === word)
+                ).length;
+                
+                // Unknown words marked in this passage
+                const unknownCount = passage.unknownWords.length;
+                
+                // Calculate comprehension: assume you know all words EXCEPT the ones marked as unknown
+                // This way you don't have to mark every word you know!
+                const knownWords = uniqueWords.length - unknownCount;
+                const knownPercent = uniqueWords.length > 0 ? Math.round((knownWords / uniqueWords.length) * 100) : 0;
+                
+                return `
+                    <div class="reading-passage-card">
+                        <div class="reading-passage-header">
+                            <div>
+                                <div class="reading-passage-title">${passage.title}</div>
+                                ${passage.source ? `<div class="reading-passage-meta">Source: ${passage.source}</div>` : ''}
+                                <div class="reading-passage-meta">${new Date(passage.created).toLocaleDateString('fr-FR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}</div>
+                            </div>
+                            <div class="reading-passage-stats">
+                                <div class="reading-stat">
+                                    <div class="reading-stat-value">${totalWords}</div>
+                                    <div class="reading-stat-label">Mots</div>
+                                </div>
+                                <div class="reading-stat">
+                                    <div class="reading-stat-value" style="color: #4CAF50;">${wordsInVocab}</div>
+                                    <div class="reading-stat-label">Vocabulaire</div>
+                                </div>
+                                <div class="reading-stat">
+                                    <div class="reading-stat-value" style="color: #FFD700;">${unknownCount}</div>
+                                    <div class="reading-stat-label">Inconnus</div>
+                                </div>
+                                <div class="reading-stat">
+                                    <div class="reading-stat-value">${knownPercent}%</div>
+                                    <div class="reading-stat-label">Compris</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="reading-passage-text" data-passage-id="${passage.id}">
+                            ${renderInteractiveText(passage)}
+                        </div>
+                        
+                        <div class="reading-progress-bar">
+                            <div class="reading-progress-label">Compréhension: ${knownPercent}%</div>
+                            <div class="reading-progress-track">
+                                <div class="reading-progress-fill" style="width: ${knownPercent}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                            <button class="btn btn-secondary" onclick="deletePassage(${passage.id})" style="flex: 1;">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                                Supprimer
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Attach click handlers to words
+            attachWordClickHandlers();
+        }
+        
+        function renderInteractiveText(passage) {
+            // Split text into words while preserving punctuation
+            const words = passage.text.match(/[\wàâäæçéèêëïîôùûüÿœ'-]+|[^\wàâäæçéèêëïîôùûüÿœ'-]+/gi) || [];
+            
+            return words.map(token => {
+                // Check if it's a word (not punctuation)
+                if (/[\wàâäæçéèêëïîôùûüÿœ'-]+/i.test(token)) {
+                    const normalizedWord = token.toLowerCase();
+                    
+                    // Check if word exists in user's vocabulary (already learned!)
+                    const inVocabulary = vocabulary.some(v => v.french.toLowerCase() === normalizedWord);
+                    
+                    // Check passage-specific marking (only for unknown words)
+                    const isUnknown = passage.unknownWords.includes(normalizedWord);
+                    
+                    let className = 'word';
+                    if (inVocabulary) className += ' known'; // Green - in Le Jardin!
+                    else if (isUnknown) className += ' unknown'; // Yellow - marked unknown
+                    
+                    return `<span class="${className}" data-word="${token}">${token}</span>`;
+                } else {
+                    // Punctuation or whitespace
+                    return token;
+                }
+            }).join('');
+        }
+        
+        function attachWordClickHandlers() {
+            document.querySelectorAll('.reading-passage-text .word').forEach(wordEl => {
+                wordEl.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const word = wordEl.dataset.word;
+                    const passageId = parseInt(wordEl.closest('.reading-passage-text').dataset.passageId);
+                    
+                    // Store passage context for later
+                    window.currentReadingPassageId = passageId;
+                    
+                    // Open the SAME dictionary lookup modal as listening section!
+                    openDictionaryLookup(word);
+                });
+            });
+        }
+        
+        // Mark word as unknown in the reading passage
+        window.markWordAsUnknownInPassage = function(word) {
+            const passageId = window.currentReadingPassageId;
+            if (!passageId) return;
+            
+            const passage = readingPassages.find(p => p.id === passageId);
+            if (!passage) return;
+            
+            const normalizedWord = word.toLowerCase();
+            
+            if (!passage.unknownWords.includes(normalizedWord)) {
+                passage.unknownWords.push(normalizedWord);
+                // Remove from known if it was there
+                passage.knownWords = passage.knownWords.filter(w => w !== normalizedWord);
+                syncToFirebase();
+                renderReadingPassages();
+            }
+        };
+        
+        window.markWordAsKnownInPassage = function(word) {
+            const passageId = window.currentReadingPassageId;
+            if (!passageId) return;
+            
+            const passage = readingPassages.find(p => p.id === passageId);
+            if (!passage) return;
+            
+            const normalizedWord = word.toLowerCase();
+            
+            if (!passage.knownWords.includes(normalizedWord)) {
+                passage.knownWords.push(normalizedWord);
+                // Remove from unknown if it was there
+                passage.unknownWords = passage.unknownWords.filter(w => w !== normalizedWord);
+                syncToFirebase();
+                renderReadingPassages();
+            }
+        };
+        
+        window.unmarkWord = function(word, passageId) {
+            const passage = readingPassages.find(p => p.id === passageId);
+            if (!passage) return;
+            
+            passage.unknownWords = passage.unknownWords.filter(w => w !== word);
+            passage.knownWords = passage.knownWords.filter(w => w !== word);
+            syncToFirebase();
+            renderReadingPassages();
+        };
+        
+        window.deletePassage = function(passageId) {
+            if (!confirm('Supprimer ce texte?')) return;
+            
+            readingPassages = readingPassages.filter(p => p.id !== passageId);
+            syncToFirebase();
+            renderReadingPassages();
+        };
+
+        // ============================================
         // SPEAKING - FIXED VERSION
         // ============================================
         function initializeSpeechRecognition() {
@@ -9140,6 +9719,7 @@ const firebaseConfig = {
                             console.log('💕 Heart easter egg activated - reloading data');
                             await loadDataFromFirebase(currentUser.uid);
                             renderGarden();
+                            renderReadingPassages();
                             renderGardenVisual();
                             // Show a heart notification
                             const heartNote = document.getElementById('heart-note');
@@ -10096,10 +10676,19 @@ const firebaseConfig = {
                         listeningTranscripts = data.listeningTranscripts;
                     }
                     
+                    if (data.readingPassages) {
+                        readingPassages = data.readingPassages;
+                        console.log('✅ Loaded', readingPassages.length, 'reading passages');
+                    }
+                    
                     if (data.presenceData) {
                         presenceData = data.presenceData;
                         console.log('✅ Loaded', Object.keys(presenceData).length, 'days of presence data');
                     }
+                    
+                    // CRITICAL: Rebuild presence data from ALL existing entries
+                    // This ensures calendar shows entries that were created before presence tracking was added
+                    rebuildPresenceDataFromEntries();
                     
                     console.log('✅ Data loaded from Firebase into memory!');
                     
@@ -10110,6 +10699,8 @@ const firebaseConfig = {
                         console.log('  ✅ renderGarden() complete');
                         renderReadingList();
                         console.log('  ✅ renderReadingList() complete');
+                        renderReadingPassages();
+                        console.log('  ✅ renderReadingPassages() complete');
                         renderListeningList();
                         console.log('  ✅ renderListeningList() complete');
                         renderRecordings();
@@ -10174,9 +10765,13 @@ const firebaseConfig = {
                         
                         console.log('✅ Migration complete!');
                         
+                        // Rebuild presence data from migrated entries
+                        rebuildPresenceDataFromEntries();
+                        
                         // Render all data
                         renderGarden();
                         renderReadingList();
+                        renderReadingPassages();
                         renderListeningList();
                         renderRecordings();
                         renderWritingsArchive();
@@ -10451,6 +11046,16 @@ const firebaseConfig = {
             selectedWordForLookup = cleanWord;
             document.getElementById('dictionary-word-input').value = cleanWord;
             
+            // Show/hide reading passage quick actions
+            const quickActions = document.getElementById('reading-passage-quick-actions');
+            if (quickActions) {
+                if (window.currentReadingPassageId) {
+                    quickActions.style.display = 'block';
+                } else {
+                    quickActions.style.display = 'none';
+                }
+            }
+            
             // Show the modal
             document.getElementById('dictionary-lookup-modal').classList.add('active');
             
@@ -10467,22 +11072,25 @@ const firebaseConfig = {
             translationDisplay.style.display = 'block';
             translationLoading.style.display = 'block';
             translationText.style.display = 'none';
+            translationText.value = '';
             
             try {
                 const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=fr|en`);
                 const data = await response.json();
                 
                 if (data.responseData && data.responseData.translatedText) {
-                    translationText.textContent = data.responseData.translatedText;
+                    translationText.value = data.responseData.translatedText;
                     translationText.style.display = 'block';
                     translationLoading.style.display = 'none';
                 } else {
-                    translationText.textContent = 'Traduction non disponible';
+                    translationText.value = '';
+                    translationText.placeholder = 'Entre la traduction manuellement';
                     translationText.style.display = 'block';
                     translationLoading.style.display = 'none';
                 }
             } catch (error) {
-                translationText.textContent = 'Erreur de traduction';
+                translationText.value = '';
+                translationText.placeholder = 'Entre la traduction manuellement';
                 translationText.style.display = 'block';
                 translationLoading.style.display = 'none';
             }
@@ -10490,11 +11098,17 @@ const firebaseConfig = {
         
         function addWordToJardinFromLookup() {
             const word = document.getElementById('dictionary-word-input').value.trim();
-            const translation = document.getElementById('translation-text').textContent;
+            const translation = document.getElementById('translation-text').value.trim();
             
             if (!word) {
                 alert('Veuillez entrer un mot');
                 return;
+            }
+            
+            // If coming from reading passage, mark as unknown
+            if (window.currentReadingPassageId) {
+                markWordAsUnknownInPassage(word);
+                window.currentReadingPassageId = null; // Reset
             }
             
             // Close the dictionary modal
@@ -10503,17 +11117,35 @@ const firebaseConfig = {
             // Open the add word modal with pre-filled data
             document.getElementById('add-word-modal').classList.add('active');
             document.getElementById('word-french').value = word;
-            document.getElementById('word-english').value = translation && translation !== 'Chargement...' && translation !== 'Traduction non disponible' && translation !== 'Erreur de traduction' ? translation : '';
+            document.getElementById('word-english').value = translation || '';
             
-            // Focus on the English input if translation didn't work
-            if (!document.getElementById('word-english').value) {
+            // Focus on the English input if translation is empty
+            if (!translation) {
                 document.getElementById('word-english').focus();
             }
         }
         
         function closeDictionaryLookup() {
             document.getElementById('dictionary-lookup-modal').classList.remove('active');
+            window.currentReadingPassageId = null; // Reset passage context
         }
+        
+        // Quick action buttons for reading passages
+        window.markWordAsKnownInPassageFromModal = function() {
+            const word = document.getElementById('dictionary-word-input').value.trim();
+            if (word && window.currentReadingPassageId) {
+                markWordAsKnownInPassage(word);
+                closeDictionaryLookup();
+            }
+        };
+        
+        window.markWordAsUnknownInPassageFromModal = function() {
+            const word = document.getElementById('dictionary-word-input').value.trim();
+            if (word && window.currentReadingPassageId) {
+                markWordAsUnknownInPassage(word);
+                closeDictionaryLookup();
+            }
+        };
         
         // Toggle transcript collapse/expand
         let transcriptExpanded = true;
