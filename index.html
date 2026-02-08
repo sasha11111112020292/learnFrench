@@ -4347,6 +4347,7 @@ const firebaseConfig = {
 
                 <div style="margin-bottom: 2rem; text-align: center;">
                     <button class="btn btn-primary" id="add-reading-btn">+ Ajouter un article ou livre</button>
+                    <button class="btn btn-secondary" id="add-reading-transcript-btn">+ Ajouter une transcription</button>
                 </div>
 
                 <div class="resource-grid" id="reading-grid"></div>
@@ -5632,10 +5633,10 @@ const firebaseConfig = {
                 </div>
                 
                 <!-- Translation Display -->
-                <div class="form-group" id="translation-display" style="display: none;">
-                    <label class="form-label" style="font-size: 0.9rem; margin-bottom: 0.5rem;">Traduction (éditable)</label>
-                    <input type="text" class="form-input" id="translation-text" style="font-size: 1.1rem; color: var(--burgundy); font-weight: 500; background: var(--cream-light);" placeholder="Modifier ou ajouter traduction...">
-                    <div id="translation-loading" style="font-size: 0.9rem; color: var(--text-soft); font-style: italic; margin-top: 0.5rem;">Chargement...</div>
+                <div class="form-group" id="translation-display" style="display: none; padding: 1rem; background: var(--cream-light); border-radius: 8px; margin-top: 1rem;">
+                    <label class="form-label" style="font-size: 0.9rem; margin-bottom: 0.5rem;">Traduction</label>
+                    <div id="translation-text" style="font-size: 1.1rem; color: var(--burgundy); font-weight: 500;"></div>
+                    <div id="translation-loading" style="font-size: 0.9rem; color: var(--text-soft); font-style: italic;">Chargement...</div>
                 </div>
                 
                 <!-- Add to Le Jardin Button -->
@@ -5645,14 +5646,6 @@ const firebaseConfig = {
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                         </svg>
                         <span>Ajouter à Le Jardin</span>
-                    </button>
-                </div>
-                
-                <!-- Reading Passage Quick Actions (only shown when from passage) -->
-                <div class="form-group" id="reading-passage-quick-actions" style="display: none;">
-                    <label class="form-label" style="font-size: 0.9rem; color: var(--text-soft);">Marquer ce mot dans ce texte:</label>
-                    <button onclick="markWordAsUnknownInPassageFromModal()" class="btn btn-secondary" style="width: 100%; font-size: 0.9rem; padding: 0.6rem; background: rgba(255, 215, 0, 0.2); border-color: #FFD700;">
-                        ⭐ Je ne connais pas ce mot
                     </button>
                 </div>
                 
@@ -5702,18 +5695,18 @@ const firebaseConfig = {
         // ============================================
         // FIREBASE SYNC FUNCTIONS (MUST BE FIRST!)
         // ============================================
-        window.currentUser = null;
+        let currentUser = null;
         let saveTimeout;
         
         // Safe sync function that can be called even before Firebase is ready
         window.syncToFirebase = function() {
             console.log('🔔 syncToFirebase called!');
-            console.log('   currentUser:', window.currentUser ? window.currentUser.email : 'null');
+            console.log('   currentUser:', currentUser ? currentUser.email : 'null');
             console.log('   firebaseReady:', window.firebaseReady);
             console.log('   vocabulary length:', vocabulary.length);
             
             // If not logged in or Firebase not ready, do nothing
-            if (!window.currentUser || !window.firebaseReady) {
+            if (!currentUser || !window.firebaseReady) {
                 console.warn('⏸️ Sync skipped - not logged in or Firebase not ready');
                 return;
             }
@@ -5728,7 +5721,7 @@ const firebaseConfig = {
         async function saveDataToFirebase() {
             console.log('💾 saveDataToFirebase called!');
             
-            if (!window.currentUser) {
+            if (!currentUser) {
                 console.error('❌ Save failed - not logged in');
                 return;
             }
@@ -5758,7 +5751,7 @@ const firebaseConfig = {
             if (syncIndicator) syncIndicator.style.opacity = '1';
             
             try {
-                await setDoc(doc(window.firebaseDB, 'users', window.currentUser.uid), {
+                await setDoc(doc(window.firebaseDB, 'users', currentUser.uid), {
                     vocabulary,
                     readingList,
                     listeningList,
@@ -6620,7 +6613,7 @@ const firebaseConfig = {
                     if (musicVolume) localStorage.setItem('musicVolume', musicVolume);
                     
                     // Sync empty data to Firebase (only if logged in)
-                    if (window.currentUser) {
+                    if (currentUser) {
                         await saveDataToFirebase(); // Immediate sync, not debounced
                     }
                     
@@ -7556,12 +7549,7 @@ const firebaseConfig = {
         }
 
         function closeModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) {
-                modal.classList.remove('active');
-            } else {
-                console.warn(`⚠️ Modal "${id}" not found`);
-            }
+            document.getElementById(id).classList.remove('active');
             const forms = ['word-form', 'edit-word-form', 'reading-form', 'listening-form', 'resources-form'];
             forms.forEach(formId => {
                 const form = document.getElementById(formId);
@@ -8513,7 +8501,8 @@ const firebaseConfig = {
                 source: document.getElementById('passage-source').value.trim(),
                 text: document.getElementById('passage-text').value.trim(),
                 created: new Date().toISOString(),
-                unknownWords: []
+                unknownWords: [],
+                knownWords: []
             };
             
             readingPassages.push(passage);
@@ -8550,21 +8539,8 @@ const firebaseConfig = {
             container.innerHTML = sortedPassages.map(passage => {
                 const words = passage.text.split(/\s+/);
                 const totalWords = words.length;
-                const uniqueWords = [...new Set(words.map(w => w.toLowerCase().replace(/[.,!?;:…—\-"'«»]/g, '')))];
-                
-                // Count words in vocabulary
-                const wordsInVocab = uniqueWords.filter(word => 
-                    vocabulary.some(v => v.french.toLowerCase() === word)
-                ).length;
-                
-                // Unknown words marked in this passage
                 const unknownCount = passage.unknownWords.length;
-                
-                // NEW LOGIC: All words are assumed known EXCEPT those marked unknown
-                // Comprehension = (total unique - unknown marked) / total unique
-                const knownPercent = uniqueWords.length > 0 
-                    ? Math.round(((uniqueWords.length - unknownCount) / uniqueWords.length) * 100) 
-                    : 100; // Default to 100% if no words
+                const knownPercent = totalWords > 0 ? Math.round(((totalWords - unknownCount) / totalWords) * 100) : 0;
                 
                 return `
                     <div class="reading-passage-card">
@@ -8584,16 +8560,12 @@ const firebaseConfig = {
                                     <div class="reading-stat-label">Mots</div>
                                 </div>
                                 <div class="reading-stat">
-                                    <div class="reading-stat-value" style="color: #4CAF50;">${wordsInVocab}</div>
-                                    <div class="reading-stat-label">Vocabulaire</div>
-                                </div>
-                                <div class="reading-stat">
-                                    <div class="reading-stat-value" style="color: #FFD700;">${unknownCount}</div>
+                                    <div class="reading-stat-value">${unknownCount}</div>
                                     <div class="reading-stat-label">Inconnus</div>
                                 </div>
                                 <div class="reading-stat">
                                     <div class="reading-stat-value">${knownPercent}%</div>
-                                    <div class="reading-stat-label">Compris</div>
+                                    <div class="reading-stat-label">Connus</div>
                                 </div>
                             </div>
                         </div>
@@ -8633,17 +8605,12 @@ const firebaseConfig = {
                 // Check if it's a word (not punctuation)
                 if (/[\wàâäæçéèêëïîôùûüÿœ'-]+/i.test(token)) {
                     const normalizedWord = token.toLowerCase();
-                    
-                    // Check if word exists in user's vocabulary (already learned!)
-                    const inVocabulary = vocabulary.some(v => v.french.toLowerCase() === normalizedWord);
-                    
-                    // Check if marked as unknown in this passage
                     const isUnknown = passage.unknownWords.includes(normalizedWord);
+                    const isKnown = passage.knownWords.includes(normalizedWord);
                     
                     let className = 'word';
-                    if (inVocabulary) className += ' known'; // Green - in Le Jardin!
-                    else if (isUnknown) className += ' unknown'; // Yellow - marked unknown
-                    // Everything else is assumed known (no special class)
+                    if (isUnknown) className += ' unknown';
+                    if (isKnown) className += ' known';
                     
                     return `<span class="${className}" data-word="${token}">${token}</span>`;
                 } else {
@@ -8657,33 +8624,114 @@ const firebaseConfig = {
             document.querySelectorAll('.reading-passage-text .word').forEach(wordEl => {
                 wordEl.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const word = wordEl.dataset.word;
-                    const passageId = parseInt(wordEl.closest('.reading-passage-text').dataset.passageId);
-                    
-                    // Store passage context for later
-                    window.currentReadingPassageId = passageId;
-                    
-                    // Open the SAME dictionary lookup modal as listening section!
-                    openDictionaryLookup(word);
+                    showWordPopup(wordEl);
                 });
             });
+            
+            // Close popup when clicking outside
+            document.addEventListener('click', closeWordPopup);
         }
         
-        // Mark word as unknown in the reading passage
-        window.markWordAsUnknownInPassage = function(word) {
-            const passageId = window.currentReadingPassageId;
-            if (!passageId) return;
+        function showWordPopup(wordEl) {
+            // Close existing popup
+            closeWordPopup();
             
+            const word = wordEl.dataset.word;
+            const passageId = parseInt(wordEl.closest('.reading-passage-text').dataset.passageId);
             const passage = readingPassages.find(p => p.id === passageId);
+            
             if (!passage) return;
             
             const normalizedWord = word.toLowerCase();
+            const isUnknown = passage.unknownWords.includes(normalizedWord);
+            const isKnown = passage.knownWords.includes(normalizedWord);
             
-            if (!passage.unknownWords.includes(normalizedWord)) {
-                passage.unknownWords.push(normalizedWord);
+            // Create popup
+            const popup = document.createElement('div');
+            popup.className = 'word-popup';
+            popup.innerHTML = `
+                <div class="word-popup-word">${word}</div>
+                <div class="word-popup-actions">
+                    ${!isUnknown ? `
+                        <button class="word-popup-btn primary" onclick="markWordAsUnknown('${normalizedWord}', ${passageId})">
+                            ⭐ Ajouter au vocabulaire
+                        </button>
+                    ` : `
+                        <button class="word-popup-btn secondary" onclick="unmarkWord('${normalizedWord}', ${passageId})">
+                            ✓ Marqué comme inconnu
+                        </button>
+                    `}
+                    ${!isKnown && !isUnknown ? `
+                        <button class="word-popup-btn secondary" onclick="markWordAsKnown('${normalizedWord}', ${passageId})">
+                            Je connais ce mot
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            activeWordPopup = popup;
+            
+            // Position popup
+            const rect = wordEl.getBoundingClientRect();
+            popup.style.left = `${rect.left + window.scrollX}px`;
+            popup.style.top = `${rect.bottom + window.scrollY + 10}px`;
+            
+            // Adjust if popup goes off screen
+            const popupRect = popup.getBoundingClientRect();
+            if (popupRect.right > window.innerWidth) {
+                popup.style.left = `${window.innerWidth - popupRect.width - 20}px`;
+            }
+            if (popupRect.bottom > window.innerHeight) {
+                popup.style.top = `${rect.top + window.scrollY - popupRect.height - 10}px`;
+            }
+        }
+        
+        function closeWordPopup() {
+            if (activeWordPopup) {
+                activeWordPopup.remove();
+                activeWordPopup = null;
+            }
+        }
+        
+        window.markWordAsUnknown = function(word, passageId) {
+            const passage = readingPassages.find(p => p.id === passageId);
+            if (!passage) return;
+            
+            if (!passage.unknownWords.includes(word)) {
+                passage.unknownWords.push(word);
+                // Remove from known if it was there
+                passage.knownWords = passage.knownWords.filter(w => w !== word);
                 syncToFirebase();
                 renderReadingPassages();
             }
+            
+            closeWordPopup();
+            
+            // Ask if user wants to add to vocabulary
+            if (confirm(`Ajouter "${word}" au vocabulaire?`)) {
+                // Open word modal with pre-filled word
+                document.getElementById('word-french').value = word;
+                document.getElementById('word-type').value = '';
+                document.getElementById('word-english').value = '';
+                document.getElementById('word-example').value = '';
+                openModal('word-modal');
+            }
+        };
+        
+        window.markWordAsKnown = function(word, passageId) {
+            const passage = readingPassages.find(p => p.id === passageId);
+            if (!passage) return;
+            
+            if (!passage.knownWords.includes(word)) {
+                passage.knownWords.push(word);
+                // Remove from unknown if it was there
+                passage.unknownWords = passage.unknownWords.filter(w => w !== word);
+                syncToFirebase();
+                renderReadingPassages();
+            }
+            
+            closeWordPopup();
         };
         
         window.unmarkWord = function(word, passageId) {
@@ -8691,8 +8739,10 @@ const firebaseConfig = {
             if (!passage) return;
             
             passage.unknownWords = passage.unknownWords.filter(w => w !== word);
+            passage.knownWords = passage.knownWords.filter(w => w !== word);
             syncToFirebase();
             renderReadingPassages();
+            closeWordPopup();
         };
         
         window.deletePassage = function(passageId) {
@@ -9699,9 +9749,9 @@ const firebaseConfig = {
                     heartTimer = setTimeout(() => { heartClicks = 0; }, 2000);
                     if (heartClicks === 3) {
                         heartClicks = 0;
-                        if (window.currentUser && window.currentUser.uid) {
+                        if (currentUser && currentUser.uid) {
                             console.log('💕 Heart easter egg activated - reloading data');
-                            await loadDataFromFirebase(window.currentUser.uid);
+                            await loadDataFromFirebase(currentUser.uid);
                             renderGarden();
                             renderReadingPassages();
                             renderGardenVisual();
@@ -9753,9 +9803,9 @@ const firebaseConfig = {
             
             // IMPORTANT: Auto-load user data after login (3 second delay to ensure everything is ready)
             setTimeout(() => {
-                if (window.currentUser && window.currentUser.uid) {
+                if (currentUser && currentUser.uid) {
                     console.log('🔄 Auto-loading data for logged in user...');
-                    loadDataFromFirebase(window.currentUser.uid).then(() => {
+                    loadDataFromFirebase(currentUser.uid).then(() => {
                         renderGarden();
                         renderGardenVisual();
                         console.log('✅ Auto-load complete!');
@@ -10289,6 +10339,19 @@ const firebaseConfig = {
 
         // Setup transcript buttons and forms
         function setupTranscriptSystem() {
+            // Reading transcript button
+            document.getElementById('add-reading-transcript-btn')?.addEventListener('click', () => {
+                // Reset form and modal title for new transcript
+                const form = document.getElementById('add-reading-transcript-form');
+                const modalTitle = document.querySelector('#add-reading-transcript-modal .modal-title');
+                if (form) {
+                    form.reset();
+                    delete form.dataset.editingId;
+                }
+                if (modalTitle) modalTitle.textContent = 'Ajouter une transcription';
+                openModal('add-reading-transcript-modal');
+            });
+            
             // Listening transcript button
             document.getElementById('add-listening-transcript-btn')?.addEventListener('click', () => {
                 // Reset form and modal title for new transcript
@@ -10423,7 +10486,7 @@ const firebaseConfig = {
                 console.log('👤 Auth state changed:', user ? user.email : 'Not logged in');
                 
                 if (user) {
-                    window.currentUser = user;
+                    currentUser = user;
                     
                     // Show entrance user profile
                     const userProfile = document.getElementById('entrance-user-profile');
@@ -10436,31 +10499,16 @@ const firebaseConfig = {
                     if (userAvatar) userAvatar.textContent = user.email[0].toUpperCase();
                     if (loginSection) loginSection.style.display = 'none';
                     
-                    // Try to close auth modal, but don't let it break the login flow
-                    try {
-                        closeModal('auth-modal');
-                    } catch (e) {
-                        console.warn('⚠️ Could not close auth modal:', e);
-                    }
+                    closeModal('auth-modal');
                     
                     // Load data from Firestore
                     console.log('📥 Loading data for user:', user.uid);
                     await loadDataFromFirebase(user.uid);
-                    console.log('✅ loadDataFromFirebase completed successfully');
-                    console.log('📊 Current state:', {
-                        vocabulary: vocabulary.length,
-                        readingPassages: readingPassages.length
-                    });
-                    
-                    // Update debug panel
-                    if (typeof updateDebugPanel !== 'undefined') {
-                        updateDebugPanel();
-                    }
                     
                     // Setup real-time sync
                     setupRealtimeSync(user.uid);
                 } else {
-                    window.currentUser = null;
+                    currentUser = null;
                     
                     // Hide entrance user profile
                     const userProfile = document.getElementById('entrance-user-profile');
@@ -10601,22 +10649,16 @@ const firebaseConfig = {
         // Load all data from Firebase
         async function loadDataFromFirebase(userId) {
             console.log('🔍 loadDataFromFirebase called for userId:', userId);
-            console.log('🔍 window.firebaseModules exists?', !!window.firebaseModules);
-            console.log('🔍 window.firebaseDB exists?', !!window.firebaseDB);
             
             const { doc, getDoc } = window.firebaseModules;
             
             try {
                 console.log('📡 Fetching user document...');
-                const userDocRef = doc(window.firebaseDB, 'users', userId);
-                console.log('📡 Doc ref created:', userDocRef);
-                const userDoc = await getDoc(userDocRef);
-                console.log('📄 User doc received');
+                const userDoc = await getDoc(doc(window.firebaseDB, 'users', userId));
                 console.log('📄 User doc exists?', userDoc.exists());
                 
                 if (userDoc.exists()) {
                     const data = userDoc.data();
-                    console.log('📦 Raw data object keys:', Object.keys(data));
                     console.log('📦 Data received:', {
                         vocabulary: data.vocabulary?.length || 0,
                         readingList: data.readingList?.length || 0,
@@ -10627,7 +10669,6 @@ const firebaseConfig = {
                         resourcesList: data.resourcesList?.length || 0,
                         readingTranscripts: data.readingTranscripts?.length || 0,
                         listeningTranscripts: data.listeningTranscripts?.length || 0,
-                        readingPassages: data.readingPassages?.length || 0,
                         presenceData: Object.keys(data.presenceData || {}).length || 0
                     });
                     
@@ -10684,9 +10725,6 @@ const firebaseConfig = {
                     rebuildPresenceDataFromEntries();
                     
                     console.log('✅ Data loaded from Firebase into memory!');
-                    
-                    // Update debug panel
-                    updateDebugPanel();
                     
                     // Try to render if functions exist, otherwise they'll render when page loads
                     if (typeof renderGarden !== 'undefined') {
@@ -10791,61 +10829,6 @@ const firebaseConfig = {
                 alert('Failed to load data: ' + error.message);
             }
         }
-        
-        // UPDATE DEBUG PANEL
-        function updateDebugPanel() {
-            const loggedInEl = document.getElementById('debug-logged-in');
-            const firebaseEl = document.getElementById('debug-firebase-ready');
-            const vocabEl = document.getElementById('debug-vocab-count');
-            const passagesEl = document.getElementById('debug-passages-count');
-            
-            if (loggedInEl) {
-                loggedInEl.innerHTML = window.currentUser 
-                    ? `👤 Logged in: <span style="color: #4CAF50;">✓ ${window.currentUser.email || 'YES'}</span>`
-                    : `👤 Logged in: <span style="color: #FF6B6B;">✗ NO</span>`;
-            }
-            
-            if (firebaseEl) {
-                firebaseEl.innerHTML = window.firebaseReady 
-                    ? `🔥 Firebase: <span style="color: #4CAF50;">✓ Ready</span>`
-                    : `🔥 Firebase: <span style="color: #FF6B6B;">✗ Not Ready</span>`;
-            }
-            
-            if (vocabEl) {
-                vocabEl.innerHTML = `📚 Vocabulary: <span style="color: #4CAF50;">${vocabulary.length}</span>`;
-            }
-            
-            if (passagesEl) {
-                passagesEl.innerHTML = `📖 Passages: <span style="color: #4CAF50;">${readingPassages.length}</span>`;
-            }
-        }
-        
-        // FORCE RELOAD DATA
-        window.forceReloadData = async function() {
-            if (!window.currentUser) {
-                alert('❌ Not logged in! Please log in first.');
-                return;
-            }
-            
-            if (!window.firebaseReady) {
-                alert('❌ Firebase not ready! Refresh the page.');
-                return;
-            }
-            
-            alert('🔄 Reloading data from Firebase...');
-            
-            try {
-                await loadDataFromFirebase(window.currentUser.uid);
-                updateDebugPanel();
-                alert('✅ Data reloaded successfully!');
-            } catch (error) {
-                alert('❌ Error: ' + error.message);
-            }
-        };
-        
-        // Update debug panel every 2 seconds
-        setInterval(updateDebugPanel, 2000);
-        setTimeout(updateDebugPanel, 500); // Initial update
         
         function setupRealtimeSync(userId) {
             console.log('🔄 Real-time sync is active for user:', userId);
@@ -11097,16 +11080,6 @@ const firebaseConfig = {
             selectedWordForLookup = cleanWord;
             document.getElementById('dictionary-word-input').value = cleanWord;
             
-            // Show/hide reading passage quick actions
-            const quickActions = document.getElementById('reading-passage-quick-actions');
-            if (quickActions) {
-                if (window.currentReadingPassageId) {
-                    quickActions.style.display = 'block';
-                } else {
-                    quickActions.style.display = 'none';
-                }
-            }
-            
             // Show the modal
             document.getElementById('dictionary-lookup-modal').classList.add('active');
             
@@ -11119,9 +11092,6 @@ const firebaseConfig = {
             const translationText = document.getElementById('translation-text');
             const translationLoading = document.getElementById('translation-loading');
             
-            // Clear previous value
-            translationText.value = '';
-            
             // Show loading
             translationDisplay.style.display = 'block';
             translationLoading.style.display = 'block';
@@ -11132,16 +11102,16 @@ const firebaseConfig = {
                 const data = await response.json();
                 
                 if (data.responseData && data.responseData.translatedText) {
-                    translationText.value = data.responseData.translatedText;
+                    translationText.textContent = data.responseData.translatedText;
                     translationText.style.display = 'block';
                     translationLoading.style.display = 'none';
                 } else {
-                    translationText.value = 'Traduction non disponible';
+                    translationText.textContent = 'Traduction non disponible';
                     translationText.style.display = 'block';
                     translationLoading.style.display = 'none';
                 }
             } catch (error) {
-                translationText.value = 'Erreur de traduction';
+                translationText.textContent = 'Erreur de traduction';
                 translationText.style.display = 'block';
                 translationLoading.style.display = 'none';
             }
@@ -11149,45 +11119,30 @@ const firebaseConfig = {
         
         function addWordToJardinFromLookup() {
             const word = document.getElementById('dictionary-word-input').value.trim();
-            const translation = document.getElementById('translation-text').value;
+            const translation = document.getElementById('translation-text').textContent;
             
             if (!word) {
                 alert('Veuillez entrer un mot');
                 return;
             }
             
-            // If coming from reading passage, mark as unknown
-            if (window.currentReadingPassageId) {
-                markWordAsUnknownInPassage(word);
-                window.currentReadingPassageId = null; // Reset
-            }
-            
             // Close the dictionary modal
             closeDictionaryLookup();
             
-            // Open the word modal with pre-filled data
-            document.getElementById('word-modal').classList.add('active');
-            document.getElementById('word-input').value = word;
-            document.getElementById('meaning-input').value = translation && translation !== 'Chargement...' && translation !== 'Traduction non disponible' && translation !== 'Erreur de traduction' ? translation : '';
+            // Open the add word modal with pre-filled data
+            document.getElementById('add-word-modal').classList.add('active');
+            document.getElementById('word-french').value = word;
+            document.getElementById('word-english').value = translation && translation !== 'Chargement...' && translation !== 'Traduction non disponible' && translation !== 'Erreur de traduction' ? translation : '';
             
-            // Focus on the meaning input if translation didn't work
-            if (!document.getElementById('meaning-input').value) {
-                document.getElementById('meaning-input').focus();
+            // Focus on the English input if translation didn't work
+            if (!document.getElementById('word-english').value) {
+                document.getElementById('word-english').focus();
             }
         }
         
         function closeDictionaryLookup() {
             document.getElementById('dictionary-lookup-modal').classList.remove('active');
-            window.currentReadingPassageId = null; // Reset passage context
         }
-        
-        window.markWordAsUnknownInPassageFromModal = function() {
-            const word = document.getElementById('dictionary-word-input').value.trim();
-            if (word && window.currentReadingPassageId) {
-                markWordAsUnknownInPassage(word);
-                closeDictionaryLookup();
-            }
-        };
         
         // Toggle transcript collapse/expand
         let transcriptExpanded = true;
@@ -11482,34 +11437,6 @@ const firebaseConfig = {
                 
                 <div style="text-align: center; margin-top: 1.5rem;">
                     <a href="#" id="show-signup" style="color: var(--crimson); text-decoration: none;">Pas encore de compte ? S'inscrire</a>
-                </div>
-            </div>
-            
-            <div id="auth-signup-view" style="display: none;">
-                <form id="signup-form">
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" id="signup-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mot de passe</label>
-                        <input type="password" class="form-input" id="signup-password" required minlength="6">
-                        <small style="color: var(--text-soft);">Minimum 6 caractères</small>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Créer un compte</button>
-                    </div>
-                </form>
-                
-                <div style="text-align: center; margin-top: 1.5rem;">
-                    <a href="#" id="show-login" style="color: var(--crimson); text-decoration: none;">Déjà un compte ? Se connecter</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</body>
-</html>w-signup" style="color: var(--crimson); text-decoration: none;">Pas encore de compte ? S'inscrire</a>
                 </div>
             </div>
             
