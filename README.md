@@ -3016,6 +3016,107 @@ const firebaseConfig = {
             background: rgba(144, 238, 144, 0.2);
         }
 
+        /* Dark mode for reading passages */
+        body.dark-mode .reading-passage-card {
+            background: var(--dark-card);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .reading-passage-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .reading-passage-title {
+            color: var(--dark-text);
+        }
+
+        body.dark-mode .reading-passage-meta {
+            color: var(--dark-text-soft);
+        }
+
+        body.dark-mode .reading-passage-text {
+            color: var(--dark-text);
+        }
+
+        body.dark-mode .reading-passage-text .word:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        body.dark-mode .reading-passage-text .word.unknown {
+            background: rgba(255, 215, 0, 0.4);
+            border-bottom-color: #FFD700;
+        }
+
+        body.dark-mode .reading-passage-text .word.known {
+            background: rgba(144, 238, 144, 0.25);
+        }
+
+        .reading-passage-content {
+            transition: all 0.3s ease;
+        }
+
+        /* Multi-word selection mode */
+        .selection-mode-active .reading-passage-text {
+            user-select: text;
+        }
+
+        .selection-mode-active .reading-passage-text .word {
+            cursor: text;
+        }
+
+        .selection-mode-toolbar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--navy);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+
+        body.dark-mode .selection-mode-toolbar {
+            background: var(--crimson);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .selection-mode-toolbar button {
+            background: white;
+            color: var(--navy);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        body.dark-mode .selection-mode-toolbar button {
+            background: white;
+            color: var(--crimson);
+        }
+
+        .selection-mode-toolbar button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
         .word-popup {
             position: fixed;
             background: white;
@@ -3757,6 +3858,88 @@ const firebaseConfig = {
             .music-modal-close svg {
                 width: 28px;
                 height: 28px;
+            }
+            
+            /* CALENDAR FIX - Mobile responsive */
+            .heatmap-grid {
+                overflow-x: auto;
+                padding-bottom: 1rem;
+            }
+            
+            .heatmap-day {
+                min-width: 14px;
+                min-height: 14px;
+            }
+            
+            /* INTERACTIVE TEXTS FIX - Mobile responsive */
+            .reading-passage-card {
+                padding: 1.5rem 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .reading-passage-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .reading-passage-stats {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                justify-content: flex-start;
+            }
+            
+            .reading-passage-text {
+                font-size: 1rem;
+                line-height: 1.7;
+            }
+            
+            .reading-stat {
+                min-width: 70px;
+            }
+            
+            /* ACCOUNT BUTTON FIX - Mobile responsive */
+            .header {
+                overflow: hidden;
+            }
+            
+            .account-section {
+                max-width: 100%;
+                overflow: hidden;
+            }
+            
+            .account-section button {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            /* Selection toolbar mobile */
+            .selection-mode-toolbar {
+                flex-direction: column;
+                bottom: 1rem;
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+            
+            .selection-mode-toolbar button {
+                width: 100%;
+            }
+            
+            /* Modal responsive */
+            .modal-content {
+                max-width: 95% !important;
+                margin: 1rem;
+            }
+            
+            /* Reading passage buttons responsive */
+            .reading-passage-card [style*="display: flex"] button {
+                min-width: unset !important;
+                flex: 1 1 auto;
             }
         }
 
@@ -5071,9 +5254,21 @@ const firebaseConfig = {
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Texte</label>
-                    <textarea class="form-textarea" id="passage-text" required style="min-height: 300px; font-size: 1.05rem; line-height: 1.8;" placeholder="Colle ton texte français ici..."></textarea>
-                    <small style="color: var(--text-soft);">Astuce: Colle n'importe quel texte français ici. Après l'avoir ajouté, tu pourras cliquer sur les mots pour les ajouter à ton vocabulaire.</small>
+                    <label class="form-label">Lié à un élément de "Ma Liste de Lecture" (optionnel)</label>
+                    <select class="form-select" id="passage-linked-reading">
+                        <option value="">-- Sélectionner un élément --</option>
+                    </select>
+                    <small style="color: var(--text-soft);">Si ce texte provient de votre liste de lecture, sélectionnez-le ici.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Texte (longueur illimitée)</label>
+                    <textarea class="form-textarea" id="passage-text" required style="min-height: 400px; font-size: 1.05rem; line-height: 1.8; resize: vertical;" placeholder="Colle ton texte français ici...
+
+Tu peux inclure plusieurs paragraphes.
+
+Ils seront préservés lors de l'affichage !"></textarea>
+                    <small style="color: var(--text-soft);">✨ Nouveau : Les paragraphes sont maintenant préservés ! Clique sur les mots ou sélectionne plusieurs mots à la fois pour les ajouter à ton vocabulaire.</small>
                 </div>
 
                 <div class="form-actions">
@@ -6374,6 +6569,11 @@ const firebaseConfig = {
         }
 
         function getSRSStats() {
+            // Safety check - ensure vocabulary is initialized
+            if (!vocabulary || !Array.isArray(vocabulary)) {
+                return { due: 0, new: 0, learning: 0, mastered: 0 };
+            }
+            
             const dueWords = getDueWords();
             const newWords = vocabulary.filter(w => !w.srs || w.srs.status === 'new');
             const learningWords = vocabulary.filter(w => w.srs && w.srs.status === 'learning');
@@ -6387,11 +6587,22 @@ const firebaseConfig = {
         }
 
         function updateSRSStatsDisplay() {
+            // Safety check - ensure elements exist
+            const dueCountEl = document.getElementById('srs-due-count');
+            const newCountEl = document.getElementById('srs-new-count');
+            const learningCountEl = document.getElementById('srs-learning-count');
+            const masteredCountEl = document.getElementById('srs-mastered-count');
+            
+            if (!dueCountEl || !newCountEl || !learningCountEl || !masteredCountEl) {
+                console.warn('SRS stats elements not found yet');
+                return;
+            }
+            
             const stats = getSRSStats();
-            document.getElementById('srs-due-count').textContent = stats.due;
-            document.getElementById('srs-new-count').textContent = stats.new;
-            document.getElementById('srs-learning-count').textContent = stats.learning;
-            document.getElementById('srs-mastered-count').textContent = stats.mastered;
+            dueCountEl.textContent = stats.due || 0;
+            newCountEl.textContent = stats.new || 0;
+            learningCountEl.textContent = stats.learning || 0;
+            masteredCountEl.textContent = stats.mastered || 0;
         }
 
         let currentSRSSession = [];
@@ -7556,6 +7767,11 @@ const firebaseConfig = {
                 document.getElementById('week-input').value = activeFilters.week || "";
                 document.getElementById('theme-input').value = activeFilters.theme || "";
             }
+            
+            // Populate linked reading dropdown when opening passage modal
+            if (id === 'add-passage-modal') {
+                populateLinkedReadingDropdown();
+            }
         }
 
         function closeModal(id) {
@@ -8114,7 +8330,12 @@ const firebaseConfig = {
                         ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
                         <div class="resource-status">${statusLabels[item.status]}</div>
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="icon-btn" onclick="createInteractiveTextFromReading(${item.id})" title="Créer un texte interactif">
+                            <svg class="svg-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                            </svg>
+                        </button>
                         <button class="icon-btn" onclick="editReading(${item.id})" title="Modifier">
                             <svg class="svg-icon" viewBox="0 0 24 24">
                                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
@@ -8129,6 +8350,26 @@ const firebaseConfig = {
                 </div>
             `).join('');
         }
+
+        window.createInteractiveTextFromReading = function(readingId) {
+            const item = readingList.find(r => r.id === readingId);
+            if (!item) return;
+            
+            // Pre-fill the interactive text form with reading list data
+            document.getElementById('passage-title').value = item.title;
+            document.getElementById('passage-source').value = item.type || '';
+            document.getElementById('passage-linked-reading').value = readingId;
+            
+            // Open modal
+            openModal('add-passage-modal');
+            
+            // Scroll to text field and focus
+            setTimeout(() => {
+                const textArea = document.getElementById('passage-text');
+                textArea.focus();
+                textArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        };
 
         function editReading(id) {
             const item = readingList.find(r => r.id === id);
@@ -8514,11 +8755,14 @@ const firebaseConfig = {
         document.getElementById('add-passage-form').addEventListener('submit', (e) => {
             e.preventDefault();
             
+            const linkedReadingId = document.getElementById('passage-linked-reading').value;
+            
             const passage = {
                 id: Date.now(),
                 title: document.getElementById('passage-title').value.trim(),
                 source: document.getElementById('passage-source').value.trim(),
                 text: document.getElementById('passage-text').value.trim(),
+                linkedReadingId: linkedReadingId ? parseInt(linkedReadingId) : null,
                 created: new Date().toISOString(),
                 unknownWords: []
             };
@@ -8574,55 +8818,75 @@ const firebaseConfig = {
                     : 100; // Default to 100% if no words
                 
                 return `
-                    <div class="reading-passage-card">
+                    <div class="reading-passage-card" id="passage-card-${passage.id}">
                         <div class="reading-passage-header">
                             <div>
                                 <div class="reading-passage-title">${passage.title}</div>
                                 ${passage.source ? `<div class="reading-passage-meta">Source: ${passage.source}</div>` : ''}
+                                ${passage.linkedReadingId ? `<div class="reading-passage-meta" style="color: var(--crimson);">
+                                    📚 Lié à: ${getLinkedReadingTitle(passage.linkedReadingId)}
+                                    <button onclick="viewLinkedReading(${passage.linkedReadingId})" style="margin-left: 0.5rem; font-size: 0.85em; padding: 0.2rem 0.5rem; background: var(--crimson); color: white; border: none; border-radius: 4px; cursor: pointer;">Voir</button>
+                                </div>` : ''}
                                 <div class="reading-passage-meta">${new Date(passage.created).toLocaleDateString('fr-FR', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric'
                                 })}</div>
                             </div>
-                            <div class="reading-passage-stats">
-                                <div class="reading-stat">
-                                    <div class="reading-stat-value">${totalWords}</div>
-                                    <div class="reading-stat-label">Mots</div>
+                            <div style="display: flex; gap: 1.5rem; align-items: start;">
+                                <div class="reading-passage-stats">
+                                    <div class="reading-stat">
+                                        <div class="reading-stat-value">${totalWords}</div>
+                                        <div class="reading-stat-label">Mots</div>
+                                    </div>
+                                    <div class="reading-stat">
+                                        <div class="reading-stat-value" style="color: #4CAF50;">${wordsInVocab}</div>
+                                        <div class="reading-stat-label">Vocabulaire</div>
+                                    </div>
+                                    <div class="reading-stat">
+                                        <div class="reading-stat-value" style="color: #FFD700;">${unknownCount}</div>
+                                        <div class="reading-stat-label">Inconnus</div>
+                                    </div>
+                                    <div class="reading-stat">
+                                        <div class="reading-stat-value">${knownPercent}%</div>
+                                        <div class="reading-stat-label">Compris</div>
+                                    </div>
                                 </div>
-                                <div class="reading-stat">
-                                    <div class="reading-stat-value" style="color: #4CAF50;">${wordsInVocab}</div>
-                                    <div class="reading-stat-label">Vocabulaire</div>
-                                </div>
-                                <div class="reading-stat">
-                                    <div class="reading-stat-value" style="color: #FFD700;">${unknownCount}</div>
-                                    <div class="reading-stat-label">Inconnus</div>
-                                </div>
-                                <div class="reading-stat">
-                                    <div class="reading-stat-value">${knownPercent}%</div>
-                                    <div class="reading-stat-label">Compris</div>
-                                </div>
+                                <button class="btn btn-secondary" onclick="togglePassageExpansion(${passage.id})" style="padding: 0.5rem 1rem; white-space: nowrap;">
+                                    <svg id="expand-icon-${passage.id}" viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                        <path d="M7 10l5 5 5-5z"/>
+                                    </svg>
+                                    <span id="expand-text-${passage.id}">Réduire</span>
+                                </button>
                             </div>
                         </div>
                         
-                        <div class="reading-passage-text" data-passage-id="${passage.id}">
-                            ${renderInteractiveText(passage)}
-                        </div>
-                        
-                        <div class="reading-progress-bar">
-                            <div class="reading-progress-label">Compréhension: ${knownPercent}%</div>
-                            <div class="reading-progress-track">
-                                <div class="reading-progress-fill" style="width: ${knownPercent}%"></div>
+                        <div class="reading-passage-content" id="passage-content-${passage.id}">
+                            <div class="reading-passage-text" data-passage-id="${passage.id}">
+                                ${renderInteractiveText(passage)}
                             </div>
-                        </div>
-                        
-                        <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
-                            <button class="btn btn-secondary" onclick="deletePassage(${passage.id})" style="flex: 1;">
-                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                </svg>
-                                Supprimer
-                            </button>
+                            
+                            <div class="reading-progress-bar">
+                                <div class="reading-progress-label">Compréhension: ${knownPercent}%</div>
+                                <div class="reading-progress-track">
+                                    <div class="reading-progress-fill" style="width: ${knownPercent}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                                <button class="btn btn-primary" onclick="toggleMultiWordSelection(${passage.id})" style="flex: 1; min-width: 200px;">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                        <path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/>
+                                    </svg>
+                                    Sélection multiple
+                                </button>
+                                <button class="btn btn-secondary" onclick="deletePassage(${passage.id})" style="flex: 1; min-width: 150px;">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                    </svg>
+                                    Supprimer
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -8633,30 +8897,39 @@ const firebaseConfig = {
         }
         
         function renderInteractiveText(passage) {
-            // Split text into words while preserving punctuation
-            const words = passage.text.match(/[\wàâäæçéèêëïîôùûüÿœ'-]+|[^\wàâäæçéèêëïîôùûüÿœ'-]+/gi) || [];
+            // Split text by paragraphs first (double newline or single newline)
+            const paragraphs = passage.text.split(/\n\n+|\n/);
             
-            return words.map(token => {
-                // Check if it's a word (not punctuation)
-                if (/[\wàâäæçéèêëïîôùûüÿœ'-]+/i.test(token)) {
-                    const normalizedWord = token.toLowerCase();
-                    
-                    // Check if word exists in user's vocabulary (already learned!)
-                    const inVocabulary = vocabulary.some(v => v.french.toLowerCase() === normalizedWord);
-                    
-                    // Check if marked as unknown in this passage
-                    const isUnknown = passage.unknownWords.includes(normalizedWord);
-                    
-                    let className = 'word';
-                    if (inVocabulary) className += ' known'; // Green - in Le Jardin!
-                    else if (isUnknown) className += ' unknown'; // Yellow - marked unknown
-                    // Everything else is assumed known (no special class)
-                    
-                    return `<span class="${className}" data-word="${token}">${token}</span>`;
-                } else {
-                    // Punctuation or whitespace
-                    return token;
-                }
+            return paragraphs.map(para => {
+                if (!para.trim()) return ''; // Skip empty paragraphs
+                
+                // Split paragraph into words while preserving punctuation
+                const words = para.match(/[\wàâäæçéèêëïîôùûüÿœ'-]+|[^\wàâäæçéèêëïîôùûüÿœ'-]+/gi) || [];
+                
+                const processedWords = words.map(token => {
+                    // Check if it's a word (not punctuation)
+                    if (/[\wàâäæçéèêëïîôùûüÿœ'-]+/i.test(token)) {
+                        const normalizedWord = token.toLowerCase();
+                        
+                        // Check if word exists in user's vocabulary (already learned!)
+                        const inVocabulary = vocabulary.some(v => v.french.toLowerCase() === normalizedWord);
+                        
+                        // Check if marked as unknown in this passage
+                        const isUnknown = passage.unknownWords.includes(normalizedWord);
+                        
+                        let className = 'word';
+                        if (inVocabulary) className += ' known'; // Green - in Le Jardin!
+                        else if (isUnknown) className += ' unknown'; // Yellow - marked unknown
+                        // Everything else is assumed known (no special class)
+                        
+                        return `<span class="${className}" data-word="${token}">${token}</span>`;
+                    } else {
+                        // Punctuation or whitespace
+                        return token;
+                    }
+                }).join('');
+                
+                return `<p style="margin-bottom: 1em;">${processedWords}</p>`;
             }).join('');
         }
         
@@ -8673,6 +8946,187 @@ const firebaseConfig = {
                     // Open the SAME dictionary lookup modal as listening section!
                     openDictionaryLookup(word);
                 });
+            });
+        }
+        
+        // Multi-word selection mode
+        let selectionModeActive = false;
+        let activePassageId = null;
+        
+        window.toggleMultiWordSelection = function(passageId) {
+            selectionModeActive = !selectionModeActive;
+            activePassageId = passageId;
+            
+            if (selectionModeActive) {
+                document.body.classList.add('selection-mode-active');
+                showSelectionToolbar(passageId);
+            } else {
+                document.body.classList.remove('selection-mode-active');
+                hideSelectionToolbar();
+            }
+        };
+        
+        function showSelectionToolbar(passageId) {
+            // Remove existing toolbar if any
+            hideSelectionToolbar();
+            
+            const toolbar = document.createElement('div');
+            toolbar.id = 'selection-toolbar';
+            toolbar.className = 'selection-mode-toolbar';
+            toolbar.innerHTML = `
+                <span style="font-weight: 500;">✨ Mode sélection activé - Sélectionnez plusieurs mots</span>
+                <button onclick="lookupSelectedWords(` + passageId + `)">Rechercher les mots sélectionnés</button>
+                <button onclick="toggleMultiWordSelection(` + passageId + `)" style="background: transparent; color: white; border: 2px solid white;">Annuler</button>
+            `;
+            document.body.appendChild(toolbar);
+        }
+        
+        function hideSelectionToolbar() {
+            const toolbar = document.getElementById('selection-toolbar');
+            if (toolbar) toolbar.remove();
+        }
+        
+        window.lookupSelectedWords = function(passageId) {
+            const selection = window.getSelection();
+            const selectedText = selection.toString().trim();
+            
+            if (!selectedText) {
+                alert('Veuillez sélectionner du texte d\'abord');
+                return;
+            }
+            
+            // Extract words from selected text
+            const words = selectedText.match(/[\wàâäæçéèêëïîôùûüÿœ'-]+/gi) || [];
+            const uniqueWords = [...new Set(words.map(w => w.toLowerCase()))];
+            
+            if (uniqueWords.length === 0) {
+                alert('Aucun mot trouvé dans la sélection');
+                return;
+            }
+            
+            // Store passage context
+            window.currentReadingPassageId = passageId;
+            
+            if (uniqueWords.length === 1) {
+                // Single word - use normal lookup
+                openDictionaryLookup(words[0]);
+            } else {
+                // Multiple words - open multi-word lookup modal
+                openMultiWordLookup(uniqueWords, words);
+            }
+            
+            // Clear selection
+            selection.removeAllRanges();
+        };
+        
+        window.openMultiWordLookup = function(uniqueWords, originalWords) {
+            // Create a temporary modal for multi-word lookup
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'multi-word-lookup-modal';
+            modal.style.display = 'flex';
+            
+            const wordsList = uniqueWords.map((word, index) => {
+                const inVocab = vocabulary.some(v => v.french.toLowerCase() === word);
+                return `
+                    <div style="padding: 0.75rem; background: ${inVocab ? 'rgba(144, 238, 144, 0.1)' : 'rgba(255, 215, 0, 0.1)'}; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 1.1rem;">${originalWords[uniqueWords.indexOf(word)]}</span>
+                        ${inVocab ? '<span style="color: #4CAF50; font-size: 0.85rem;">✓ Dans le vocabulaire</span>' : `<button class="btn btn-primary" onclick="openDictionaryLookup('${originalWords[uniqueWords.indexOf(word)]}'); closeMultiWordModal()" style="padding: 0.4rem 1rem; font-size: 0.9rem;">Rechercher</button>`}
+                    </div>
+                `;
+            }).join('');
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h2 class="modal-title">` + uniqueWords.length + ` mots sélectionnés</h2>
+                        <button class="close-btn" onclick="closeMultiWordModal()">&times;</button>
+                    </div>
+                    <div style="max-height: 60vh; overflow-y: auto;">
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            ` + wordsList + `
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem; text-align: center;">
+                        <button class="btn btn-secondary" onclick="closeMultiWordModal()">Fermer</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add close handler
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeMultiWordModal();
+                }
+            });
+        };
+        
+        window.closeMultiWordModal = function() {
+            const modal = document.getElementById('multi-word-lookup-modal');
+            if (modal) {
+                modal.remove();
+            }
+        };
+        
+        // Fold/unfold passages
+        window.togglePassageExpansion = function(passageId) {
+            const content = document.getElementById(`passage-content-${passageId}`);
+            const icon = document.getElementById(`expand-icon-${passageId}`);
+            const text = document.getElementById(`expand-text-${passageId}`);
+            
+            if (!content) return;
+            
+            if (content.style.display === 'none') {
+                // Expand
+                content.style.display = 'block';
+                icon.innerHTML = '<path d="M7 10l5 5 5-5z"/>';
+                text.textContent = 'Réduire';
+            } else {
+                // Collapse
+                content.style.display = 'none';
+                icon.innerHTML = '<path d="M7 14l5-5 5 5z"/>';
+                text.textContent = 'Développer';
+            }
+        };
+        
+        // Helper functions for reading list linking
+        window.getLinkedReadingTitle = function(readingId) {
+            const item = readingList.find(r => r.id === readingId);
+            return item ? item.title : 'Élément supprimé';
+        };
+        
+        window.viewLinkedReading = function(readingId) {
+            const item = readingList.find(r => r.id === readingId);
+            if (!item) {
+                alert('Cet élément a été supprimé de votre liste de lecture');
+                return;
+            }
+            
+            // Scroll to reading section and highlight the item
+            document.getElementById('lire').scrollIntoView({ behavior: 'smooth' });
+            
+            // Could optionally open edit modal or show details
+            setTimeout(() => {
+                alert(`📚 "${item.title}"\nType: ${item.type}\nStatut: ${item.status}`);
+            }, 500);
+        };
+        
+        // Populate linked reading dropdown when modal opens
+        function populateLinkedReadingDropdown() {
+            const select = document.getElementById('passage-linked-reading');
+            if (!select) return;
+            
+            // Clear existing options except first
+            select.innerHTML = '<option value="">-- Sélectionner un élément --</option>';
+            
+            // Add reading list items
+            readingList.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.title} (${item.type})`;
+                select.appendChild(option);
             });
         }
         
@@ -11126,6 +11580,11 @@ const firebaseConfig = {
             const translationText = document.getElementById('translation-text');
             const translationLoading = document.getElementById('translation-loading');
             
+            if (!translationDisplay || !translationText || !translationLoading) {
+                console.warn('Translation elements not found');
+                return;
+            }
+            
             // Clear previous value
             translationText.value = '';
             
@@ -11138,17 +11597,24 @@ const firebaseConfig = {
                 const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=fr|en`);
                 const data = await response.json();
                 
-                if (data.responseData && data.responseData.translatedText) {
-                    translationText.value = data.responseData.translatedText;
+                if (data && data.responseData && data.responseData.translatedText) {
+                    const translation = data.responseData.translatedText;
+                    // Check if translation is valid and not just the same as input
+                    if (translation && translation.toLowerCase() !== word.toLowerCase()) {
+                        translationText.value = translation;
+                    } else {
+                        translationText.value = 'Traduction non disponible - veuillez entrer manuellement';
+                    }
                     translationText.style.display = 'block';
                     translationLoading.style.display = 'none';
                 } else {
-                    translationText.value = 'Traduction non disponible';
+                    translationText.value = 'Traduction non disponible - veuillez entrer manuellement';
                     translationText.style.display = 'block';
                     translationLoading.style.display = 'none';
                 }
             } catch (error) {
-                translationText.value = 'Erreur de traduction';
+                console.error('Translation error:', error);
+                translationText.value = 'Erreur de traduction - veuillez entrer manuellement';
                 translationText.style.display = 'block';
                 translationLoading.style.display = 'none';
             }
