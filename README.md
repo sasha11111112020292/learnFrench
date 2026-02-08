@@ -1952,6 +1952,16 @@ const firebaseConfig = {
             font-size: 1.2rem;
             line-height: 1.8;
             color: var(--text);
+            max-height: none; /* Show full content by default */
+            overflow-y: auto;
+            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .transcript-body.folded {
+            max-height: 0;
+            padding: 0;
+            opacity: 0;
+            overflow: hidden;
         }
 
         .clickable-word {
@@ -8449,8 +8459,8 @@ const firebaseConfig = {
         // ============================================
         
         // Storage
-        let readingTranscripts = JSON.parse(localStorage.getItem('readingTranscripts') || '[]');
-        let listeningTranscripts = JSON.parse(localStorage.getItem('listeningTranscripts') || '[]');
+        let readingTranscripts = [];
+        let listeningTranscripts = [];
         let wordLookupCache = JSON.parse(localStorage.getItem('wordLookupCache') || '{}');
         
         // Current lookup state
@@ -8751,18 +8761,19 @@ const firebaseConfig = {
         // Toggle transcript fold/unfold
         function toggleTranscript(id) {
             const body = document.querySelector(`.transcript-body[data-id="${id}"]`);
-            const chevron = event.target.closest('.transcript-fold-btn').querySelector('.chevron-icon');
+            const btn = event.target.closest('.transcript-fold-btn');
+            const chevron = btn.querySelector('.chevron-icon');
             
-            if (body.style.maxHeight === '0px' || body.style.maxHeight === '0') {
+            if (body.classList.contains('folded')) {
                 // Unfold
-                body.style.maxHeight = '500px';
-                body.style.padding = '';
+                body.classList.remove('folded');
                 chevron.style.transform = 'rotate(0deg)';
+                btn.setAttribute('title', 'Replier');
             } else {
                 // Fold
-                body.style.maxHeight = '0px';
-                body.style.padding = '0';
+                body.classList.add('folded');
                 chevron.style.transform = 'rotate(-90deg)';
+                btn.setAttribute('title', 'Déplier');
             }
         }
 
@@ -9238,8 +9249,10 @@ const firebaseConfig = {
                     const localWritings = localStorage.getItem('writings');
                     const localNotes = localStorage.getItem('notes');
                     const localResources = localStorage.getItem('resourcesList');
+                    const localReadingTranscripts = localStorage.getItem('readingTranscripts');
+                    const localListeningTranscripts = localStorage.getItem('listeningTranscripts');
                     
-                    if (localVocab || localReadings || localListening || localRecordings || localWritings || localNotes || localResources) {
+                    if (localVocab || localReadings || localListening || localRecordings || localWritings || localNotes || localResources || localReadingTranscripts || localListeningTranscripts) {
                         console.log('📦 Migrating data from localStorage to Firebase...');
                         
                         if (localVocab) vocabulary = JSON.parse(localVocab);
@@ -9249,6 +9262,8 @@ const firebaseConfig = {
                         if (localWritings) writings = JSON.parse(localWritings);
                         if (localNotes) notes = JSON.parse(localNotes);
                         if (localResources) resourcesList = JSON.parse(localResources);
+                        if (localReadingTranscripts) readingTranscripts = JSON.parse(localReadingTranscripts);
+                        if (localListeningTranscripts) listeningTranscripts = JSON.parse(localListeningTranscripts);
                         
                         // Save migrated data to Firebase
                         await saveDataToFirebase();
@@ -9261,6 +9276,8 @@ const firebaseConfig = {
                         localStorage.removeItem('writings');
                         localStorage.removeItem('notes');
                         localStorage.removeItem('resourcesList');
+                        localStorage.removeItem('readingTranscripts');
+                        localStorage.removeItem('listeningTranscripts');
                         
                         console.log('✅ Migration complete!');
                         
