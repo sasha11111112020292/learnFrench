@@ -2798,6 +2798,7 @@ const firebaseConfig = {
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
+            grid-auto-rows: minmax(0, auto);
             gap: 6px;
         }
 
@@ -3875,6 +3876,31 @@ const firebaseConfig = {
             .heatmap-day {
                 min-width: 14px;
                 min-height: 14px;
+            }
+            
+            /* Presence calendar mobile fix - prevent huge February */
+            .calendar-month {
+                padding: 1rem;
+            }
+            
+            .calendar-grid {
+                gap: 4px;
+            }
+            
+            .calendar-day {
+                aspect-ratio: auto;
+                min-height: 50px;
+                max-height: 60px;
+                height: auto;
+                font-size: 0.85rem;
+            }
+            
+            .calendar-day-number {
+                font-size: 0.85rem;
+            }
+            
+            .calendar-day-icons {
+                transform: scale(0.8);
             }
             
             /* INTERACTIVE TEXTS FIX - Mobile responsive */
