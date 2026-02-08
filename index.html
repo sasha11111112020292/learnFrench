@@ -3395,6 +3395,7 @@ const firebaseConfig = {
                             <div id="entrance-user-email" style="color: var(--text-soft); font-size: 0.9rem;"></div>
                         </div>
                         <button class="btn btn-secondary" id="entrance-logout-btn" style="margin-left: 1rem;">Déconnexion</button>
+                        <button class="btn btn-primary" id="manual-load-btn" style="margin-left: 0.5rem;">📥 Charger données</button>
                     </div>
                 </div>
             </div>
@@ -8743,6 +8744,15 @@ const firebaseConfig = {
             // Logout handler
             document.getElementById('entrance-logout-btn').addEventListener('click', async () => {
                 await signOut(window.firebaseAuth);
+            });
+            
+            // Manual data load button
+            document.getElementById('manual-load-btn').addEventListener('click', async () => {
+                if (currentUser && currentUser.uid) {
+                    console.log('🔘 Manual load button clicked');
+                    await loadDataFromFirebase(currentUser.uid);
+                    alert('Données chargées!');
+                }
             });
             
             // Toggle between login/signup
