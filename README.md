@@ -3884,8 +3884,33 @@ const firebaseConfig = {
             }
             
             .reading-passage-header {
-                flex-direction: column;
+                flex-direction: column !important;
                 gap: 1rem;
+                align-items: stretch !important;
+            }
+            
+            .reading-passage-header > div:first-child {
+                width: 100%;
+            }
+            
+            .reading-passage-header > div:last-child {
+                width: 100%;
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+            
+            /* Stats box on mobile */
+            .reading-passage-header > div:last-child > div[style*="gradient"] {
+                width: 100% !important;
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 0.75rem !important;
+                padding: 1rem !important;
+            }
+            
+            /* Stat separators hidden on mobile */
+            .reading-passage-header > div:last-child > div[style*="gradient"] > div[style*="width: 1px"] {
+                display: none !important;
             }
             
             .reading-passage-stats {
@@ -3897,6 +3922,22 @@ const firebaseConfig = {
             .reading-passage-text {
                 font-size: 1rem;
                 line-height: 1.7;
+            }
+            
+            /* Icon buttons on mobile */
+            .reading-passage-header .icon-btn {
+                padding: 0.4rem !important;
+            }
+            
+            .reading-passage-header .icon-btn svg {
+                width: 16px !important;
+                height: 16px !important;
+            }
+            
+            /* Linked reading button on mobile */
+            .reading-passage-header button[onclick^="viewLinkedReading"] {
+                font-size: 0.75rem !important;
+                padding: 0.4rem 0.8rem !important;
             }
             
             .reading-stat {
@@ -4006,6 +4047,26 @@ const firebaseConfig = {
             .transcript-btn svg {
                 width: 18px;
                 height: 18px;
+            }
+            
+            /* Reading list mobile */
+            .resource-card {
+                padding: 1.25rem !important;
+            }
+            
+            .resource-info > div:first-child {
+                flex-wrap: wrap !important;
+            }
+            
+            .resource-card button[onclick^="viewLinkedPassage"] {
+                font-size: 0.7rem !important;
+                padding: 0.3rem 0.5rem !important;
+                white-space: nowrap;
+            }
+            
+            .resource-card button[onclick^="viewLinkedPassage"] svg {
+                width: 10px !important;
+                height: 10px !important;
             }
         }
     </style>
@@ -5180,6 +5241,13 @@ const firebaseConfig = {
                     <textarea class="form-textarea" id="reading-note" placeholder="Pourquoi tu veux lire ça ? Qu'est-ce que tu en penses ?"></textarea>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Lier à un texte interactif (optionnel)</label>
+                    <select class="form-select" id="reading-linked-passage">
+                        <option value="">-- Aucun --</option>
+                    </select>
+                </div>
+
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('reading-modal')">Annuler</button>
                     <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -5230,6 +5298,13 @@ const firebaseConfig = {
                 <div class="form-group">
                     <label class="form-label">Notes</label>
                     <textarea class="form-textarea" id="edit-reading-note" placeholder="Pourquoi tu veux lire ça ? Qu'est-ce que tu en penses ?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lier à un texte interactif (optionnel)</label>
+                    <select class="form-select" id="edit-reading-linked-passage">
+                        <option value="">-- Aucun --</option>
+                    </select>
                 </div>
 
                 <div class="form-actions">
@@ -5912,16 +5987,19 @@ Ils seront préservés lors de l'affichage !"></textarea>
             console.log('   currentUser:', window.currentUser ? window.currentUser.email : 'null');
             console.log('   firebaseReady:', window.firebaseReady);
             console.log('   vocabulary length:', vocabulary.length);
+            console.log('   readingPassages length:', readingPassages.length);
             
-            // If not logged in or Firebase not ready, do nothing
-            if (!window.currentUser || !window.firebaseReady) {
-                console.warn('⏸️ Sync skipped - not logged in or Firebase not ready');
-                return;
-            }
-            console.log('📤 Syncing to Firebase in 1 second...');
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => {
-                saveDataToFirebase();
+                // If Firebase is ready and user is logged in, save to Firebase
+                if (window.currentUser && window.firebaseReady) {
+                    console.log('📤 Syncing to Firebase...');
+                    saveDataToFirebase();
+                } else {
+                    // Fallback: Save to localStorage
+                    console.log('💾 Firebase not ready - saving to localStorage instead');
+                    saveToLocalStorage();
+                }
             }, 1000); // Wait 1 second after last change
         };
         
@@ -6006,6 +6084,111 @@ Ils seront préservés lors de l'affichage !"></textarea>
             }
         }
         
+        // Save to localStorage as fallback when Firebase isn't available
+        function saveToLocalStorage() {
+            console.log('💾 Saving to localStorage...');
+            console.log('   - readingPassages:', readingPassages.length, 'items');
+            
+            try {
+                localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                localStorage.setItem('readingList', JSON.stringify(readingList));
+                localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                localStorage.setItem('recordings', JSON.stringify(recordings));
+                localStorage.setItem('writings', JSON.stringify(writings));
+                localStorage.setItem('notes', JSON.stringify(notes));
+                localStorage.setItem('resourcesList', JSON.stringify(resourcesList));
+                localStorage.setItem('readingTranscripts', JSON.stringify(readingTranscripts));
+                localStorage.setItem('listeningTranscripts', JSON.stringify(listeningTranscripts));
+                localStorage.setItem('readingPassages', JSON.stringify(readingPassages));
+                localStorage.setItem('presenceData', JSON.stringify(presenceData));
+                
+                console.log('✅ Data saved to localStorage successfully!');
+                
+                // Show indicator
+                const syncIndicator = document.getElementById('sync-indicator');
+                if (syncIndicator) {
+                    syncIndicator.textContent = '💾 Local';
+                    syncIndicator.style.opacity = '1';
+                    setTimeout(() => {
+                        syncIndicator.style.opacity = '0';
+                        setTimeout(() => {
+                            syncIndicator.textContent = '☁️ Sync...';
+                        }, 300);
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error('❌ Error saving to localStorage:', error);
+            }
+        }
+        
+        // Load from localStorage
+        function loadFromLocalStorage() {
+            console.log('📦 Loading from localStorage...');
+            
+            try {
+                const localVocab = localStorage.getItem('vocabulary');
+                const localReadings = localStorage.getItem('readingList');
+                const localListening = localStorage.getItem('listeningList');
+                const localRecordings = localStorage.getItem('recordings');
+                const localWritings = localStorage.getItem('writings');
+                const localNotes = localStorage.getItem('notes');
+                const localResources = localStorage.getItem('resourcesList');
+                const localReadingTranscripts = localStorage.getItem('readingTranscripts');
+                const localListeningTranscripts = localStorage.getItem('listeningTranscripts');
+                const localPassages = localStorage.getItem('readingPassages');
+                const localPresence = localStorage.getItem('presenceData');
+                
+                if (localVocab) vocabulary = JSON.parse(localVocab);
+                if (localReadings) readingList = JSON.parse(localReadings);
+                if (localListening) listeningList = JSON.parse(localListening);
+                if (localRecordings) recordings = JSON.parse(localRecordings);
+                if (localWritings) writings = JSON.parse(localWritings);
+                if (localNotes) notes = JSON.parse(localNotes);
+                if (localResources) resourcesList = JSON.parse(localResources);
+                if (localReadingTranscripts) readingTranscripts = JSON.parse(localReadingTranscripts);
+                if (localListeningTranscripts) listeningTranscripts = JSON.parse(localListeningTranscripts);
+                if (localPassages) readingPassages = JSON.parse(localPassages);
+                if (localPresence) presenceData = JSON.parse(localPresence);
+                
+                console.log('✅ Loaded from localStorage:', {
+                    vocabulary: vocabulary.length,
+                    readingList: readingList.length,
+                    listeningList: listeningList.length,
+                    recordings: recordings.length,
+                    writings: writings.length,
+                    notes: notes.length,
+                    resourcesList: resourcesList.length,
+                    readingTranscripts: readingTranscripts.length,
+                    listeningTranscripts: listeningTranscripts.length,
+                    readingPassages: readingPassages.length,
+                    presenceData: Object.keys(presenceData).length
+                });
+                
+                // Rebuild presence data
+                rebuildPresenceDataFromEntries();
+                
+                // Render everything
+                if (typeof renderGarden !== 'undefined') {
+                    renderGarden();
+                    renderReadingList();
+                    renderReadingPassages();
+                    renderListeningList();
+                    renderRecordings();
+                    renderWritingsArchive();
+                    renderNotes();
+                    renderResourcesList();
+                    renderTranscripts('reading');
+                    renderTranscripts('listening');
+                    initializeSRSData();
+                    updateSRSStatsDisplay();
+                    updatePresenceUI();
+                    updateDebugPanel();
+                }
+            } catch (error) {
+                console.error('❌ Error loading from localStorage:', error);
+            }
+        }
+        
         console.log('✅ Firebase sync functions ready!');
         
         // ============================================
@@ -6081,7 +6264,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
         // ============================================
         // DATA MANAGEMENT
         // ============================================
-        // Initialize empty - will load from Firebase when user logs in
+        // Initialize empty - will load from localStorage first, then Firebase when user logs in
         let vocabulary = [];
         let writings = [];
         let readingList = [];
@@ -6090,6 +6273,37 @@ Ils seront préservés lors de l'affichage !"></textarea>
         let resourcesList = [];
         let notes = [];
         let readingPassages = []; // Interactive reading passages
+
+        // IMMEDIATELY load from localStorage on page load (before Firebase is ready)
+        console.log('🚀 Page loading - checking localStorage for data...');
+        try {
+            const localVocab = localStorage.getItem('vocabulary');
+            const localReadings = localStorage.getItem('readingList');
+            const localListening = localStorage.getItem('listeningList');
+            const localRecordings = localStorage.getItem('recordings');
+            const localWritings = localStorage.getItem('writings');
+            const localNotes = localStorage.getItem('notes');
+            const localResources = localStorage.getItem('resourcesList');
+            const localReadingTranscripts = localStorage.getItem('readingTranscripts');
+            const localListeningTranscripts = localStorage.getItem('listeningTranscripts');
+            const localPassages = localStorage.getItem('readingPassages');
+            
+            if (localVocab) vocabulary = JSON.parse(localVocab);
+            if (localReadings) readingList = JSON.parse(localReadings);
+            if (localListening) listeningList = JSON.parse(localListening);
+            if (localRecordings) recordings = JSON.parse(localRecordings);
+            if (localWritings) writings = JSON.parse(localWritings);
+            if (localNotes) notes = JSON.parse(localNotes);
+            if (localResources) resourcesList = JSON.parse(localResources);
+            if (localPassages) readingPassages = JSON.parse(localPassages);
+            
+            console.log('✅ Pre-loaded from localStorage:', {
+                vocabulary: vocabulary.length,
+                readingPassages: readingPassages.length
+            });
+        } catch (e) {
+            console.warn('⚠️ Could not pre-load from localStorage:', e);
+        }
 
         let currentRecording = null;
         let activeWordPopup = null; // Track current word popup
@@ -8328,15 +8542,15 @@ Ils seront préservés lors de l'affichage !"></textarea>
             const sortedReadingList = [...readingList].sort((a, b) => b.id - a.id);
 
             grid.innerHTML = sortedReadingList.map(item => {
-                // Check if there's a linked interactive text
-                const linkedPassage = readingPassages.find(p => p.linkedReadingId === item.id);
+                // Check if this reading item has a linked passage
+                const hasLinkedPassage = item.linkedPassageId && readingPassages.find(p => p.id === item.linkedPassageId);
                 
                 return `
                 <div class="resource-card">
                     <div class="resource-info">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
                             <div class="resource-type">${item.type}</div>
-                            ${linkedPassage ? `
+                            ${hasLinkedPassage ? `
                                 <button onclick="viewLinkedPassage(${item.id})" 
                                     style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.6rem; background: var(--crimson); color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: all 0.2s;"
                                     onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 2px 8px rgba(190, 31, 46, 0.3)';"
@@ -8355,7 +8569,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         <div class="resource-status">${statusLabels[item.status]}</div>
                     </div>
                     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button class="icon-btn" onclick="createInteractiveTextFromReading(${item.id})" title="Créer un texte interactif">
+                        <button class="icon-btn" onclick="createInteractiveTextFromReading(${item.id})" title="Voir le texte interactif">
                             <svg class="svg-icon" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
                             </svg>
@@ -8380,21 +8594,60 @@ Ils seront préservés lors de l'affichage !"></textarea>
             const item = readingList.find(r => r.id === readingId);
             if (!item) return;
             
-            // Pre-fill the interactive text form with reading list data
-            document.getElementById('passage-title').value = item.title;
-            document.getElementById('passage-source').value = item.type || '';
-            document.getElementById('passage-linked-reading').value = readingId;
+            // FIRST: Check if there's already an interactive text linked to this reading
+            const existingPassage = readingPassages.find(p => p.linkedReadingId === readingId);
             
-            // Open modal
-            openModal('add-passage-modal');
-            
-            // Scroll to text field and focus
-            setTimeout(() => {
-                const textArea = document.getElementById('passage-text');
-                textArea.focus();
-                textArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+            if (existingPassage) {
+                // Navigate to the Textes Interactifs section
+                window.location.hash = 'reading';
+                
+                // Scroll to the specific passage card
+                setTimeout(() => {
+                    const passageCard = document.getElementById(`passage-card-${existingPassage.id}`);
+                    if (passageCard) {
+                        passageCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Add a highlight flash effect
+                        passageCard.style.transition = 'all 0.3s ease';
+                        passageCard.style.transform = 'scale(1.02)';
+                        passageCard.style.boxShadow = '0 8px 30px rgba(190, 31, 46, 0.3)';
+                        
+                        setTimeout(() => {
+                            passageCard.style.transform = 'scale(1)';
+                            passageCard.style.boxShadow = '';
+                        }, 600);
+                    }
+                }, 300);
+            } else {
+                // No existing passage - open form to create new one
+                // Pre-fill the interactive text form with reading list data
+                document.getElementById('passage-title').value = item.title;
+                document.getElementById('passage-source').value = item.type || '';
+                document.getElementById('passage-linked-reading').value = readingId;
+                
+                // Open modal
+                openModal('add-passage-modal');
+                
+                // Scroll to text field and focus
+                setTimeout(() => {
+                    const textArea = document.getElementById('passage-text');
+                    textArea.focus();
+                    textArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
         };
+
+        // Populate passages dropdown in reading forms
+        function populatePassagesDropdown() {
+            const addSelect = document.getElementById('reading-linked-passage');
+            const editSelect = document.getElementById('edit-reading-linked-passage');
+            
+            const options = '<option value="">-- Aucun --</option>' + 
+                readingPassages.map(p => `<option value="${p.id}">${p.title}</option>`).join('');
+            
+            if (addSelect) addSelect.innerHTML = options;
+            if (editSelect) editSelect.innerHTML = options;
+        }
 
         function editReading(id) {
             const item = readingList.find(r => r.id === id);
@@ -8406,6 +8659,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
             document.getElementById('edit-reading-link').value = item.link || '';
             document.getElementById('edit-reading-status').value = item.status;
             document.getElementById('edit-reading-note').value = item.note || '';
+            
+            // Populate passages dropdown and set current value
+            populatePassagesDropdown();
+            document.getElementById('edit-reading-linked-passage').value = item.linkedPassageId || '';
 
             openModal('edit-reading-modal');
         }
@@ -8420,11 +8677,14 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
         function setupReadingListeners() {
             document.getElementById('add-reading-btn').addEventListener('click', () => {
+                populatePassagesDropdown();
                 openModal('reading-modal');
             });
 
             document.getElementById('reading-form').addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            const linkedPassageId = document.getElementById('reading-linked-passage').value;
             
             const item = {
                 id: Date.now(),
@@ -8433,6 +8693,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 link: document.getElementById('reading-link').value.trim(),
                 status: document.getElementById('reading-status').value,
                 note: document.getElementById('reading-note').value.trim() || '',
+                linkedPassageId: linkedPassageId ? parseInt(linkedPassageId) : null,
                 created: new Date().toISOString()
             };
 
@@ -8449,6 +8710,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
             logAction(ACTION_TYPES.READING);
             
             renderReadingList();
+            document.getElementById('reading-form').reset();
             closeModal('reading-modal');
         });
 
@@ -8461,13 +8723,16 @@ Ils seront préservés lors de l'affichage !"></textarea>
             
             if (index === -1) return;
 
+            const linkedPassageId = document.getElementById('edit-reading-linked-passage').value;
+
             readingList[index] = {
                 ...readingList[index],
                 type: document.getElementById('edit-reading-type').value,
                 title: document.getElementById('edit-reading-title').value.trim(),
                 link: document.getElementById('edit-reading-link').value.trim(),
                 status: document.getElementById('edit-reading-status').value,
-                note: document.getElementById('edit-reading-note').value.trim() || ''
+                note: document.getElementById('edit-reading-note').value.trim() || '',
+                linkedPassageId: linkedPassageId ? parseInt(linkedPassageId) : null
             };
 
             // Validate required field
@@ -9289,9 +9554,15 @@ Ils seront préservés lors de l'affichage !"></textarea>
         
         // View interactive text linked to a reading list item
         window.viewLinkedPassage = function(readingId) {
-            const linkedPassage = readingPassages.find(p => p.linkedReadingId === readingId);
-            if (!linkedPassage) {
+            const readingItem = readingList.find(r => r.id === readingId);
+            if (!readingItem || !readingItem.linkedPassageId) {
                 showToast('Aucun texte interactif lié à cet élément');
+                return;
+            }
+            
+            const linkedPassage = readingPassages.find(p => p.id === readingItem.linkedPassageId);
+            if (!linkedPassage) {
+                showToast('Le texte interactif lié n\'existe plus');
                 return;
             }
             
@@ -11158,6 +11429,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     
                     if (userProfile) userProfile.style.display = 'none';
                     if (loginSection) loginSection.style.display = 'block';
+                    
+                    // Load from localStorage when not logged in
+                    console.log('📦 Not logged in - loading from localStorage...');
+                    loadFromLocalStorage();
                     
                     // Show login modal when not authenticated
                     setTimeout(() => {
