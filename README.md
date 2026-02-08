@@ -3395,7 +3395,6 @@ const firebaseConfig = {
                             <div id="entrance-user-email" style="color: var(--text-soft); font-size: 0.9rem;"></div>
                         </div>
                         <button class="btn btn-secondary" id="entrance-logout-btn" style="margin-left: 1rem;">Déconnexion</button>
-                        <button class="btn btn-primary" id="manual-load-btn" style="margin-left: 0.5rem;">📥 Charger données</button>
                     </div>
                 </div>
             </div>
@@ -4853,7 +4852,7 @@ const firebaseConfig = {
     </div>
 
     <!-- Floating Heart -->
-    <svg class="floating-heart" width="80" height="80" viewBox="0 0 24 24" fill="#A64253">
+    <svg class="floating-heart" id="floating-heart" width="80" height="80" viewBox="0 0 24 24" fill="#A64253">
         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
     </svg>
 
@@ -8104,6 +8103,36 @@ const firebaseConfig = {
                 });
             }
 
+            // Heart triple-click to reload data (romantic easter egg + manual refresh!)
+            const floatingHeart = document.getElementById('floating-heart');
+            let heartClicks = 0;
+            let heartTimer;
+            if (floatingHeart) {
+                floatingHeart.style.cursor = 'pointer';
+                floatingHeart.addEventListener('click', async () => {
+                    heartClicks++;
+                    clearTimeout(heartTimer);
+                    heartTimer = setTimeout(() => { heartClicks = 0; }, 2000);
+                    if (heartClicks === 3) {
+                        heartClicks = 0;
+                        if (currentUser && currentUser.uid) {
+                            console.log('💕 Heart easter egg activated - reloading data');
+                            await loadDataFromFirebase(currentUser.uid);
+                            renderGarden();
+                            renderGardenVisual();
+                            // Show a heart notification
+                            const heartNote = document.getElementById('heart-note');
+                            const heartReason = document.getElementById('heart-reason');
+                            if (heartNote && heartReason) {
+                                heartReason.textContent = '💕 Données rechargées avec amour!';
+                                heartNote.classList.add('active');
+                                setTimeout(() => heartNote.classList.remove('active'), 3000);
+                            }
+                        }
+                    }
+                });
+            }
+
             // NOTE: initializeSRSData() is now called AFTER Firebase loads user data
             // See loadDataFromFirebase() function
             updateSRSStatsDisplay();
@@ -8133,13 +8162,17 @@ const firebaseConfig = {
             renderNotes();
             setupTranscriptSystem(); // Initialize transcript system
             
-            // IMPORTANT: Try to load user data if already logged in
+            // IMPORTANT: Auto-load user data after login (3 second delay to ensure everything is ready)
             setTimeout(() => {
                 if (currentUser && currentUser.uid) {
-                    console.log('🔄 Page ready - loading data for logged in user');
-                    loadDataFromFirebase(currentUser.uid);
+                    console.log('🔄 Auto-loading data for logged in user...');
+                    loadDataFromFirebase(currentUser.uid).then(() => {
+                        renderGarden();
+                        renderGardenVisual();
+                        console.log('✅ Auto-load complete!');
+                    });
                 }
-            }, 2000); // Wait 2 full seconds for everything to be ready
+            }, 3000); // Wait 3 seconds for everything to be ready
             
             // Resources filter listener
             const resourcesFilter = document.getElementById('filter-resources-type');
@@ -8355,15 +8388,29 @@ const firebaseConfig = {
             const card = element.closest('.transcript-card');
             const fullText = card.querySelector('.transcript-body').textContent;
             
-            // Find sentence containing the word
-            const sentences = fullText.split(/[.!?]+/);
+            // Find sentence containing the word - improved logic
+            const sentences = fullText.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
             let sentence = '';
+            
+            // Try to find the exact sentence
             for (let s of sentences) {
-                if (s.toLowerCase().includes(word)) {
-                    sentence = s.trim();
+                if (s.toLowerCase().includes(word.toLowerCase())) {
+                    sentence = s;
                     break;
                 }
             }
+            
+            // Fallback: if no sentence found or sentence is too long, use just the word
+            if (!sentence || sentence.length > 200) {
+                sentence = word;
+            }
+            
+            // Add punctuation if missing
+            if (sentence && !sentence.match(/[.!?]$/)) {
+                sentence = sentence + '.';
+            }
+            
+            console.log('Word:', word, '| Extracted sentence:', sentence);
             
             // Open popup immediately
             openModal('word-lookup-modal');
@@ -8453,11 +8500,14 @@ const firebaseConfig = {
         function displayLookupResult(result, sentence, sourceId) {
             currentLookup = { ...result, sentence, sourceId };
             
-            const translationsList = result.translations.map(t => `<li>${t}</li>`).join('');
+            const translationsList = result.translations && result.translations.length > 0
+                ? result.translations.map(t => `<li>${t}</li>`).join('')
+                : '<li><em>Cliquez sur "Sauvegarder" pour ajouter ce mot et ajouter la traduction manuellement</em></li>';
             
             document.getElementById('lookup-content').innerHTML = `
                 <div class="lookup-info">
                     ${result.lemma ? `<div class="lookup-lemma"><strong>Lemme:</strong> ${result.lemma} <em>(${result.partOfSpeech || ''})</em></div>` : ''}
+                    ${result.word ? `<div><strong>Mot trouvé dans:</strong> "${sentence}"</div>` : ''}
                     ${result.ipa ? `<div class="lookup-ipa">/${result.ipa}/</div>` : ''}
                     ${result.definition ? `<div style="margin-bottom: 1rem; color: var(--text-soft);">${result.definition}</div>` : ''}
                     <div>
@@ -8465,6 +8515,10 @@ const firebaseConfig = {
                         <ul class="lookup-translations">
                             ${translationsList}
                         </ul>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label class="form-label">✏️ Ajouter/modifier la traduction:</label>
+                        <input type="text" class="form-input" id="manual-translation-input" placeholder="Entrez la traduction ici..." value="${result.translations && result.translations.length > 0 ? result.translations.join(', ') : ''}">
                     </div>
                     <div class="lookup-sentence">
                         <strong>Contexte:</strong><br>
@@ -8480,10 +8534,14 @@ const firebaseConfig = {
         document.getElementById('save-lookup-word')?.addEventListener('click', function() {
             if (!currentLookup) return;
             
+            // Get manual translation if provided
+            const manualTranslation = document.getElementById('manual-translation-input')?.value.trim();
+            const translation = manualTranslation || (currentLookup.translations && currentLookup.translations.length > 0 ? currentLookup.translations.join(', ') : '');
+            
             const word = {
                 id: Date.now(),
-                french: currentLookup.lemma || document.getElementById('lookup-word-title').textContent,
-                meaning: currentLookup.translations.join(', '),
+                french: currentLookup.lemma || currentLookup.word || document.getElementById('lookup-word-title').textContent,
+                meaning: translation,
                 article: '',
                 gender: '',
                 theme: 'De transcription',
@@ -8744,18 +8802,6 @@ const firebaseConfig = {
             // Logout handler
             document.getElementById('entrance-logout-btn').addEventListener('click', async () => {
                 await signOut(window.firebaseAuth);
-            });
-            
-            // Manual data load button
-            document.getElementById('manual-load-btn').addEventListener('click', async () => {
-                if (currentUser && currentUser.uid) {
-                    console.log('🔘 Manual load button clicked');
-                    await loadDataFromFirebase(currentUser.uid);
-                    // Also render the garden visual
-                    renderGarden();
-                    renderGardenVisual();
-                    alert('Données chargées!');
-                }
             });
             
             // Toggle between login/signup
