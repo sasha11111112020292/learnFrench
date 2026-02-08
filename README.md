@@ -4365,7 +4365,7 @@ const firebaseConfig = {
             <div style="margin-top: 3rem;">
                 <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 0.5rem;">Lecture Interactive</h3>
                 <p style="color: var(--text-soft); margin-bottom: 1.5rem; font-size: 0.95rem;">
-                    Importe des textes français et clique sur les mots que tu ne connais pas. Les mots que tu as déjà appris (dans Le Jardin) apparaîtront en vert.
+                    Importe des textes français et clique sur les mots inconnus pour les ajouter à ton vocabulaire.
                 </p>
                 
                 <div style="margin-bottom: 2rem;">
@@ -5632,11 +5632,10 @@ const firebaseConfig = {
                 </div>
                 
                 <!-- Translation Display -->
-                <div class="form-group" id="translation-display" style="display: none; padding: 1rem; background: var(--cream-light); border-radius: 8px; margin-top: 1rem;">
+                <div class="form-group" id="translation-display" style="display: none;">
                     <label class="form-label" style="font-size: 0.9rem; margin-bottom: 0.5rem;">Traduction (éditable)</label>
-                    <input type="text" class="form-input" id="translation-text" style="font-size: 1.1rem; color: var(--burgundy); font-weight: 500; border: 1px solid var(--whisper);">
+                    <input type="text" class="form-input" id="translation-text" style="font-size: 1.1rem; color: var(--burgundy); font-weight: 500; background: var(--cream-light);" placeholder="Modifier ou ajouter traduction...">
                     <div id="translation-loading" style="font-size: 0.9rem; color: var(--text-soft); font-style: italic; margin-top: 0.5rem;">Chargement...</div>
-                    <small style="color: var(--text-soft); font-size: 0.85rem; margin-top: 0.5rem; display: block;">Tu peux éditer la traduction avant de l'ajouter</small>
                 </div>
                 
                 <!-- Add to Le Jardin Button -->
@@ -5651,9 +5650,9 @@ const firebaseConfig = {
                 
                 <!-- Reading Passage Quick Actions (only shown when from passage) -->
                 <div class="form-group" id="reading-passage-quick-actions" style="display: none;">
-                    <label class="form-label" style="font-size: 0.9rem; color: var(--text-soft);">Marquer ce mot dans le texte:</label>
+                    <label class="form-label" style="font-size: 0.9rem; color: var(--text-soft);">Marquer ce mot dans ce texte:</label>
                     <button onclick="markWordAsUnknownInPassageFromModal()" class="btn btn-secondary" style="width: 100%; font-size: 0.9rem; padding: 0.6rem; background: rgba(255, 215, 0, 0.2); border-color: #FFD700;">
-                        ⭐ Marquer comme mot inconnu
+                        ⭐ Je ne connais pas ce mot
                     </button>
                 </div>
                 
@@ -8509,8 +8508,7 @@ const firebaseConfig = {
                 source: document.getElementById('passage-source').value.trim(),
                 text: document.getElementById('passage-text').value.trim(),
                 created: new Date().toISOString(),
-                unknownWords: [],
-                knownWords: []
+                unknownWords: []
             };
             
             readingPassages.push(passage);
@@ -8557,9 +8555,11 @@ const firebaseConfig = {
                 // Unknown words marked in this passage
                 const unknownCount = passage.unknownWords.length;
                 
-                // Calculate comprehension (vocab + marked known / total unique)
-                const knownWords = wordsInVocab + passage.knownWords.length;
-                const knownPercent = uniqueWords.length > 0 ? Math.round((knownWords / uniqueWords.length) * 100) : 0;
+                // NEW LOGIC: All words are assumed known EXCEPT those marked unknown
+                // Comprehension = (total unique - unknown marked) / total unique
+                const knownPercent = uniqueWords.length > 0 
+                    ? Math.round(((uniqueWords.length - unknownCount) / uniqueWords.length) * 100) 
+                    : 100; // Default to 100% if no words
                 
                 return `
                     <div class="reading-passage-card">
@@ -8584,7 +8584,7 @@ const firebaseConfig = {
                                 </div>
                                 <div class="reading-stat">
                                     <div class="reading-stat-value" style="color: #FFD700;">${unknownCount}</div>
-                                    <div class="reading-stat-label">Marqués</div>
+                                    <div class="reading-stat-label">Inconnus</div>
                                 </div>
                                 <div class="reading-stat">
                                     <div class="reading-stat-value">${knownPercent}%</div>
@@ -8632,12 +8632,13 @@ const firebaseConfig = {
                     // Check if word exists in user's vocabulary (already learned!)
                     const inVocabulary = vocabulary.some(v => v.french.toLowerCase() === normalizedWord);
                     
-                    // Check passage-specific marking (only for unknown words)
+                    // Check if marked as unknown in this passage
                     const isUnknown = passage.unknownWords.includes(normalizedWord);
                     
                     let className = 'word';
                     if (inVocabulary) className += ' known'; // Green - in Le Jardin!
                     else if (isUnknown) className += ' unknown'; // Yellow - marked unknown
+                    // Everything else is assumed known (no special class)
                     
                     return `<span class="${className}" data-word="${token}">${token}</span>`;
                 } else {
@@ -8675,26 +8676,6 @@ const firebaseConfig = {
             
             if (!passage.unknownWords.includes(normalizedWord)) {
                 passage.unknownWords.push(normalizedWord);
-                // Remove from known if it was there
-                passage.knownWords = passage.knownWords.filter(w => w !== normalizedWord);
-                syncToFirebase();
-                renderReadingPassages();
-            }
-        };
-        
-        window.markWordAsKnownInPassage = function(word) {
-            const passageId = window.currentReadingPassageId;
-            if (!passageId) return;
-            
-            const passage = readingPassages.find(p => p.id === passageId);
-            if (!passage) return;
-            
-            const normalizedWord = word.toLowerCase();
-            
-            if (!passage.knownWords.includes(normalizedWord)) {
-                passage.knownWords.push(normalizedWord);
-                // Remove from unknown if it was there
-                passage.unknownWords = passage.unknownWords.filter(w => w !== normalizedWord);
                 syncToFirebase();
                 renderReadingPassages();
             }
@@ -8705,7 +8686,6 @@ const firebaseConfig = {
             if (!passage) return;
             
             passage.unknownWords = passage.unknownWords.filter(w => w !== word);
-            passage.knownWords = passage.knownWords.filter(w => w !== word);
             syncToFirebase();
             renderReadingPassages();
         };
@@ -10304,19 +10284,6 @@ const firebaseConfig = {
 
         // Setup transcript buttons and forms
         function setupTranscriptSystem() {
-            // Reading transcript button
-            document.getElementById('add-reading-transcript-btn')?.addEventListener('click', () => {
-                // Reset form and modal title for new transcript
-                const form = document.getElementById('add-reading-transcript-form');
-                const modalTitle = document.querySelector('#add-reading-transcript-modal .modal-title');
-                if (form) {
-                    form.reset();
-                    delete form.dataset.editingId;
-                }
-                if (modalTitle) modalTitle.textContent = 'Ajouter une transcription';
-                openModal('add-reading-transcript-modal');
-            });
-            
             // Listening transcript button
             document.getElementById('add-listening-transcript-btn')?.addEventListener('click', () => {
                 // Reset form and modal title for new transcript
@@ -11067,11 +11034,13 @@ const firebaseConfig = {
             const translationText = document.getElementById('translation-text');
             const translationLoading = document.getElementById('translation-loading');
             
+            // Clear previous value
+            translationText.value = '';
+            
             // Show loading
             translationDisplay.style.display = 'block';
             translationLoading.style.display = 'block';
             translationText.style.display = 'none';
-            translationText.value = '';
             
             try {
                 const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=fr|en`);
@@ -11082,14 +11051,12 @@ const firebaseConfig = {
                     translationText.style.display = 'block';
                     translationLoading.style.display = 'none';
                 } else {
-                    translationText.value = '';
-                    translationText.placeholder = 'Entre la traduction manuellement';
+                    translationText.value = 'Traduction non disponible';
                     translationText.style.display = 'block';
                     translationLoading.style.display = 'none';
                 }
             } catch (error) {
-                translationText.value = '';
-                translationText.placeholder = 'Entre la traduction manuellement';
+                translationText.value = 'Erreur de traduction';
                 translationText.style.display = 'block';
                 translationLoading.style.display = 'none';
             }
@@ -11097,7 +11064,7 @@ const firebaseConfig = {
         
         function addWordToJardinFromLookup() {
             const word = document.getElementById('dictionary-word-input').value.trim();
-            const translation = document.getElementById('translation-text').value.trim();
+            const translation = document.getElementById('translation-text').value;
             
             if (!word) {
                 alert('Veuillez entrer un mot');
@@ -11113,14 +11080,14 @@ const firebaseConfig = {
             // Close the dictionary modal
             closeDictionaryLookup();
             
-            // Open the add word modal with pre-filled data
-            document.getElementById('add-word-modal').classList.add('active');
-            document.getElementById('word-french').value = word;
-            document.getElementById('word-english').value = translation || '';
+            // Open the word modal with pre-filled data
+            document.getElementById('word-modal').classList.add('active');
+            document.getElementById('word-input').value = word;
+            document.getElementById('meaning-input').value = translation && translation !== 'Chargement...' && translation !== 'Traduction non disponible' && translation !== 'Erreur de traduction' ? translation : '';
             
-            // Focus on the English input if translation is empty
-            if (!translation) {
-                document.getElementById('word-english').focus();
+            // Focus on the meaning input if translation didn't work
+            if (!document.getElementById('meaning-input').value) {
+                document.getElementById('meaning-input').focus();
             }
         }
         
@@ -11128,15 +11095,6 @@ const firebaseConfig = {
             document.getElementById('dictionary-lookup-modal').classList.remove('active');
             window.currentReadingPassageId = null; // Reset passage context
         }
-        
-        // Quick action buttons for reading passages
-        window.markWordAsKnownInPassageFromModal = function() {
-            const word = document.getElementById('dictionary-word-input').value.trim();
-            if (word && window.currentReadingPassageId) {
-                markWordAsKnownInPassage(word);
-                closeDictionaryLookup();
-            }
-        };
         
         window.markWordAsUnknownInPassageFromModal = function() {
             const word = document.getElementById('dictionary-word-input').value.trim();
