@@ -5045,6 +5045,8 @@ const firebaseConfig = {
             console.log('   - recordings:', recordings.length, 'items');
             console.log('   - notes:', notes.length, 'items');
             console.log('   - resourcesList:', resourcesList.length, 'items');
+            console.log('   - readingTranscripts:', readingTranscripts.length, 'items');
+            console.log('   - listeningTranscripts:', listeningTranscripts.length, 'items');
             
             // Show sync indicator
             const syncIndicator = document.getElementById('sync-indicator');
@@ -5059,6 +5061,8 @@ const firebaseConfig = {
                     writings,
                     notes,
                     resourcesList,
+                    readingTranscripts,
+                    listeningTranscripts,
                     lastUpdated: new Date().toISOString()
                 });
                 
@@ -8507,6 +8511,12 @@ const firebaseConfig = {
                                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                                 </svg>
                             </button>
+                            <button class="icon-btn" onclick="editTranscript('${type}', ${t.id})" title="Modifier">
+                                <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
                             <button class="icon-btn transcript-fold-btn" onclick="toggleTranscript(${t.id})" title="Replier/Déplier">
                                 <svg class="svg-icon chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -8519,7 +8529,7 @@ const firebaseConfig = {
                             </button>
                         </div>
                     </div>
-                    <div class="transcript-body" data-id="${t.id}" style="transition: max-height 0.3s ease, padding 0.3s ease; max-height: 500px; overflow: hidden;">
+                    <div class="transcript-body" data-id="${t.id}">
                         ${makeTranscriptClickable(t.text, t.id)}
                     </div>
                 </div>
@@ -8780,20 +8790,68 @@ const firebaseConfig = {
                 syncToFirebase(); // Auto-save readingTranscripts to Firebase
                 renderTranscripts('reading');
             } else {
-                listeningTranscripts = listeningTranscripts.filter(t => t.id !== id);            // Transcripts stored in memory only - no Firebase sync needed
+                listeningTranscripts = listeningTranscripts.filter(t => t.id !== id);
+                syncToFirebase(); // Auto-save listeningTranscripts to Firebase
                 renderTranscripts('listening');
             }
+        }
+        
+        // Edit a transcript
+        function editTranscript(type, id) {
+            const transcripts = type === 'reading' ? readingTranscripts : listeningTranscripts;
+            const transcript = transcripts.find(t => t.id === id);
+            
+            if (!transcript) return;
+            
+            // Populate the form with existing data
+            const modalId = type === 'reading' ? 'add-reading-transcript-modal' : 'add-listening-transcript-modal';
+            const titleField = document.getElementById(`${type}-transcript-title`);
+            const textField = document.getElementById(`${type}-transcript-text`);
+            const translationField = document.getElementById(`${type}-transcript-translation`);
+            const linkedField = document.getElementById(`${type}-transcript-linked-material`);
+            
+            if (titleField) titleField.value = transcript.title || '';
+            if (textField) textField.value = transcript.text || '';
+            if (translationField) translationField.value = transcript.translation || '';
+            if (linkedField) linkedField.value = transcript.linkedMaterial || '';
+            
+            // Store the ID being edited
+            const form = document.getElementById(`add-${type}-transcript-form`);
+            form.dataset.editingId = id;
+            
+            // Change modal title
+            const modalTitle = document.querySelector(`#${modalId} .modal-title`);
+            if (modalTitle) modalTitle.textContent = 'Modifier la transcription';
+            
+            // Open the modal
+            openModal(modalId);
         }
 
         // Setup transcript buttons and forms
         function setupTranscriptSystem() {
             // Reading transcript button
             document.getElementById('add-reading-transcript-btn')?.addEventListener('click', () => {
+                // Reset form and modal title for new transcript
+                const form = document.getElementById('add-reading-transcript-form');
+                const modalTitle = document.querySelector('#add-reading-transcript-modal .modal-title');
+                if (form) {
+                    form.reset();
+                    delete form.dataset.editingId;
+                }
+                if (modalTitle) modalTitle.textContent = 'Ajouter une transcription';
                 openModal('add-reading-transcript-modal');
             });
             
             // Listening transcript button
             document.getElementById('add-listening-transcript-btn')?.addEventListener('click', () => {
+                // Reset form and modal title for new transcript
+                const form = document.getElementById('add-listening-transcript-form');
+                const modalTitle = document.querySelector('#add-listening-transcript-modal .modal-title');
+                if (form) {
+                    form.reset();
+                    delete form.dataset.editingId;
+                }
+                if (modalTitle) modalTitle.textContent = 'Ajouter une transcription';
                 openModal('add-listening-transcript-modal');
             });
             
@@ -8801,19 +8859,43 @@ const firebaseConfig = {
             document.getElementById('add-reading-transcript-form')?.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
-                const transcript = {
-                    id: Date.now(),
-                    title: document.getElementById('reading-transcript-title').value.trim(),
-                    text: document.getElementById('reading-transcript-text').value.trim(),
-                    translation: document.getElementById('reading-transcript-translation')?.value.trim() || '',
-                    linkedMaterial: document.getElementById('reading-transcript-linked-material')?.value || '',
-                    created: new Date().toISOString()
-                };
+                const form = e.target;
+                const editingId = form.dataset.editingId ? parseInt(form.dataset.editingId) : null;
                 
-                readingTranscripts.push(transcript);
+                if (editingId) {
+                    // Edit existing transcript
+                    const index = readingTranscripts.findIndex(t => t.id === editingId);
+                    if (index !== -1) {
+                        readingTranscripts[index] = {
+                            ...readingTranscripts[index],
+                            title: document.getElementById('reading-transcript-title').value.trim(),
+                            text: document.getElementById('reading-transcript-text').value.trim(),
+                            translation: document.getElementById('reading-transcript-translation')?.value.trim() || '',
+                            linkedMaterial: document.getElementById('reading-transcript-linked-material')?.value || '',
+                            updated: new Date().toISOString()
+                        };
+                    }
+                    delete form.dataset.editingId;
+                } else {
+                    // Create new transcript
+                    const transcript = {
+                        id: Date.now(),
+                        title: document.getElementById('reading-transcript-title').value.trim(),
+                        text: document.getElementById('reading-transcript-text').value.trim(),
+                        translation: document.getElementById('reading-transcript-translation')?.value.trim() || '',
+                        linkedMaterial: document.getElementById('reading-transcript-linked-material')?.value || '',
+                        created: new Date().toISOString()
+                    };
+                    readingTranscripts.push(transcript);
+                }
+                
                 syncToFirebase(); // Auto-save readingTranscripts to Firebase
                 renderTranscripts('reading');
                 closeModal('add-reading-transcript-modal');
+                
+                // Reset modal title
+                const modalTitle = document.querySelector('#add-reading-transcript-modal .modal-title');
+                if (modalTitle) modalTitle.textContent = 'Ajouter une transcription';
                 
                 e.target.reset();
             });
@@ -8822,18 +8904,43 @@ const firebaseConfig = {
             document.getElementById('add-listening-transcript-form')?.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
-                const transcript = {
-                    id: Date.now(),
-                    title: document.getElementById('listening-transcript-title').value.trim(),
-                    text: document.getElementById('listening-transcript-text').value.trim(),
-                    translation: document.getElementById('listening-transcript-translation')?.value.trim() || '',
-                    linkedMaterial: document.getElementById('listening-transcript-linked-material')?.value || '',
-                    created: new Date().toISOString()
-                };
+                const form = e.target;
+                const editingId = form.dataset.editingId ? parseInt(form.dataset.editingId) : null;
                 
-                listeningTranscripts.push(transcript);            // Transcripts stored in memory only - no Firebase sync needed
+                if (editingId) {
+                    // Edit existing transcript
+                    const index = listeningTranscripts.findIndex(t => t.id === editingId);
+                    if (index !== -1) {
+                        listeningTranscripts[index] = {
+                            ...listeningTranscripts[index],
+                            title: document.getElementById('listening-transcript-title').value.trim(),
+                            text: document.getElementById('listening-transcript-text').value.trim(),
+                            translation: document.getElementById('listening-transcript-translation')?.value.trim() || '',
+                            linkedMaterial: document.getElementById('listening-transcript-linked-material')?.value || '',
+                            updated: new Date().toISOString()
+                        };
+                    }
+                    delete form.dataset.editingId;
+                } else {
+                    // Create new transcript
+                    const transcript = {
+                        id: Date.now(),
+                        title: document.getElementById('listening-transcript-title').value.trim(),
+                        text: document.getElementById('listening-transcript-text').value.trim(),
+                        translation: document.getElementById('listening-transcript-translation')?.value.trim() || '',
+                        linkedMaterial: document.getElementById('listening-transcript-linked-material')?.value || '',
+                        created: new Date().toISOString()
+                    };
+                    listeningTranscripts.push(transcript);
+                }
+                
+                syncToFirebase(); // Auto-save listeningTranscripts to Firebase
                 renderTranscripts('listening');
                 closeModal('add-listening-transcript-modal');
+                
+                // Reset modal title
+                const modalTitle = document.querySelector('#add-listening-transcript-modal .modal-title');
+                if (modalTitle) modalTitle.textContent = 'Ajouter une transcription';
                 
                 e.target.reset();
             });
@@ -9049,7 +9156,9 @@ const firebaseConfig = {
                         recordings: data.recordings?.length || 0,
                         writings: data.writings?.length || 0,
                         notes: data.notes?.length || 0,
-                        resourcesList: data.resourcesList?.length || 0
+                        resourcesList: data.resourcesList?.length || 0,
+                        readingTranscripts: data.readingTranscripts?.length || 0,
+                        listeningTranscripts: data.listeningTranscripts?.length || 0
                     });
                     
                     // Load all data directly into memory
@@ -9082,6 +9191,14 @@ const firebaseConfig = {
                         resourcesList = data.resourcesList;
                     }
                     
+                    if (data.readingTranscripts) {
+                        readingTranscripts = data.readingTranscripts;
+                    }
+                    
+                    if (data.listeningTranscripts) {
+                        listeningTranscripts = data.listeningTranscripts;
+                    }
+                    
                     console.log('✅ Data loaded from Firebase into memory!');
                     
                     // Try to render if functions exist, otherwise they'll render when page loads
@@ -9101,6 +9218,10 @@ const firebaseConfig = {
                         console.log('  ✅ renderNotes() complete');
                         renderResourcesList();
                         console.log('  ✅ renderResourcesList() complete');
+                        renderTranscripts('reading');
+                        console.log('  ✅ renderTranscripts(reading) complete');
+                        renderTranscripts('listening');
+                        console.log('  ✅ renderTranscripts(listening) complete');
                         initializeSRSData();
                         updateSRSStatsDisplay();
                         console.log('✅ All sections rendered with Firebase data');
