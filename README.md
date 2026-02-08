@@ -2709,6 +2709,373 @@ const firebaseConfig = {
             border-radius: 3px;
         }
 
+        /* PRESENCE CALENDAR - MULTI MONTH */
+        .calendar-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .calendar-nav-btn {
+            background: var(--cream-dark);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--navy);
+        }
+
+        .calendar-nav-btn:hover {
+            background: var(--sage);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .calendar-nav-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .calendar-month-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: var(--navy);
+            text-align: center;
+            flex: 1;
+        }
+
+        #presence-calendar-months {
+            max-width: 100%;
+        }
+
+        .calendar-month {
+            background: var(--whisper);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--cream-dark);
+        }
+
+        .calendar-month-header {
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-soft);
+            font-weight: 500;
+            padding: 0.35rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        /* PRESENCE CALENDAR - DAY STYLES */
+        #presence-calendar-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-soft);
+            font-weight: 500;
+            padding: 0.5rem 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            background: var(--whisper);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .calendar-day:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .calendar-day.today {
+            border: 2px solid var(--crimson);
+        }
+
+        .calendar-day.active {
+            background: linear-gradient(135deg, #fef3e8 0%, #fde8d0 100%);
+        }
+
+        .calendar-day.active-1 {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+            box-shadow: 0 0 8px rgba(255, 136, 136, 0.15);
+        }
+
+        .calendar-day.active-2 {
+            background: linear-gradient(135deg, #ffd4d4 0%, #ffbaba 100%);
+            box-shadow: 0 0 12px rgba(255, 136, 136, 0.25);
+        }
+
+        .calendar-day.active-3 {
+            background: linear-gradient(135deg, #ffbaba 0%, #ff9999 100%);
+            box-shadow: 0 0 16px rgba(255, 119, 119, 0.35);
+        }
+
+        .calendar-day.active-4 {
+            background: linear-gradient(135deg, #ff9999 0%, #ff7777 100%);
+            box-shadow: 0 0 20px rgba(255, 119, 119, 0.45);
+        }
+
+        .calendar-day.active-5 {
+            background: linear-gradient(135deg, #ff7777 0%, #ff5555 100%);
+            box-shadow: 0 0 24px rgba(255, 85, 85, 0.5);
+            animation: rosyGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes rosyGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 85, 85, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(255, 85, 85, 0.6); }
+        }
+
+        .calendar-day-number {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .calendar-day-icons {
+            display: flex;
+            gap: 2px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 100%;
+        }
+
+        .calendar-action-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .calendar-action-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--navy);
+            opacity: 0.7;
+        }
+
+        .action-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 0.85rem;
+            background: var(--cream-dark);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--navy);
+            transition: all 0.3s ease;
+        }
+
+        .action-badge svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--navy);
+        }
+
+        .action-badge.active {
+            background: linear-gradient(135deg, #ff9999 0%, #ff7777 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 119, 119, 0.3);
+        }
+
+        .action-badge.active svg {
+            fill: white;
+        }
+
+        /* GROWTH TREE VISUALIZATION */
+        .growth-tree-container {
+            background: linear-gradient(180deg, #fdfcfb 0%, #f7f6f4 100%);
+            padding: 3rem 2rem 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 2px 24px rgba(0, 0, 0, 0.04);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(168, 184, 168, 0.1);
+        }
+
+        .growth-tree-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .growth-tree-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            font-weight: 400;
+            margin-bottom: 0.35rem;
+            letter-spacing: 0.3px;
+        }
+
+        .growth-tree-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-soft);
+            font-weight: 300;
+            letter-spacing: 0.2px;
+        }
+
+        .growth-tree-canvas {
+            max-width: 320px;
+            margin: 0 auto 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        #tree-svg {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.04));
+        }
+
+        .growth-tree-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .growth-stat {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .growth-stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .growth-stat-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--navy);
+            margin-bottom: 0.15rem;
+            line-height: 1;
+        }
+
+        .growth-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-soft);
+            text-transform: lowercase;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+
+        /* Tree SVG Elements - More refined */
+        .tree-trunk {
+            fill: #9d8b7a;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tree-branch {
+            stroke: #9d8b7a;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            opacity: 0;
+            animation: growBranch 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes growBranch {
+            from { 
+                opacity: 0; 
+                stroke-dasharray: 150; 
+                stroke-dashoffset: 150; 
+            }
+            to { 
+                opacity: 0.85; 
+                stroke-dasharray: 150; 
+                stroke-dashoffset: 0; 
+            }
+        }
+
+        .tree-leaf {
+            fill: #a8b89a;
+            opacity: 0;
+            animation: leafAppear 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transform-origin: center;
+        }
+
+        @keyframes leafAppear {
+            from { 
+                opacity: 0; 
+                transform: scale(0) rotate(-10deg); 
+            }
+            to { 
+                opacity: 0.75; 
+                transform: scale(1) rotate(0deg); 
+            }
+        }
+
+        .tree-flower {
+            opacity: 0;
+            animation: flowerBloom 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transform-origin: center;
+        }
+
+        @keyframes flowerBloom {
+            0% { 
+                opacity: 0; 
+                transform: scale(0) rotate(-15deg); 
+            }
+            70% { 
+                transform: scale(1.08) rotate(2deg); 
+            }
+            100% { 
+                opacity: 0.9; 
+                transform: scale(1) rotate(0deg); 
+            }
+        }
+
         /* GARDEN VISUAL */
         .garden-visual {
             background: linear-gradient(to bottom, #e8f4f8 0%, #f5f9e8 100%);
@@ -3319,9 +3686,45 @@ const firebaseConfig = {
         <section class="room active" id="entree">
             <div class="room-intro">
                 <h1 class="room-title">L'Entrée</h1>
-                <p class="room-description">
-                    Entre doucement. Prends ton temps. C'est ton espace, ton rythme.
+                <p class="room-description" id="time-greeting">
+                    Bonjour, tu es revenu chez toi.
                 </p>
+                <p class="room-description" id="presence-streak" style="font-size: 0.9rem; margin-top: 0.5rem;">
+                    <!-- Streak info will appear here -->
+                </p>
+            </div>
+
+            <!-- Presence Calendar -->
+            <div class="entrance-card">
+                <div class="entrance-sentence">Ton calendrier de présence</div>
+                <div class="entrance-translation" style="margin-bottom: 1.5rem;">
+                    Chaque jour où tu touches le français compte. Pas besoin d'être parfait.
+                </div>
+                
+                <div class="calendar-navigation">
+                    <button class="calendar-nav-btn" id="prev-month">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                    </button>
+                    <div class="calendar-month-title" id="current-month-title">Février 2026</div>
+                    <button class="calendar-nav-btn" id="next-month">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="presence-calendar-months">
+                    <!-- Single month calendar will be rendered here -->
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; background: var(--whisper); border-radius: 8px;">
+                    <div style="font-size: 0.9rem; color: var(--text-soft); margin-bottom: 0.75rem;">Aujourd'hui, tu as fait:</div>
+                    <div id="today-actions" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
+                        <!-- Today's action badges will appear here -->
+                    </div>
+                </div>
             </div>
 
             <div id="entrance-content"></div>
@@ -3427,6 +3830,38 @@ const firebaseConfig = {
                 <p class="room-description">
                     Plante des mots. Laisse-les grandir dans leur propre temps.
                 </p>
+            </div>
+
+            <!-- Growth Tree Visualization -->
+            <div class="growth-tree-container">
+                <div class="growth-tree-header">
+                    <div class="growth-tree-title">Ton arbre de croissance</div>
+                    <div class="growth-tree-subtitle">Chaque mot appris fait grandir ton arbre</div>
+                </div>
+                
+                <div class="growth-tree-canvas" id="growth-tree">
+                    <svg viewBox="0 0 400 500" id="tree-svg">
+                        <!-- Tree will be rendered here -->
+                    </svg>
+                </div>
+                
+                <div class="growth-tree-stats">
+                    <div class="growth-stat">
+                        <div class="growth-stat-icon">🌱</div>
+                        <div class="growth-stat-value" id="tree-leaves">0</div>
+                        <div class="growth-stat-label">Feuilles</div>
+                    </div>
+                    <div class="growth-stat">
+                        <div class="growth-stat-icon">🌿</div>
+                        <div class="growth-stat-value" id="tree-branches">0</div>
+                        <div class="growth-stat-label">Branches</div>
+                    </div>
+                    <div class="growth-stat">
+                        <div class="growth-stat-icon">🌸</div>
+                        <div class="growth-stat-value" id="tree-flowers">0</div>
+                        <div class="growth-stat-label">Fleurs</div>
+                    </div>
+                </div>
             </div>
 
             <!-- Garden Visual -->
@@ -4212,12 +4647,12 @@ const firebaseConfig = {
                     Colle tes mots dans le format suivant (une ligne par mot):
                 </p>
                 <div style="background: var(--cream-dark); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin-bottom: 1rem;">
-                    le chat | the cat | animaux<br>
-                    la maison | the house | logement<br>
-                    manger | to eat | verbes
+                    embrasure | window recess | La lumière entre par l'embrasure. | architecture<br>
+                    épanouissement | blooming, fulfillment | Son épanouissement personnel est visible.<br>
+                    soupçon | hint, suspicion | Il y a un soupçon de vanille. | cuisine
                 </div>
                 <p style="color: var(--text-soft); font-size: 0.9rem;">
-                    <strong>Format:</strong> mot français | signification | thème (optionnel)<br>
+                    <strong>Format:</strong> mot français | signification | exemple (optionnel) | thème (optionnel)<br>
                     Sépare avec le symbole | (barre verticale)
                 </p>
             </div>
@@ -4228,7 +4663,7 @@ const firebaseConfig = {
                     <textarea 
                         class="form-textarea" 
                         id="bulk-import-text" 
-                        placeholder="le chat | the cat | animaux&#10;la maison | the house | logement&#10;manger | to eat | verbes"
+                        placeholder="embrasure | window recess | La lumière entre par l'embrasure. | architecture&#10;épanouissement | blooming, fulfillment | Son épanouissement personnel est visible.&#10;soupçon | hint, suspicion | Il y a un soupçon de vanille. | cuisine"
                         rows="10"
                         required
                         style="font-family: monospace;"
@@ -5057,6 +5492,7 @@ const firebaseConfig = {
             console.log('   - resourcesList:', resourcesList.length, 'items');
             console.log('   - readingTranscripts:', readingTranscripts.length, 'items');
             console.log('   - listeningTranscripts:', listeningTranscripts.length, 'items');
+            console.log('   - presenceData:', Object.keys(presenceData).length, 'days');
             
             // Show sync indicator
             const syncIndicator = document.getElementById('sync-indicator');
@@ -5073,6 +5509,7 @@ const firebaseConfig = {
                     resourcesList,
                     readingTranscripts,
                     listeningTranscripts,
+                    presenceData,
                     lastUpdated: new Date().toISOString()
                 });
                 
@@ -5199,6 +5636,326 @@ const firebaseConfig = {
         let logoMainClicks = 0;
         let logoSubTimer = null;
         let logoMainTimer = null;
+
+        // ============================================
+        // PRESENCE TRACKING SYSTEM
+        // ============================================
+        
+        // Presence data structure - will sync with Firebase
+        let presenceData = {};
+        
+        // Action types
+        const ACTION_TYPES = {
+            WRITING: 'writing',
+            SPEAKING: 'speaking',
+            LISTENING: 'listening',
+            READING: 'reading',
+            NEW_WORD: 'new_word'
+        };
+
+        // Time-based greetings
+        const GREETINGS = {
+            morning: [
+                "Bonjour, tu es revenu chez toi.",
+                "Nouvelle journée, nouveau mot.",
+                "On apprend doucement aujourd'hui.",
+                "Bienvenue dans ta maison française.",
+                "Le matin est doux, comme ton apprentissage."
+            ],
+            afternoon: [
+                "Bon après-midi. Ta maison t'attend.",
+                "L'après-midi est à toi.",
+                "On continue en douceur.",
+                "Prends ton temps cet après-midi.",
+                "Tu es là, c'est ce qui compte."
+            ],
+            evening: [
+                "Bonsoir. Ta maison française t'attend.",
+                "On révise doucement ce soir.",
+                "Tu peux être fier d'être là.",
+                "La soirée est calme, apprends en paix.",
+                "Bonsoir, entre et installe-toi."
+            ],
+            night: [
+                "Bonne nuit. Même quelques minutes comptent.",
+                "La nuit est douce pour apprendre.",
+                "Tu es là, même tard. C'est beau.",
+                "Quelques mots avant de dormir.",
+                "La maison est ouverte, même la nuit."
+            ],
+            rare: [
+                "Chaque mot est une fenêtre.",
+                "Tu construis quelque chose de beau.",
+                "Le français devient tien, doucement.",
+                "Présence, pas perfection.",
+                "Ta régularité est ta force."
+            ]
+        };
+
+        let lastGreeting = null;
+
+        function getTimeBasedGreeting() {
+            const hour = new Date().getHours();
+            let timeBlock;
+            
+            if (hour >= 5 && hour < 12) timeBlock = 'morning';
+            else if (hour >= 12 && hour < 18) timeBlock = 'afternoon';
+            else if (hour >= 18 && hour < 23) timeBlock = 'evening';
+            else timeBlock = 'night';
+            
+            // 5% chance for rare poetic greeting
+            if (Math.random() < 0.05) {
+                const rareGreetings = GREETINGS.rare;
+                return rareGreetings[Math.floor(Math.random() * rareGreetings.length)];
+            }
+            
+            // Get greeting from time block, avoid repeating last one
+            const greetings = GREETINGS[timeBlock];
+            let greeting;
+            do {
+                greeting = greetings[Math.floor(Math.random() * greetings.length)];
+            } while (greeting === lastGreeting && greetings.length > 1);
+            
+            lastGreeting = greeting;
+            return greeting;
+        }
+
+        function getTodayDate() {
+            const today = new Date();
+            return today.toISOString().split('T')[0]; // YYYY-MM-DD
+        }
+
+        function initPresenceForToday() {
+            const today = getTodayDate();
+            if (!presenceData[today]) {
+                presenceData[today] = {
+                    date: today,
+                    actions: {
+                        writing: false,
+                        speaking: false,
+                        listening: false,
+                        reading: false,
+                        new_word: false
+                    },
+                    totalActions: 0
+                };
+                savePresenceData();
+            }
+            return presenceData[today];
+        }
+
+        function logAction(actionType) {
+            const today = initPresenceForToday();
+            if (!today.actions[actionType]) {
+                today.actions[actionType] = true;
+                today.totalActions = Object.values(today.actions).filter(Boolean).length;
+                savePresenceData();
+                updatePresenceUI();
+            }
+        }
+
+        function savePresenceData() {
+            // Sync to Firebase instead of localStorage
+            if (window.syncToFirebase) window.syncToFirebase();
+        }
+
+        function calculateStreak() {
+            const dates = Object.keys(presenceData).sort().reverse();
+            let currentStreak = 0;
+            let longestStreak = 0;
+            let tempStreak = 0;
+            
+            const today = getTodayDate();
+            let checkDate = new Date(today);
+            
+            // Calculate current streak
+            while (true) {
+                const dateStr = checkDate.toISOString().split('T')[0];
+                if (presenceData[dateStr] && presenceData[dateStr].totalActions > 0) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+                checkDate.setDate(checkDate.getDate() - 1);
+            }
+            
+            // Calculate longest streak
+            for (const date of dates) {
+                if (presenceData[date].totalActions > 0) {
+                    tempStreak++;
+                    longestStreak = Math.max(longestStreak, tempStreak);
+                } else {
+                    tempStreak = 0;
+                }
+            }
+            
+            return { currentStreak, longestStreak };
+        }
+
+        function updatePresenceUI() {
+            // Update greeting
+            const greetingEl = document.getElementById('time-greeting');
+            if (greetingEl) {
+                greetingEl.textContent = getTimeBasedGreeting();
+            }
+            
+            // Update streak
+            const streakEl = document.getElementById('presence-streak');
+            if (streakEl) {
+                const { currentStreak, longestStreak } = calculateStreak();
+                if (currentStreak > 0) {
+                    streakEl.innerHTML = `🌱 Tu es venu <strong>${currentStreak}</strong> jour${currentStreak > 1 ? 's' : ''} de suite`;
+                } else {
+                    streakEl.innerHTML = 'La maison est toujours ouverte. <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px; vertical-align: middle; display: inline-block;"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>';
+                }
+            }
+            
+            // Update today's actions
+            const todayActionsEl = document.getElementById('today-actions');
+            if (todayActionsEl) {
+                const today = initPresenceForToday();
+                const actionSvgs = {
+                    writing: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>',
+                    speaking: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>',
+                    listening: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg>',
+                    reading: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg>',
+                    new_word: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>'
+                };
+                const actionLabels = {
+                    writing: 'Écriture',
+                    speaking: 'Parole',
+                    listening: 'Écoute',
+                    reading: 'Lecture',
+                    new_word: 'Nouveau mot'
+                };
+                
+                todayActionsEl.innerHTML = Object.entries(actionSvgs).map(([action, svg]) => `
+                    <div class="action-badge ${today.actions[action] ? 'active' : ''}">
+                        ${svg}
+                        <span>${actionLabels[action]}</span>
+                    </div>
+                `).join('');
+            }
+            
+            // Render calendar
+            renderPresenceCalendar();
+        }
+
+        // Current viewing month/year
+        let viewingMonth = new Date().getMonth();
+        let viewingYear = new Date().getFullYear();
+
+        function renderPresenceCalendar() {
+            const container = document.getElementById('presence-calendar-months');
+            if (!container) return;
+            
+            // SVG icon paths
+            const svgIcons = {
+                writing: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>',
+                speaking: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>',
+                listening: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg>',
+                reading: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg>',
+                new_word: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>'
+            };
+            
+            // Update month title
+            const monthTitleEl = document.getElementById('current-month-title');
+            if (monthTitleEl) {
+                const monthName = new Date(viewingYear, viewingMonth, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+                monthTitleEl.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+            }
+            
+            const firstDay = new Date(viewingYear, viewingMonth, 1);
+            const lastDay = new Date(viewingYear, viewingMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+            
+            let html = `
+                <div class="calendar-month">
+                    <div class="calendar-weekdays">
+                        <div class="calendar-weekday">Dim</div>
+                        <div class="calendar-weekday">Lun</div>
+                        <div class="calendar-weekday">Mar</div>
+                        <div class="calendar-weekday">Mer</div>
+                        <div class="calendar-weekday">Jeu</div>
+                        <div class="calendar-weekday">Ven</div>
+                        <div class="calendar-weekday">Sam</div>
+                    </div>
+                    <div class="calendar-grid">
+            `;
+            
+            // Empty cells before first day
+            for (let i = 0; i < startingDayOfWeek; i++) {
+                html += '<div></div>';
+            }
+            
+            // Days of month
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(viewingYear, viewingMonth, day);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayData = presenceData[dateStr];
+                const isToday = date.getFullYear() === today.getFullYear() && 
+                               date.getMonth() === today.getMonth() && 
+                               date.getDate() === today.getDate();
+                
+                let classes = ['calendar-day'];
+                if (isToday) classes.push('today');
+                
+                if (dayData && dayData.totalActions > 0) {
+                    const intensity = Math.min(dayData.totalActions, 5);
+                    classes.push(`active-${intensity}`);
+                }
+                
+                const actionIcons = dayData ? Object.entries(dayData.actions)
+                    .filter(([_, active]) => active)
+                    .map(([action]) => {
+                        return `<span class="calendar-action-icon">${svgIcons[action]}</span>`;
+                    }).join('') : '';
+                
+                html += `
+                    <div class="${classes.join(' ')}">
+                        <div class="calendar-day-number">${day}</div>
+                        <div class="calendar-day-icons">${actionIcons}</div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Month navigation
+        function setupCalendarNavigation() {
+            const prevBtn = document.getElementById('prev-month');
+            const nextBtn = document.getElementById('next-month');
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    viewingMonth--;
+                    if (viewingMonth < 0) {
+                        viewingMonth = 11;
+                        viewingYear--;
+                    }
+                    renderPresenceCalendar();
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    viewingMonth++;
+                    if (viewingMonth > 11) {
+                        viewingMonth = 0;
+                        viewingYear++;
+                    }
+                    renderPresenceCalendar();
+                });
+            }
+        }
 
         // === SRS SYSTEM ===
         function initializeSRSData() {
@@ -5498,6 +6255,7 @@ const firebaseConfig = {
                     recordings = [];
                     resourcesList = [];
                     notes = [];
+                    presenceData = {};
                     activeFilters = { year: "", quarter: "", week: "", theme: "", favorite: "" };
                     
                     // Clear localStorage (for dark mode, volume, etc)
@@ -6173,7 +6931,106 @@ const firebaseConfig = {
             });
         }
 
+        // === GROWTH TREE RENDERING ===
+        function renderGrowthTree() {
+            const totalWords = vocabulary.length;
+            const { currentStreak } = calculateStreak();
+            
+            // Calculate tree growth metrics
+            const leaves = totalWords;
+            const branches = Math.floor(currentStreak / 7);
+            const flowers = Math.floor(totalWords / 50);
+            
+            // Update stats display
+            document.getElementById('tree-leaves').textContent = leaves;
+            document.getElementById('tree-branches').textContent = branches;
+            document.getElementById('tree-flowers').textContent = flowers;
+            
+            // Render SVG tree
+            const svg = document.getElementById('tree-svg');
+            if (!svg) return;
+            
+            let svgContent = '';
+            
+            // More elegant trunk
+            svgContent += `
+                <path class="tree-trunk" d="M 190 350 Q 185 400 185 450 L 215 450 Q 215 400 210 350 Z" 
+                      fill="#9d8b7a" opacity="0.9"/>
+            `;
+            
+            // Graceful main branches
+            const mainBranches = Math.min(branches, 6);
+            for (let i = 0; i < mainBranches; i++) {
+                const side = i % 2 === 0 ? -1 : 1;
+                const yPos = 370 - (i * 25);
+                const xStart = 200;
+                const length = 50 + (i * 8);
+                const xEnd = 200 + (side * length);
+                const yEnd = yPos - 35 - (i * 3);
+                
+                svgContent += `
+                    <path class="tree-branch" 
+                          d="M ${xStart} ${yPos} Q ${xStart + side * (length * 0.4)} ${yPos - 15} ${xEnd} ${yEnd}"
+                          style="animation-delay: ${i * 0.15}s"/>
+                `;
+            }
+            
+            // Minimal, elegant leaves
+            const leafCount = Math.min(leaves, 80);
+            const goldenRatio = 1.618;
+            
+            for (let i = 0; i < leafCount; i++) {
+                // Use golden ratio spiral for natural distribution
+                const angle = i * goldenRatio * Math.PI;
+                const radius = 15 + Math.sqrt(i) * 8;
+                const x = 200 + Math.cos(angle) * radius;
+                const y = 320 - Math.abs(Math.sin(angle)) * radius;
+                
+                // Simple circular leaves with slight variation
+                const size = 4 + Math.random() * 2;
+                svgContent += `
+                    <circle class="tree-leaf" 
+                            cx="${x}" 
+                            cy="${y}" 
+                            r="${size}" 
+                            style="animation-delay: ${0.3 + i * 0.008}s"/>
+                `;
+            }
+            
+            // Delicate flowers at milestones
+            const flowerPositions = [
+                { x: 200, y: 260 },
+                { x: 160, y: 290 },
+                { x: 240, y: 290 },
+                { x: 180, y: 270 },
+                { x: 220, y: 270 }
+            ];
+            
+            for (let i = 0; i < Math.min(flowers, 5); i++) {
+                const pos = flowerPositions[i];
+                
+                // Minimalist 5-petal flower
+                svgContent += `
+                    <g class="tree-flower" style="animation-delay: ${2 + i * 0.4}s">
+                        ${[0, 72, 144, 216, 288].map(angle => {
+                            const rad = (angle * Math.PI) / 180;
+                            const px = pos.x + Math.cos(rad) * 5;
+                            const py = pos.y + Math.sin(rad) * 5;
+                            return `<circle cx="${px}" cy="${py}" r="3.5" fill="#f5d5d8" opacity="0.9"/>`;
+                        }).join('')}
+                        <circle cx="${pos.x}" cy="${pos.y}" r="2.5" fill="#f4c7ab" opacity="0.95"/>
+                    </g>
+                `;
+            }
+            
+            svg.innerHTML = svgContent;
+        }
+
         function renderGarden() {
+            // First render the tree
+            renderGrowthTree();
+            
+            // Then render the word grid
             const grid = document.getElementById('word-grid');
             const filteredVocabulary = getFilteredVocabulary();
             
@@ -6453,6 +7310,9 @@ const firebaseConfig = {
 
             vocabulary.push(word);
                 if (window.syncToFirebase) window.syncToFirebase();
+            
+            // Log action for presence tracking
+            logAction(ACTION_TYPES.NEW_WORD);
             
             renderGarden();
             populateJardinFilters(); // Update filters after adding
@@ -6952,6 +7812,10 @@ const firebaseConfig = {
 
             readingList.push(item);
                 syncToFirebase(); // Auto-save readingList to Firebase
+            
+            // Log action for presence tracking
+            logAction(ACTION_TYPES.READING);
+            
             renderReadingList();
             closeModal('reading-modal');
         });
@@ -7092,6 +7956,10 @@ const firebaseConfig = {
 
             listeningList.push(item);
                 syncToFirebase(); // Auto-save listeningList to Firebase
+            
+            // Log action for presence tracking
+            logAction(ACTION_TYPES.LISTENING);
+            
             renderListeningList();
             closeModal('listening-modal');
             
@@ -7365,6 +8233,9 @@ const firebaseConfig = {
             recordings.push(recording);
                 syncToFirebase(); // Auto-save recordings to Firebase
             
+            // Log action for presence tracking
+            logAction(ACTION_TYPES.SPEAKING);
+            
             // Clear UI
             document.getElementById('spoken-text').textContent = '';
             document.getElementById('recording-note').value = '';
@@ -7541,6 +8412,9 @@ const firebaseConfig = {
 
             writings.push(writing);
                 syncToFirebase(); // Auto-save writings to Firebase
+
+            // Log action for presence tracking
+            logAction(ACTION_TYPES.WRITING);
 
             writingArea.value = '';
             wordCountEl.textContent = '0 mots';
@@ -7874,7 +8748,8 @@ const firebaseConfig = {
                 
                 const french = parts[0];
                 const meaning = parts[1];
-                const lineTheme = parts[2] || ''; // Theme from the line itself
+                const exampleSentence = parts[2] || ''; // NEW: Example sentence (3rd field)
+                const lineTheme = parts[3] || ''; // Theme moved to 4th field
                 const finalTheme = lineTheme || defaultTheme; // Use line theme if present, otherwise default
                 
                 // Detect article
@@ -7898,7 +8773,7 @@ const firebaseConfig = {
                     week: week,
                     quarter: quarter,
                     year: year,
-                    contexts: ['', '', ''],
+                    contexts: exampleSentence ? [exampleSentence, '', ''] : ['', '', ''], // Use example if provided
                     note: '',
                     image: '',
                     created: new Date().toISOString(),
@@ -7911,6 +8786,12 @@ const firebaseConfig = {
                 imported++;
             });
                 syncToFirebase(); // Auto-save vocabulary to Firebase
+            
+            // Log action for presence tracking if words were imported
+            if (imported > 0) {
+                logAction(ACTION_TYPES.NEW_WORD);
+            }
+            
             renderGarden();
             closeModal('bulk-import-modal');
             
@@ -8276,6 +9157,10 @@ const firebaseConfig = {
             // NOTE: initializeSRSData() is now called AFTER Firebase loads user data
             // See loadDataFromFirebase() function
             updateSRSStatsDisplay();
+
+            // Initialize presence tracking UI
+            updatePresenceUI();
+            setupCalendarNavigation();
 
             // SRS button
             const startSRSBtn = document.getElementById('start-srs-session');
@@ -9169,7 +10054,8 @@ const firebaseConfig = {
                         notes: data.notes?.length || 0,
                         resourcesList: data.resourcesList?.length || 0,
                         readingTranscripts: data.readingTranscripts?.length || 0,
-                        listeningTranscripts: data.listeningTranscripts?.length || 0
+                        listeningTranscripts: data.listeningTranscripts?.length || 0,
+                        presenceData: Object.keys(data.presenceData || {}).length || 0
                     });
                     
                     // Load all data directly into memory
@@ -9210,6 +10096,11 @@ const firebaseConfig = {
                         listeningTranscripts = data.listeningTranscripts;
                     }
                     
+                    if (data.presenceData) {
+                        presenceData = data.presenceData;
+                        console.log('✅ Loaded', Object.keys(presenceData).length, 'days of presence data');
+                    }
+                    
                     console.log('✅ Data loaded from Firebase into memory!');
                     
                     // Try to render if functions exist, otherwise they'll render when page loads
@@ -9235,6 +10126,8 @@ const firebaseConfig = {
                         console.log('  ✅ renderTranscripts(listening) complete');
                         initializeSRSData();
                         updateSRSStatsDisplay();
+                        updatePresenceUI();
+                        console.log('  ✅ updatePresenceUI() complete');
                         console.log('✅ All sections rendered with Firebase data');
                     } else {
                         console.log('⏳ Render functions not ready - data will render when page loads');
