@@ -8138,7 +8138,7 @@ const firebaseConfig = {
                     console.log('🔄 Page ready - loading data for logged in user');
                     loadDataFromFirebase(currentUser.uid);
                 }
-            }, 500);
+            }, 2000); // Wait 2 full seconds for everything to be ready
             
             // Resources filter listener
             const resourcesFilter = document.getElementById('filter-resources-type');
