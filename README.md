@@ -8878,7 +8878,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                                     <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
                                         <path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/>
                                     </svg>
-                                    Sélection multiple
+                                    Rechercher une expression
                                 </button>
                                 <button class="btn btn-secondary" onclick="deletePassage(${passage.id})" style="flex: 1; min-width: 150px;">
                                     <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
@@ -8974,8 +8974,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
             toolbar.id = 'selection-toolbar';
             toolbar.className = 'selection-mode-toolbar';
             toolbar.innerHTML = `
-                <span style="font-weight: 500;">✨ Mode sélection activé - Sélectionnez plusieurs mots</span>
-                <button onclick="lookupSelectedWords(` + passageId + `)">Rechercher les mots sélectionnés</button>
+                <span style="font-weight: 500;">✨ Sélectionnez une expression ou collocation à rechercher</span>
+                <button onclick="lookupSelectedWords(` + passageId + `)">🔍 Rechercher l'expression</button>
                 <button onclick="toggleMultiWordSelection(` + passageId + `)" style="background: transparent; color: white; border: 2px solid white;">Annuler</button>
             `;
             document.body.appendChild(toolbar);
@@ -8995,59 +8995,111 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 return;
             }
             
-            // Extract words from selected text
-            const words = selectedText.match(/[\wàâäæçéèêëïîôùûüÿœ'-]+/gi) || [];
-            const uniqueWords = [...new Set(words.map(w => w.toLowerCase()))];
+            // Clean the text a bit but keep it as a phrase
+            const cleanedPhrase = selectedText.replace(/\s+/g, ' ').trim();
             
-            if (uniqueWords.length === 0) {
-                alert('Aucun mot trouvé dans la sélection');
+            if (!cleanedPhrase) {
+                alert('Aucun texte trouvé dans la sélection');
                 return;
             }
             
             // Store passage context
             window.currentReadingPassageId = passageId;
             
-            if (uniqueWords.length === 1) {
+            // Extract individual words for breakdown option
+            const words = selectedText.match(/[\wàâäæçéèêëïîôùûüÿœ'-]+/gi) || [];
+            const wordCount = words.length;
+            
+            if (wordCount === 1) {
                 // Single word - use normal lookup
-                openDictionaryLookup(words[0]);
+                openDictionaryLookup(cleanedPhrase);
             } else {
-                // Multiple words - open multi-word lookup modal
-                openMultiWordLookup(uniqueWords, words);
+                // Multiple words - open phrase lookup modal
+                openPhraseLookup(cleanedPhrase, words, passageId);
             }
             
             // Clear selection
             selection.removeAllRanges();
         };
         
-        window.openMultiWordLookup = function(uniqueWords, originalWords) {
-            // Create a temporary modal for multi-word lookup
+        
+        window.closeMultiWordModal = function() {
+            const modal = document.getElementById('multi-word-lookup-modal');
+            if (modal) {
+                modal.remove();
+            }
+        };
+        
+        // NEW: Phrase lookup for expressions and collocations
+        window.openPhraseLookup = function(phrase, words, passageId) {
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.id = 'multi-word-lookup-modal';
             modal.style.display = 'flex';
             
-            const wordsList = uniqueWords.map((word, index) => {
-                const inVocab = vocabulary.some(v => v.french.toLowerCase() === word);
-                return `
-                    <div style="padding: 0.75rem; background: ${inVocab ? 'rgba(144, 238, 144, 0.1)' : 'rgba(255, 215, 0, 0.1)'}; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 1.1rem;">${originalWords[uniqueWords.indexOf(word)]}</span>
-                        ${inVocab ? '<span style="color: #4CAF50; font-size: 0.85rem;">✓ Dans le vocabulaire</span>' : `<button class="btn btn-primary" onclick="openDictionaryLookup('${originalWords[uniqueWords.indexOf(word)]}'); closeMultiWordModal()" style="padding: 0.4rem 1rem; font-size: 0.9rem;">Rechercher</button>`}
-                    </div>
-                `;
-            }).join('');
-            
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 600px;">
                     <div class="modal-header">
-                        <h2 class="modal-title">` + uniqueWords.length + ` mots sélectionnés</h2>
+                        <h2 class="modal-title">🔍 Expression / Collocation</h2>
                         <button class="close-btn" onclick="closeMultiWordModal()">&times;</button>
                     </div>
-                    <div style="max-height: 60vh; overflow-y: auto;">
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            ` + wordsList + `
+                    
+                    <div style="padding: 1.5rem;">
+                        <div style="background: var(--cream-light); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 4px solid var(--crimson);">
+                            <div style="font-size: 1.4rem; font-weight: 500; color: var(--navy); margin-bottom: 0.5rem;">
+                                "${phrase}"
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--text-soft);">
+                                ${words.length} mot${words.length > 1 ? 's' : ''}
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <label class="form-label" style="margin-bottom: 1rem;">Rechercher l'expression complète dans:</label>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                <button onclick="searchPhrase('google', '` + phrase.replace(/'/g, "\\'") + `')" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                    </svg>
+                                    Google
+                                </button>
+                                
+                                <button onclick="searchPhrase('reverso', '` + phrase.replace(/'/g, "\\'") + `')" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                    </svg>
+                                    Reverso Context
+                                </button>
+                                
+                                <button onclick="searchPhrase('linguee', '` + phrase.replace(/'/g, "\\'") + `')" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                    Linguee
+                                </button>
+                                
+                                <button onclick="searchPhrase('wordreference', '` + phrase.replace(/'/g, "\\'") + `')" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                    </svg>
+                                    WordReference
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="border-top: 1px solid var(--whisper); padding-top: 1.5rem; margin-top: 1rem;">
+                            <button onclick="showIndividualWords('` + phrase.replace(/'/g, "\\'") + `', ` + JSON.stringify(words) + `)" class="btn btn-secondary" style="width: 100%;">
+                                📝 Ou voir les mots individuels
+                            </button>
                         </div>
                     </div>
-                    <div style="margin-top: 1.5rem; text-align: center;">
+                    
+                    <div class="form-actions">
                         <button class="btn btn-secondary" onclick="closeMultiWordModal()">Fermer</button>
                     </div>
                 </div>
@@ -9055,7 +9107,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
             
             document.body.appendChild(modal);
             
-            // Add close handler
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     closeMultiWordModal();
@@ -9063,10 +9114,64 @@ Ils seront préservés lors de l'affichage !"></textarea>
             });
         };
         
-        window.closeMultiWordModal = function() {
+        // Search phrase in different services
+        window.searchPhrase = function(service, phrase) {
+            let url;
+            const encodedPhrase = encodeURIComponent(phrase);
+            
+            switch(service) {
+                case 'google':
+                    url = `https://www.google.com/search?q=${encodedPhrase}`;
+                    break;
+                case 'reverso':
+                    url = `https://context.reverso.net/translation/french-english/${encodedPhrase.replace(/%20/g, '+')}`;
+                    break;
+                case 'linguee':
+                    url = `https://www.linguee.com/french-english/search?query=${encodedPhrase}`;
+                    break;
+                case 'wordreference':
+                    url = `https://www.wordreference.com/fren/${encodedPhrase}`;
+                    break;
+                default:
+                    url = `https://www.google.com/search?q=${encodedPhrase}`;
+            }
+            
+            window.open(url, '_blank', 'noopener,noreferrer');
+        };
+        
+        // Show individual words breakdown
+        window.showIndividualWords = function(phrase, words) {
+            const uniqueWords = [...new Set(words.map(w => w.toLowerCase()))];
+            const wordsList = uniqueWords.map(word => {
+                const inVocab = vocabulary.some(v => v.french.toLowerCase() === word);
+                return `
+                    <div style="padding: 0.75rem; background: ${inVocab ? 'rgba(144, 238, 144, 0.1)' : 'rgba(255, 215, 0, 0.1)'}; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 1.1rem;">${word}</span>
+                        ${inVocab ? '<span style="color: #4CAF50; font-size: 0.85rem;">✓ Dans le vocabulaire</span>' : '<button class="btn btn-primary" onclick="openDictionaryLookup(\'' + word + '\'); closeMultiWordModal()" style="padding: 0.4rem 1rem; font-size: 0.9rem;">Rechercher</button>'}
+                    </div>
+                `;
+            }).join('');
+            
+            // Update modal content
             const modal = document.getElementById('multi-word-lookup-modal');
             if (modal) {
-                modal.remove();
+                modal.querySelector('.modal-content').innerHTML = `
+                    <div class="modal-header">
+                        <h2 class="modal-title">Mots individuels</h2>
+                        <button class="close-btn" onclick="closeMultiWordModal()">&times;</button>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <div style="background: var(--cream-light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-style: italic; color: var(--text-soft);">
+                            Expression originale: "${phrase}"
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 60vh; overflow-y: auto;">
+                            ${wordsList}
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="closeMultiWordModal()">Fermer</button>
+                    </div>
+                `;
             }
         };
         
