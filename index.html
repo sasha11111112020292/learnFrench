@@ -8170,6 +8170,21 @@ const firebaseConfig = {
                         renderGarden();
                         renderGardenVisual();
                         console.log('✅ Auto-load complete!');
+                        
+                        // Force re-render everything 1 second later to ensure it shows
+                        setTimeout(() => {
+                            console.log('🔄 Force re-rendering all sections...');
+                            renderWords();
+                            renderReadingList();
+                            renderListeningList();
+                            renderRecordings();
+                            renderWritingsArchive();
+                            renderNotes();
+                            renderResourcesList();
+                            renderGarden();
+                            renderGardenVisual();
+                            console.log('✅ Force re-render complete!');
+                        }, 1000);
                     });
                 }
             }, 3000); // Wait 3 seconds for everything to be ready
