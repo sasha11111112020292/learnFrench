@@ -5985,10 +5985,7 @@ const firebaseConfig = {
 
         function getTodayDate() {
             const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`; // YYYY-MM-DD in LOCAL timezone
+            return today.toISOString().split('T')[0]; // YYYY-MM-DD
         }
 
         function initPresenceForToday() {
@@ -8561,7 +8558,6 @@ const firebaseConfig = {
                 const unknownCount = passage.unknownWords.length;
                 
                 // Calculate comprehension: assume you know all words EXCEPT the ones marked as unknown
-                // This way you don't have to mark every word you know!
                 const knownWords = uniqueWords.length - unknownCount;
                 const knownPercent = uniqueWords.length > 0 ? Math.round((knownWords / uniqueWords.length) * 100) : 0;
                 
