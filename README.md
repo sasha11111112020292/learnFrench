@@ -8557,9 +8557,8 @@ const firebaseConfig = {
                 // Unknown words marked in this passage
                 const unknownCount = passage.unknownWords.length;
                 
-                // Calculate comprehension: assume you know all words EXCEPT the ones marked as unknown
-                // This way you don't have to mark every word you know!
-                const knownWords = uniqueWords.length - unknownCount;
+                // Calculate comprehension (vocab + marked known / total unique)
+                const knownWords = wordsInVocab + passage.knownWords.length;
                 const knownPercent = uniqueWords.length > 0 ? Math.round((knownWords / uniqueWords.length) * 100) : 0;
                 
                 return `
@@ -8585,7 +8584,7 @@ const firebaseConfig = {
                                 </div>
                                 <div class="reading-stat">
                                     <div class="reading-stat-value" style="color: #FFD700;">${unknownCount}</div>
-                                    <div class="reading-stat-label">Inconnus</div>
+                                    <div class="reading-stat-label">Marqués</div>
                                 </div>
                                 <div class="reading-stat">
                                     <div class="reading-stat-value">${knownPercent}%</div>
