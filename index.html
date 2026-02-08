@@ -7771,7 +7771,7 @@ const firebaseConfig = {
                 imported++;
             });
                 syncToFirebase(); // Auto-save vocabulary to Firebase
-            renderWords();
+            renderGarden();
             closeModal('bulk-import-modal');
             
             if (errors.length > 0) {
@@ -8162,28 +8162,32 @@ const firebaseConfig = {
             renderNotes();
             setupTranscriptSystem(); // Initialize transcript system
             
-            // IMPORTANT: Auto-load user data after login (4 second delay to ensure everything is ready)
-            setTimeout(async () => {
+            // IMPORTANT: Auto-load user data after login (3 second delay to ensure everything is ready)
+            setTimeout(() => {
                 if (currentUser && currentUser.uid) {
                     console.log('🔄 Auto-loading data for logged in user...');
-                    await loadDataFromFirebase(currentUser.uid);
-                    
-                    // Wait a bit more then render everything
-                    setTimeout(() => {
-                        console.log('🎨 Final render of all sections...');
-                        if (vocabulary.length > 0) renderWords();
-                        if (readingList.length > 0) renderReadingList();
-                        if (listeningList.length > 0) renderListeningList();
-                        if (recordings.length > 0) renderRecordings();
-                        if (writings.length > 0) renderWritingsArchive();
-                        if (notes.length > 0) renderNotes();
-                        if (resourcesList.length > 0) renderResourcesList();
+                    loadDataFromFirebase(currentUser.uid).then(() => {
                         renderGarden();
                         renderGardenVisual();
-                        console.log('✅ Everything rendered!');
-                    }, 500);
+                        console.log('✅ Auto-load complete!');
+                        
+                        // Force re-render everything 1 second later to ensure it shows
+                        setTimeout(() => {
+                            console.log('🔄 Force re-rendering all sections...');
+                            renderGarden();
+                            renderReadingList();
+                            renderListeningList();
+                            renderRecordings();
+                            renderWritingsArchive();
+                            renderNotes();
+                            renderResourcesList();
+                            renderGarden();
+                            renderGardenVisual();
+                            console.log('✅ Force re-render complete!');
+                        }, 1000);
+                    });
                 }
-            }, 4000); // Wait 4 seconds total
+            }, 3000); // Wait 3 seconds for everything to be ready
             
             // Resources filter listener
             const resourcesFilter = document.getElementById('filter-resources-type');
@@ -8887,10 +8891,10 @@ const firebaseConfig = {
                     console.log('✅ Data loaded from Firebase into memory!');
                     
                     // Try to render if functions exist, otherwise they'll render when page loads
-                    if (typeof renderWords !== 'undefined') {
+                    if (typeof renderGarden !== 'undefined') {
                         console.log('🎨 Rendering all sections with loaded data...');
-                        renderWords();
-                        console.log('  ✅ renderWords() complete');
+                        renderGarden();
+                        console.log('  ✅ renderGarden() complete');
                         renderReadingList();
                         console.log('  ✅ renderReadingList() complete');
                         renderListeningList();
@@ -8946,7 +8950,7 @@ const firebaseConfig = {
                         console.log('✅ Migration complete!');
                         
                         // Render all data
-                        renderWords();
+                        renderGarden();
                         renderReadingList();
                         renderListeningList();
                         renderRecordings();
