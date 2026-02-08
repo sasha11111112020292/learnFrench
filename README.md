@@ -5983,8 +5983,11 @@ const firebaseConfig = {
         }
 
         function getTodayDate() {
-            const today = new Date();
-            return today.toISOString().split('T')[0]; // YYYY-MM-DD
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`; // LOCAL timezone
         }
 
         function initPresenceForToday() {
@@ -7561,19 +7564,19 @@ const firebaseConfig = {
                 if (modal && modal.classList) {
                     modal.classList.remove('active');
                 } else {
-                    console.warn(`⚠️ Modal "${id}" not found or not ready`);
+                    console.warn(`⚠️ Modal "${id}" not found`);
                 }
                 const forms = ['word-form', 'edit-word-form', 'reading-form', 'listening-form', 'resources-form'];
                 forms.forEach(formId => {
                     const form = document.getElementById(formId);
-                    if (form && form.reset) form.reset();
+                    if (form) form.reset();
                 });
                 
                 // Reset image previews
                 const previews = ['word-image-preview', 'edit-word-image-preview'];
                 previews.forEach(previewId => {
                     const preview = document.getElementById(previewId);
-                    if (preview && preview.style) {
+                    if (preview) {
                         preview.style.display = 'none';
                         preview.src = '';
                     }
@@ -7585,8 +7588,8 @@ const firebaseConfig = {
                     const input = document.getElementById(inputId);
                     if (input) input.value = '';
                 });
-            } catch (error) {
-                console.error('❌ Error in closeModal:', error);
+            } catch (e) {
+                console.error('closeModal error:', e);
             }
         }
 
@@ -10424,76 +10427,60 @@ const firebaseConfig = {
             
             // Listen for auth state changes
             onAuthStateChanged(window.firebaseAuth, async (user) => {
-                try {
-                    console.log('👤 Auth state changed:', user ? user.email : 'Not logged in');
+                console.log('👤 Auth state changed:', user ? user.email : 'Not logged in');
+                
+                if (user) {
+                    window.currentUser = user;
                     
-                    if (user) {
-                        window.currentUser = user;
-                        
-                        // Show entrance user profile
-                        const userProfile = document.getElementById('entrance-user-profile');
-                        const userEmail = document.getElementById('entrance-user-email');
-                        const userAvatar = document.getElementById('entrance-user-avatar');
-                        const loginSection = document.getElementById('entrance-login-section');
-                        
-                        if (userProfile) userProfile.style.display = 'block';
-                        if (userEmail) userEmail.textContent = user.email;
-                        if (userAvatar) userAvatar.textContent = user.email[0].toUpperCase();
-                        if (loginSection) loginSection.style.display = 'none';
-                        
-                        // Try to close auth modal, but don't let it break the login flow
-                        setTimeout(() => {
-                            try {
-                                closeModal('auth-modal');
-                            } catch (e) {
-                                console.warn('⚠️ Could not close auth modal:', e);
-                            }
-                        }, 100); // Small delay to ensure DOM is ready
-                        
-                        // Load data from Firestore
-                        console.log('📥 Loading data for user:', user.uid);
-                        try {
-                            await loadDataFromFirebase(user.uid);
-                            console.log('✅ loadDataFromFirebase completed successfully');
-                            console.log('📊 Current state:', {
-                                vocabulary: vocabulary.length,
-                                readingPassages: readingPassages.length
-                            });
-                        } catch (loadError) {
-                            console.error('❌ Error in loadDataFromFirebase:', loadError);
-                            console.error('Full error:', loadError.stack);
-                            // Don't prevent login even if data load fails
-                            alert('Logged in but failed to load data: ' + loadError.message);
-                        }
-                        
-                        // Update debug panel
-                        if (typeof updateDebugPanel !== 'undefined') {
-                            updateDebugPanel();
-                        }
-                        
-                        // Setup real-time sync
-                        setupRealtimeSync(user.uid);
-                    } else {
-                        window.currentUser = null;
-                        
-                        // Hide entrance user profile
-                        const userProfile = document.getElementById('entrance-user-profile');
-                        const loginSection = document.getElementById('entrance-login-section');
-                        
-                        if (userProfile) userProfile.style.display = 'none';
-                        if (loginSection) loginSection.style.display = 'block';
-                        
-                        // Show login modal when not authenticated
-                        setTimeout(() => {
-                            console.log('🔓 Not logged in - showing auth modal');
-                            openModal('auth-modal');
-                        }, 500);
+                    // Show entrance user profile
+                    const userProfile = document.getElementById('entrance-user-profile');
+                    const userEmail = document.getElementById('entrance-user-email');
+                    const userAvatar = document.getElementById('entrance-user-avatar');
+                    const loginSection = document.getElementById('entrance-login-section');
+                    
+                    if (userProfile) userProfile.style.display = 'block';
+                    if (userEmail) userEmail.textContent = user.email;
+                    if (userAvatar) userAvatar.textContent = user.email[0].toUpperCase();
+                    if (loginSection) loginSection.style.display = 'none';
+                    
+                    // Try to close auth modal, but don't let it break the login flow
+                    try {
+                        closeModal('auth-modal');
+                    } catch (e) {
+                        console.warn('⚠️ Could not close auth modal:', e);
                     }
-                } catch (authError) {
-                    console.error('❌ Critical error in auth state change handler:', authError);
-                    console.error('Full error:', authError.stack);
-                    // Still try to show an alert so user knows something went wrong
-                    alert('Authentication error: ' + authError.message);
+                    
+                    // Load data from Firestore
+                    console.log('📥 Loading data for user:', user.uid);
+                    await loadDataFromFirebase(user.uid);
+                    console.log('✅ loadDataFromFirebase completed successfully');
+                    console.log('📊 Current state:', {
+                        vocabulary: vocabulary.length,
+                        readingPassages: readingPassages.length
+                    });
+                    
+                    // Update debug panel
+                    if (typeof updateDebugPanel !== 'undefined') {
+                        updateDebugPanel();
+                    }
+                    
+                    // Setup real-time sync
+                    setupRealtimeSync(user.uid);
+                } else {
+                    window.currentUser = null;
+                    
+                    // Hide entrance user profile
+                    const userProfile = document.getElementById('entrance-user-profile');
+                    const loginSection = document.getElementById('entrance-login-section');
+                    
+                    if (userProfile) userProfile.style.display = 'none';
+                    if (loginSection) loginSection.style.display = 'block';
+                    
+                    // Show login modal when not authenticated
+                    setTimeout(() => {
+                        console.log('🔓 Not logged in - showing auth modal');
+                        openModal('auth-modal');
+                    }, 500);
                 }
             });
             
@@ -11502,34 +11489,6 @@ const firebaseConfig = {
                 
                 <div style="text-align: center; margin-top: 1.5rem;">
                     <a href="#" id="show-signup" style="color: var(--crimson); text-decoration: none;">Pas encore de compte ? S'inscrire</a>
-                </div>
-            </div>
-            
-            <div id="auth-signup-view" style="display: none;">
-                <form id="signup-form">
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" id="signup-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mot de passe</label>
-                        <input type="password" class="form-input" id="signup-password" required minlength="6">
-                        <small style="color: var(--text-soft);">Minimum 6 caractères</small>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Créer un compte</button>
-                    </div>
-                </form>
-                
-                <div style="text-align: center; margin-top: 1.5rem;">
-                    <a href="#" id="show-login" style="color: var(--crimson); text-decoration: none;">Déjà un compte ? Se connecter</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</body>
-</html>w-signup" style="color: var(--crimson); text-decoration: none;">Pas encore de compte ? S'inscrire</a>
                 </div>
             </div>
             
