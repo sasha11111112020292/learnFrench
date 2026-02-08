@@ -8162,32 +8162,28 @@ const firebaseConfig = {
             renderNotes();
             setupTranscriptSystem(); // Initialize transcript system
             
-            // IMPORTANT: Auto-load user data after login (3 second delay to ensure everything is ready)
-            setTimeout(() => {
+            // IMPORTANT: Auto-load user data after login (4 second delay to ensure everything is ready)
+            setTimeout(async () => {
                 if (currentUser && currentUser.uid) {
                     console.log('🔄 Auto-loading data for logged in user...');
-                    loadDataFromFirebase(currentUser.uid).then(() => {
+                    await loadDataFromFirebase(currentUser.uid);
+                    
+                    // Wait a bit more then render everything
+                    setTimeout(() => {
+                        console.log('🎨 Final render of all sections...');
+                        if (vocabulary.length > 0) renderWords();
+                        if (readingList.length > 0) renderReadingList();
+                        if (listeningList.length > 0) renderListeningList();
+                        if (recordings.length > 0) renderRecordings();
+                        if (writings.length > 0) renderWritingsArchive();
+                        if (notes.length > 0) renderNotes();
+                        if (resourcesList.length > 0) renderResourcesList();
                         renderGarden();
                         renderGardenVisual();
-                        console.log('✅ Auto-load complete!');
-                        
-                        // Force re-render everything 1 second later to ensure it shows
-                        setTimeout(() => {
-                            console.log('🔄 Force re-rendering all sections...');
-                            renderWords();
-                            renderReadingList();
-                            renderListeningList();
-                            renderRecordings();
-                            renderWritingsArchive();
-                            renderNotes();
-                            renderResourcesList();
-                            renderGarden();
-                            renderGardenVisual();
-                            console.log('✅ Force re-render complete!');
-                        }, 1000);
-                    });
+                        console.log('✅ Everything rendered!');
+                    }, 500);
                 }
-            }, 3000); // Wait 3 seconds for everything to be ready
+            }, 4000); // Wait 4 seconds total
             
             // Resources filter listener
             const resourcesFilter = document.getElementById('filter-resources-type');
