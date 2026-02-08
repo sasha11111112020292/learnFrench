@@ -8751,6 +8751,9 @@ const firebaseConfig = {
                 if (currentUser && currentUser.uid) {
                     console.log('🔘 Manual load button clicked');
                     await loadDataFromFirebase(currentUser.uid);
+                    // Also render the garden visual
+                    renderGarden();
+                    renderGardenVisual();
                     alert('Données chargées!');
                 }
             });
