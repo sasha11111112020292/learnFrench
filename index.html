@@ -5702,18 +5702,18 @@ const firebaseConfig = {
         // ============================================
         // FIREBASE SYNC FUNCTIONS (MUST BE FIRST!)
         // ============================================
-        let currentUser = null;
+        window.currentUser = null;
         let saveTimeout;
         
         // Safe sync function that can be called even before Firebase is ready
         window.syncToFirebase = function() {
             console.log('🔔 syncToFirebase called!');
-            console.log('   currentUser:', currentUser ? currentUser.email : 'null');
+            console.log('   currentUser:', window.currentUser ? window.currentUser.email : 'null');
             console.log('   firebaseReady:', window.firebaseReady);
             console.log('   vocabulary length:', vocabulary.length);
             
             // If not logged in or Firebase not ready, do nothing
-            if (!currentUser || !window.firebaseReady) {
+            if (!window.currentUser || !window.firebaseReady) {
                 console.warn('⏸️ Sync skipped - not logged in or Firebase not ready');
                 return;
             }
@@ -5728,7 +5728,7 @@ const firebaseConfig = {
         async function saveDataToFirebase() {
             console.log('💾 saveDataToFirebase called!');
             
-            if (!currentUser) {
+            if (!window.currentUser) {
                 console.error('❌ Save failed - not logged in');
                 return;
             }
@@ -5758,7 +5758,7 @@ const firebaseConfig = {
             if (syncIndicator) syncIndicator.style.opacity = '1';
             
             try {
-                await setDoc(doc(window.firebaseDB, 'users', currentUser.uid), {
+                await setDoc(doc(window.firebaseDB, 'users', window.currentUser.uid), {
                     vocabulary,
                     readingList,
                     listeningList,
@@ -6620,7 +6620,7 @@ const firebaseConfig = {
                     if (musicVolume) localStorage.setItem('musicVolume', musicVolume);
                     
                     // Sync empty data to Firebase (only if logged in)
-                    if (currentUser) {
+                    if (window.currentUser) {
                         await saveDataToFirebase(); // Immediate sync, not debounced
                     }
                     
@@ -7556,7 +7556,12 @@ const firebaseConfig = {
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('active');
+            } else {
+                console.warn(`⚠️ Modal "${id}" not found`);
+            }
             const forms = ['word-form', 'edit-word-form', 'reading-form', 'listening-form', 'resources-form'];
             forms.forEach(formId => {
                 const form = document.getElementById(formId);
@@ -9694,9 +9699,9 @@ const firebaseConfig = {
                     heartTimer = setTimeout(() => { heartClicks = 0; }, 2000);
                     if (heartClicks === 3) {
                         heartClicks = 0;
-                        if (currentUser && currentUser.uid) {
+                        if (window.currentUser && window.currentUser.uid) {
                             console.log('💕 Heart easter egg activated - reloading data');
-                            await loadDataFromFirebase(currentUser.uid);
+                            await loadDataFromFirebase(window.currentUser.uid);
                             renderGarden();
                             renderReadingPassages();
                             renderGardenVisual();
@@ -9748,9 +9753,9 @@ const firebaseConfig = {
             
             // IMPORTANT: Auto-load user data after login (3 second delay to ensure everything is ready)
             setTimeout(() => {
-                if (currentUser && currentUser.uid) {
+                if (window.currentUser && window.currentUser.uid) {
                     console.log('🔄 Auto-loading data for logged in user...');
-                    loadDataFromFirebase(currentUser.uid).then(() => {
+                    loadDataFromFirebase(window.currentUser.uid).then(() => {
                         renderGarden();
                         renderGardenVisual();
                         console.log('✅ Auto-load complete!');
@@ -10418,7 +10423,7 @@ const firebaseConfig = {
                 console.log('👤 Auth state changed:', user ? user.email : 'Not logged in');
                 
                 if (user) {
-                    currentUser = user;
+                    window.currentUser = user;
                     
                     // Show entrance user profile
                     const userProfile = document.getElementById('entrance-user-profile');
@@ -10431,16 +10436,31 @@ const firebaseConfig = {
                     if (userAvatar) userAvatar.textContent = user.email[0].toUpperCase();
                     if (loginSection) loginSection.style.display = 'none';
                     
-                    closeModal('auth-modal');
+                    // Try to close auth modal, but don't let it break the login flow
+                    try {
+                        closeModal('auth-modal');
+                    } catch (e) {
+                        console.warn('⚠️ Could not close auth modal:', e);
+                    }
                     
                     // Load data from Firestore
                     console.log('📥 Loading data for user:', user.uid);
                     await loadDataFromFirebase(user.uid);
+                    console.log('✅ loadDataFromFirebase completed successfully');
+                    console.log('📊 Current state:', {
+                        vocabulary: vocabulary.length,
+                        readingPassages: readingPassages.length
+                    });
+                    
+                    // Update debug panel
+                    if (typeof updateDebugPanel !== 'undefined') {
+                        updateDebugPanel();
+                    }
                     
                     // Setup real-time sync
                     setupRealtimeSync(user.uid);
                 } else {
-                    currentUser = null;
+                    window.currentUser = null;
                     
                     // Hide entrance user profile
                     const userProfile = document.getElementById('entrance-user-profile');
@@ -10581,16 +10601,22 @@ const firebaseConfig = {
         // Load all data from Firebase
         async function loadDataFromFirebase(userId) {
             console.log('🔍 loadDataFromFirebase called for userId:', userId);
+            console.log('🔍 window.firebaseModules exists?', !!window.firebaseModules);
+            console.log('🔍 window.firebaseDB exists?', !!window.firebaseDB);
             
             const { doc, getDoc } = window.firebaseModules;
             
             try {
                 console.log('📡 Fetching user document...');
-                const userDoc = await getDoc(doc(window.firebaseDB, 'users', userId));
+                const userDocRef = doc(window.firebaseDB, 'users', userId);
+                console.log('📡 Doc ref created:', userDocRef);
+                const userDoc = await getDoc(userDocRef);
+                console.log('📄 User doc received');
                 console.log('📄 User doc exists?', userDoc.exists());
                 
                 if (userDoc.exists()) {
                     const data = userDoc.data();
+                    console.log('📦 Raw data object keys:', Object.keys(data));
                     console.log('📦 Data received:', {
                         vocabulary: data.vocabulary?.length || 0,
                         readingList: data.readingList?.length || 0,
@@ -10601,6 +10627,7 @@ const firebaseConfig = {
                         resourcesList: data.resourcesList?.length || 0,
                         readingTranscripts: data.readingTranscripts?.length || 0,
                         listeningTranscripts: data.listeningTranscripts?.length || 0,
+                        readingPassages: data.readingPassages?.length || 0,
                         presenceData: Object.keys(data.presenceData || {}).length || 0
                     });
                     
@@ -10657,6 +10684,9 @@ const firebaseConfig = {
                     rebuildPresenceDataFromEntries();
                     
                     console.log('✅ Data loaded from Firebase into memory!');
+                    
+                    // Update debug panel
+                    updateDebugPanel();
                     
                     // Try to render if functions exist, otherwise they'll render when page loads
                     if (typeof renderGarden !== 'undefined') {
@@ -10761,6 +10791,61 @@ const firebaseConfig = {
                 alert('Failed to load data: ' + error.message);
             }
         }
+        
+        // UPDATE DEBUG PANEL
+        function updateDebugPanel() {
+            const loggedInEl = document.getElementById('debug-logged-in');
+            const firebaseEl = document.getElementById('debug-firebase-ready');
+            const vocabEl = document.getElementById('debug-vocab-count');
+            const passagesEl = document.getElementById('debug-passages-count');
+            
+            if (loggedInEl) {
+                loggedInEl.innerHTML = window.currentUser 
+                    ? `👤 Logged in: <span style="color: #4CAF50;">✓ ${window.currentUser.email || 'YES'}</span>`
+                    : `👤 Logged in: <span style="color: #FF6B6B;">✗ NO</span>`;
+            }
+            
+            if (firebaseEl) {
+                firebaseEl.innerHTML = window.firebaseReady 
+                    ? `🔥 Firebase: <span style="color: #4CAF50;">✓ Ready</span>`
+                    : `🔥 Firebase: <span style="color: #FF6B6B;">✗ Not Ready</span>`;
+            }
+            
+            if (vocabEl) {
+                vocabEl.innerHTML = `📚 Vocabulary: <span style="color: #4CAF50;">${vocabulary.length}</span>`;
+            }
+            
+            if (passagesEl) {
+                passagesEl.innerHTML = `📖 Passages: <span style="color: #4CAF50;">${readingPassages.length}</span>`;
+            }
+        }
+        
+        // FORCE RELOAD DATA
+        window.forceReloadData = async function() {
+            if (!window.currentUser) {
+                alert('❌ Not logged in! Please log in first.');
+                return;
+            }
+            
+            if (!window.firebaseReady) {
+                alert('❌ Firebase not ready! Refresh the page.');
+                return;
+            }
+            
+            alert('🔄 Reloading data from Firebase...');
+            
+            try {
+                await loadDataFromFirebase(window.currentUser.uid);
+                updateDebugPanel();
+                alert('✅ Data reloaded successfully!');
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        };
+        
+        // Update debug panel every 2 seconds
+        setInterval(updateDebugPanel, 2000);
+        setTimeout(updateDebugPanel, 500); // Initial update
         
         function setupRealtimeSync(userId) {
             console.log('🔄 Real-time sync is active for user:', userId);
@@ -11397,6 +11482,34 @@ const firebaseConfig = {
                 
                 <div style="text-align: center; margin-top: 1.5rem;">
                     <a href="#" id="show-signup" style="color: var(--crimson); text-decoration: none;">Pas encore de compte ? S'inscrire</a>
+                </div>
+            </div>
+            
+            <div id="auth-signup-view" style="display: none;">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="signup-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" class="form-input" id="signup-password" required minlength="6">
+                        <small style="color: var(--text-soft);">Minimum 6 caractères</small>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Créer un compte</button>
+                    </div>
+                </form>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <a href="#" id="show-login" style="color: var(--crimson); text-decoration: none;">Déjà un compte ? Se connecter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>w-signup" style="color: var(--crimson); text-decoration: none;">Pas encore de compte ? S'inscrire</a>
                 </div>
             </div>
             
