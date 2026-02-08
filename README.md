@@ -8877,16 +8877,24 @@ const firebaseConfig = {
                     
                     // Try to render if functions exist, otherwise they'll render when page loads
                     if (typeof renderWords !== 'undefined') {
+                        console.log('🎨 Rendering all sections with loaded data...');
                         renderWords();
+                        console.log('  ✅ renderWords() complete');
                         renderReadingList();
+                        console.log('  ✅ renderReadingList() complete');
                         renderListeningList();
+                        console.log('  ✅ renderListeningList() complete');
                         renderRecordings();
+                        console.log('  ✅ renderRecordings() complete');
                         renderWritingsArchive();
+                        console.log('  ✅ renderWritingsArchive() complete');
                         renderNotes();
+                        console.log('  ✅ renderNotes() complete');
                         renderResourcesList();
+                        console.log('  ✅ renderResourcesList() complete');
                         initializeSRSData();
                         updateSRSStatsDisplay();
-                        console.log('✅ Rendered all data');
+                        console.log('✅ All sections rendered with Firebase data');
                     } else {
                         console.log('⏳ Render functions not ready - data will render when page loads');
                     }
