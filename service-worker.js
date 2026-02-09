@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ma-maison-v2';
+const CACHE_NAME = 'ma-maison-v1';
 const urlsToCache = [
   './',
   './index.html',
@@ -52,8 +52,13 @@ self.addEventListener('fetch', (event) => {
         const fetchRequest = event.request.clone();
 
         return fetch(fetchRequest).then((response) => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+          // Check if valid response - accept both basic and cors types
+          if (!response || !response.ok) {
+            return response;
+          }
+
+          // Only cache basic and cors responses (not opaque)
+          if (response.type !== 'basic' && response.type !== 'cors') {
             return response;
           }
 
