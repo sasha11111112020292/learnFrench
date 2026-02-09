@@ -8,10 +8,10 @@
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#8b4654">
     <meta name="description" content="Your personal French study sanctuary with Pomodoro timer, music, and cloud sync">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="./manifest.json">
     
     <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Ma Maison">
@@ -12528,7 +12528,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
         // Register Service Worker for PWA functionality
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
+                navigator.serviceWorker.register('./service-worker.js')
                     .then((registration) => {
                         console.log('✅ Service Worker registered successfully:', registration.scope);
                         
