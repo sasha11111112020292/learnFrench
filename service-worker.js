@@ -1,7 +1,8 @@
 const CACHE_NAME = 'ma-maison-v1';
 const urlsToCache = [
-  '/index.html',
-  '/manifest.json',
+  './',
+  './index.html',
+  './manifest.json',
   'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Work+Sans:wght@300;400;500&family=Allura&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
@@ -68,7 +69,7 @@ self.addEventListener('fetch', (event) => {
           return response;
         }).catch(() => {
           // Return a custom offline page if available
-          return caches.match('/index.html');
+          return caches.match('./index.html');
         });
       })
   );
