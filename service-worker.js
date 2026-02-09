@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ma-maison-v3';
+const CACHE_NAME = 'ma-maison-v2';
 const urlsToCache = [
   './',
   './index.html',
