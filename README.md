@@ -478,6 +478,59 @@ const firebaseConfig = {
             border-color: rgba(244, 213, 141, 0.3);
             box-shadow: 0 8px 24px rgba(244, 213, 141, 0.15);
         }
+        
+        /* Dark mode house icon styles */
+        body.dark-mode .house-icon rect[fill="#A64253"] {
+            fill: #4a3545;
+            stroke: #ff6b8a;
+        }
+        
+        body.dark-mode .house-icon circle[fill="#D4A5A5"] {
+            fill: #9d8e7a;
+        }
+        
+        body.dark-mode .house-icon rect[fill="#FBF9F4"] {
+            fill: #2a2f38;
+            stroke: #f4d58d;
+        }
+        
+        body.dark-mode .house-icon path[fill="#D4A5A5"] {
+            fill: #3a2f3f;
+            stroke: #ff6b8a;
+        }
+        
+        body.dark-mode .house-icon rect[fill="#F5E6D3"] {
+            fill: #2a2f38;
+            stroke: #ff6b8a;
+        }
+        
+        body.dark-mode .house-icon rect[fill="#E8DCC8"] {
+            fill: #1a1f26;
+            stroke: #c9b8a0;
+        }
+        
+        body.dark-mode .house-icon .house-door path {
+            fill: #4a3545;
+            stroke: #ff6b8a;
+        }
+        
+        body.dark-mode .house-icon .house-door path[fill="#D4A5A5"] {
+            fill: #d4969d;
+            stroke: #ff8fab;
+        }
+        
+        body.dark-mode .house-icon .house-door circle {
+            fill: #f4d58d;
+        }
+        
+        body.dark-mode .house-icon rect[fill="#E5D4A6"] {
+            fill: #1a1f26;
+            stroke: #c9b8a0;
+        }
+        
+        body.dark-mode .house-icon line {
+            stroke: #c9b8a0;
+        }
 
         /* ====== SVG ANIMATIONS ====== */
         .animation-container {
@@ -493,6 +546,67 @@ const firebaseConfig = {
 
         /* Floating Hearts */
         /* Removed floating heart animation styles - no longer needed */
+        
+        /* ====== HOUSE ICON STYLES ====== */
+        .house-container {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .house-container:hover {
+            transform: scale(1.05);
+        }
+
+        .house-icon {
+            width: 80px;
+            height: 80px;
+        }
+
+        /* Door animation */
+        .house-door {
+            transform-origin: left center;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .house-container.open .house-door {
+            transform: rotateY(-85deg);
+        }
+
+        /* Floating hearts animation */
+        .heart-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        .heart-particle {
+            position: absolute;
+            bottom: 45%;
+            left: 50%;
+            opacity: 0;
+            animation: floatHeart 3s ease-out forwards;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translate(-50%, 0) scale(0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), -80px) scale(1);
+                opacity: 0;
+            }
+        }
+        /* ====== END HOUSE ICON STYLES ====== */
+        
         body.dark-mode .btn-primary {
             background: linear-gradient(135deg, #d4746f 0%, #b85d5d 100%);
             border-color: transparent;
@@ -4598,7 +4712,66 @@ const firebaseConfig = {
                 <div class="logo-main" id="logo-main" style="cursor: pointer;">Ma Maison</div>
                 <div class="logo-sub" id="logo-sub" style="cursor: pointer;">Où chaque moment est doux</div>
             </div>
-            <div class="signature">apprendre</div>
+            <!-- HOUSE ICON (replaces "apprendre") -->
+            <div class="house-container" id="houseContainer">
+                <div class="heart-particles" id="heartParticles"></div>
+                
+                <svg class="house-icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Chimney FIRST - so it appears BEHIND the roof -->
+                    <rect x="165" y="150" width="45" height="90" rx="3" fill="#A64253" stroke="#8B2635" stroke-width="3"/>
+                    
+                    <!-- Chimney smoke -->
+                    <g opacity="0.6">
+                        <circle cx="187" cy="135" r="8" fill="#D4A5A5"/>
+                        <circle cx="182" cy="120" r="10" fill="#D4A5A5"/>
+                        <circle cx="192" cy="110" r="7" fill="#D4A5A5"/>
+                    </g>
+                    
+                    <!-- Book on chimney -->
+                    <g transform="translate(172, 128)">
+                        <rect width="30" height="18" rx="2" fill="#FBF9F4" stroke="#8B2635" stroke-width="2"/>
+                        <line x1="15" y1="2" x2="15" y2="16" stroke="#8B2635" stroke-width="1.5"/>
+                        <line x1="6" y1="9" x2="24" y2="9" stroke="#8B2635" stroke-width="1"/>
+                    </g>
+                    
+                    <!-- Roof - comes AFTER chimney so it covers the bottom -->
+                    <path d="M 100 240 L 256 130 L 412 240 Z" fill="#D4A5A5" stroke="#8B2635" stroke-width="3"/>
+                    
+                    <!-- House body -->
+                    <rect x="120" y="240" width="272" height="220" rx="4" fill="#F5E6D3" stroke="#8B2635" stroke-width="3"/>
+                    
+                    <!-- Window left -->
+                    <rect x="150" y="280" width="45" height="50" rx="8" fill="#E8DCC8" stroke="#8B2635" stroke-width="2.5"/>
+                    <line x1="172.5" y1="280" x2="172.5" y2="330" stroke="#8B2635" stroke-width="2"/>
+                    <line x1="150" y1="305" x2="195" y2="305" stroke="#8B2635" stroke-width="2"/>
+                    
+                    <!-- Window right -->
+                    <rect x="317" y="280" width="45" height="50" rx="8" fill="#E8DCC8" stroke="#8B2635" stroke-width="2.5"/>
+                    <line x1="339.5" y1="280" x2="339.5" y2="330" stroke="#8B2635" stroke-width="2"/>
+                    <line x1="317" y1="305" x2="362" y2="305" stroke="#8B2635" stroke-width="2"/>
+                    
+                    <!-- Door frame -->
+                    <rect x="210" y="310" width="92" height="150" rx="45" fill="#FBF9F4" stroke="#8B2635" stroke-width="3"/>
+                    
+                    <!-- Door (animated) -->
+                    <g class="house-door">
+                        <path d="M 210 310 Q 210 280 256 280 Q 302 280 302 310 L 302 460 L 210 460 Z" 
+                              fill="#8B2635" stroke="#8B2635" stroke-width="3"/>
+                        
+                        <!-- Heart on door -->
+                        <g transform="translate(256, 360)">
+                            <path d="M 0,-8 C -4,-12 -10,-12 -14,-8 C -18,-4 -18,2 -10,10 L 0,18 L 10,10 C 18,2 18,-4 14,-8 C 10,-12 4,-12 0,-8 Z" 
+                                  fill="#D4A5A5" stroke="#FBF9F4" stroke-width="1.5"/>
+                        </g>
+                        
+                        <!-- Door handle -->
+                        <circle cx="280" cy="385" r="5" fill="#C9A861"/>
+                    </g>
+                    
+                    <!-- Base/Ground -->
+                    <rect x="100" y="460" width="312" height="12" fill="#E5D4A6" stroke="#8B2635" stroke-width="2"/>
+                </svg>
+            </div>
         </div>
     </header>
 
@@ -8208,10 +8381,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
         }, 30000);
 
         // ============================================
-        // SIGNATURE MAGIC - ONE RANDOM REASON
+        // HOUSE MAGIC - FLOATING HEARTS & MOTIVATION
         // ============================================
-        let apprendreClicks = 0;
-        let apprendreTimeout;
+        let houseClicks = 0;
+        let houseTimeout;
 
         const poeticReasons = [
             "Pour vivre dans les rues de Paris",
@@ -8236,32 +8409,64 @@ Ils seront préservés lors de l'affichage !"></textarea>
             "Pour être à la fois chez soi et ailleurs"
         ];
 
-        document.querySelector('.signature').addEventListener('click', function() {
-            apprendreClicks++;
+        function createFloatingHearts() {
+            const heartParticles = document.getElementById('heartParticles');
+            const heartCount = 12;
+            
+            for (let i = 0; i < heartCount; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-particle';
+                    
+                    // Create SVG heart
+                    heart.innerHTML = `
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#D4A5A5" style="filter: drop-shadow(0 2px 4px rgba(139, 38, 53, 0.3));">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    `;
+                    
+                    // Random horizontal spread
+                    const randomX = (Math.random() - 0.5) * 100;
+                    heart.style.setProperty('--tx', `${randomX}px`);
+                    heart.style.animationDelay = `${i * 0.15}s`;
+                    
+                    heartParticles.appendChild(heart);
+                    
+                    // Remove after animation
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 3000);
+                }, i * 150);
+            }
+        }
+
+        document.getElementById('houseContainer').addEventListener('click', function() {
+            houseClicks++;
             
             // Clear previous timeout
-            if (apprendreTimeout) clearTimeout(apprendreTimeout);
+            if (houseTimeout) clearTimeout(houseTimeout);
             
             // Set timeout to reset counter
-            apprendreTimeout = setTimeout(() => {
-                apprendreClicks = 0;
+            houseTimeout = setTimeout(() => {
+                houseClicks = 0;
             }, 2000);
             
-            // Show random reason on 3rd click
-            if (apprendreClicks === 3) {
-                this.style.color = '#D4A5A5';
-                this.style.opacity = '0.9';
-                this.style.transition = 'all 0.5s ease';
+            // Show house magic on 3rd click
+            if (houseClicks === 3) {
+                // Open the house
+                this.classList.add('open');
+                
+                // Create floating hearts
+                createFloatingHearts();
                 
                 // Show one random poetic reason
                 showRandomHeartReason();
-                apprendreClicks = 0;
+                houseClicks = 0;
                 
-                // Reset after 10 seconds
+                // Reset house after 8 seconds
                 setTimeout(() => {
-                    this.style.color = 'var(--gold)';
-                    this.style.opacity = '0.7';
-                }, 10000);
+                    this.classList.remove('open');
+                }, 8000);
             }
         });
 
@@ -8291,6 +8496,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     heartNote.style.display = 'none';
                     heartNote.style.opacity = '1';
                     heartNote.style.transform = 'translate(-50%, -50%) scale(1)';
+                    // Close house too
+                    document.getElementById('houseContainer').classList.remove('open');
                 }, 500);
             };
             
