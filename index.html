@@ -4138,6 +4138,33 @@ const firebaseConfig = {
         </div>
     </header>
 
+    <!-- PWA Install Button -->
+    <div id="install-button-container" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+        <button id="pwa-install-btn" style="
+            background: linear-gradient(135deg, var(--crimson) 0%, #a63d4a 100%);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(139, 70, 84, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Work Sans', sans-serif;
+        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(139, 70, 84, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(139, 70, 84, 0.4)'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Installer l'App
+        </button>
+    </div>
+
     <!-- Navigation -->
     <nav class="nav">
         <button class="nav-link active" data-room="entree">L'Entrée</button>
@@ -12561,17 +12588,57 @@ Ils seront préservés lors de l'affichage !"></textarea>
             // Stash the event so it can be triggered later
             deferredPrompt = e;
             
-            // Optional: Show your own install button
+            // Show the install button!
             console.log('💾 PWA Install prompt available');
-            
-            // You can show a custom install button here if desired
-            // Example: showInstallButton();
+            const installContainer = document.getElementById('install-button-container');
+            if (installContainer) {
+                installContainer.style.display = 'block';
+            }
         });
+
+        // Handle install button click
+        const installBtn = document.getElementById('pwa-install-btn');
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) {
+                    console.log('⚠️ No install prompt available');
+                    return;
+                }
+
+                // Show the install prompt
+                deferredPrompt.prompt();
+
+                // Wait for the user to respond
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response: ${outcome}`);
+
+                if (outcome === 'accepted') {
+                    console.log('✅ User accepted install');
+                } else {
+                    console.log('❌ User dismissed install');
+                }
+
+                // Clear the deferred prompt
+                deferredPrompt = null;
+
+                // Hide the button
+                const installContainer = document.getElementById('install-button-container');
+                if (installContainer) {
+                    installContainer.style.display = 'none';
+                }
+            });
+        }
 
         // Track installation
         window.addEventListener('appinstalled', () => {
             console.log('✅ PWA installed successfully!');
             deferredPrompt = null;
+            
+            // Hide the button
+            const installContainer = document.getElementById('install-button-container');
+            if (installContainer) {
+                installContainer.style.display = 'none';
+            }
         });
     </script>
 
