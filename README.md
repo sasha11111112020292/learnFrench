@@ -2330,6 +2330,470 @@ const firebaseConfig = {
         .word-count {
             font-size: 0.9rem;
             color: var(--text-soft);
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s;
+        }
+
+        .word-count:hover {
+            color: var(--crimson);
+        }
+
+        .word-count-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .word-goal {
+            font-size: 0.75rem;
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .writing-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Mistake marking styles */
+        .mistake-mark {
+            background: linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(190, 31, 46, 0.3) 60%, rgba(190, 31, 46, 0.3) 100%);
+            text-decoration: underline wavy var(--crimson);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        body.dark-mode .mistake-mark {
+            background: linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(139, 70, 84, 0.4) 60%, rgba(139, 70, 84, 0.4) 100%);
+        }
+
+        .marking-mode-active .writing-area {
+            cursor: text;
+            user-select: text;
+        }
+
+        .mistake-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--crimson);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            margin-bottom: 0.5rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .mistake-mark:hover .mistake-tooltip {
+            opacity: 1;
+        }
+
+        .mistake-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--crimson);
+        }
+
+        /* Writing prompts section */
+        .writing-prompts-section {
+            background: linear-gradient(135deg, var(--whisper), rgba(232, 220, 200, 0.4));
+            padding: 1.5rem;
+            border-radius: 2px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(232, 220, 200, 0.5);
+        }
+
+        body.dark-mode .writing-prompts-section {
+            background: linear-gradient(135deg, rgba(22, 27, 34, 0.8), rgba(139, 70, 84, 0.1));
+            border-color: rgba(232, 220, 200, 0.2);
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            gap: 1rem;
+        }
+
+        .prompt-label {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .prompt-link {
+            font-size: 0.85rem;
+            color: var(--crimson);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .prompt-link:hover {
+            opacity: 0.7;
+        }
+
+        .current-prompt {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--text);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Title row with dice button */
+        .title-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .writing-title {
+            flex: 1;
+            padding: 0.875rem 1.25rem;
+            border: 1px solid #EEE;
+            border-radius: 2px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--text);
+            background: var(--cream);
+            transition: border-color 0.2s;
+        }
+
+        .writing-title:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .writing-title::placeholder {
+            color: var(--text-soft);
+            font-style: italic;
+        }
+
+        body.dark-mode .writing-title {
+            background: rgba(22, 27, 34, 0.6);
+            border-color: rgba(232, 220, 200, 0.2);
+        }
+
+        .dice-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--gold);
+            background: var(--cream);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--crimson);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .dice-btn:hover {
+            background: var(--gold);
+            color: var(--cream);
+            transform: rotate(360deg) scale(1.05);
+            box-shadow: 0 4px 8px rgba(190, 31, 46, 0.15);
+        }
+
+        .dice-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        body.dark-mode .dice-btn {
+            background: rgba(22, 27, 34, 0.6);
+            border-color: var(--gold);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .dice-btn:hover {
+            background: var(--gold);
+            color: var(--text);
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.25);
+        }
+
+        /* Archive header */
+        .archive-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(232, 220, 200, 0.3);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Collapsible writing cards */
+        .writing-card {
+            background: var(--cream);
+            border: 1px solid rgba(232, 220, 200, 0.5);
+            border-radius: 2px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .writing-card:hover {
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+
+        .writing-card-header {
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            user-select: none;
+        }
+
+        .writing-card-header:hover {
+            background: rgba(232, 220, 200, 0.3);
+        }
+
+        .writing-card-title-area {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .writing-card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .writing-card-date {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+        }
+
+        .writing-card-preview {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            color: var(--text-soft);
+            margin-top: 0.5rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .writing-card-toggle {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: var(--text-soft);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s, color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .writing-card-toggle:hover {
+            color: var(--crimson);
+        }
+
+        .writing-card-toggle.expanded {
+            transform: rotate(180deg);
+        }
+
+        .writing-card-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .writing-card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .writing-card-content.expanded {
+            max-height: 2000px;
+        }
+
+        .writing-card-body {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .writing-card-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            line-height: 2;
+            color: var(--text);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 1.25rem;
+        }
+
+        .writing-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(232, 220, 200, 0.3);
+        }
+
+        body.dark-mode .writing-card {
+            background: rgba(22, 27, 34, 0.6);
+            border-color: rgba(232, 220, 200, 0.2);
+        }
+
+        body.dark-mode .writing-card-header:hover {
+            background: rgba(232, 220, 200, 0.05);
+        }
+
+        /* AI selector */
+        .ai-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .ai-option {
+            padding: 0.875rem 1rem;
+            border: 2px solid rgba(232, 220, 200, 0.3);
+            background: var(--cream);
+            border-radius: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: var(--text-soft);
+            transition: all 0.2s;
+        }
+
+        .ai-option:hover {
+            border-color: var(--gold);
+            color: var(--text);
+        }
+
+        .ai-option.active {
+            border-color: var(--crimson);
+            background: rgba(139, 70, 84, 0.1);
+            color: var(--crimson);
+        }
+
+        body.dark-mode .ai-option {
+            background: rgba(22, 27, 34, 0.6);
+            border-color: rgba(232, 220, 200, 0.2);
+        }
+
+        body.dark-mode .ai-option.active {
+            background: rgba(139, 70, 84, 0.2);
+        }
+
+        .ai-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .ai-result-text {
+            background: var(--whisper);
+            padding: 1.25rem;
+            border-radius: 2px;
+            border-left: 3px solid var(--gold);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+
+        body.dark-mode .ai-result-text {
+            background: rgba(22, 27, 34, 0.8);
+        }
+
+        .ai-disclaimer {
+            margin-top: 1rem;
+            padding: 0.875rem;
+            background: rgba(232, 220, 200, 0.3);
+            border-radius: 2px;
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
+
+        body.dark-mode .ai-disclaimer {
+            background: rgba(232, 220, 200, 0.05);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .writing-container {
+                padding: 1.5rem;
+            }
+
+            .writing-title {
+                font-size: 1.25rem;
+            }
+
+            .writing-area {
+                font-size: 1.1rem;
+                padding: 1.25rem;
+            }
+
+            .dice-btn {
+                width: 44px;
+                height: 44px;
+            }
+
+            .ai-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .writing-actions {
+                width: 100%;
+            }
+
+            .writing-actions button {
+                flex: 1;
+            }
+
+            .archive-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .archive-header h3 {
+                text-align: center;
+            }
         }
 
         /* Speaking section */
@@ -4626,22 +5090,34 @@ const firebaseConfig = {
 
             <div class="word-grid" id="word-grid"></div>
 
-            <!-- Export/Import Buttons -->
-            <button class="pdf-save-btn" id="save-words-pdf" title="Sauvegarder les mots en PDF" style="display: none;">
+            <!-- Combined Export/Import Menu Button -->
+            <button class="pdf-save-btn" id="jardin-menu-btn" title="Gérer les mots" style="display: none;">
                 <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15.5h8v1H8v-1zm0-3h8v1H8v-1z"/>
+                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
                 </svg>
             </button>
-            <button class="pdf-save-btn" id="save-words-csv" title="Exporter en CSV (Anki/Quizlet)" style="display: none;">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm8-10v2h2v-2h-2zm0 4v2h2v-2h-2zM8 14h2v2H8v-2zm0-4h2v2H8v-2z"/>
-                </svg>
-            </button>
-            <button class="pdf-save-btn" id="bulk-import-btn" title="Importer plusieurs mots" style="display: none;">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-                </svg>
-            </button>
+            
+            <!-- Jardin Actions Menu -->
+            <div id="jardin-actions-menu" style="display: none; position: fixed; bottom: 90px; right: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); padding: 0.5rem; z-index: 9999; min-width: 200px;">
+                <button class="menu-action-btn" id="menu-save-pdf" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; border: none; background: none; cursor: pointer; border-radius: 8px; transition: background 0.2s; font-family: 'Work Sans', sans-serif; font-size: 0.95rem; color: var(--navy);" onmouseover="this.style.background='var(--whisper)'" onmouseout="this.style.background='none'">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; color: var(--crimson);">
+                        <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15.5h8v1H8v-1zm0-3h8v1H8v-1z"/>
+                    </svg>
+                    <span>Exporter en PDF</span>
+                </button>
+                <button class="menu-action-btn" id="menu-save-csv" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; border: none; background: none; cursor: pointer; border-radius: 8px; transition: background 0.2s; font-family: 'Work Sans', sans-serif; font-size: 0.95rem; color: var(--navy);" onmouseover="this.style.background='var(--whisper)'" onmouseout="this.style.background='none'">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; color: var(--gold);">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm8-10v2h2v-2h-2zm0 4v2h2v-2h-2zM8 14h2v2H8v-2zm0-4h2v2H8v-2z"/>
+                    </svg>
+                    <span>Exporter CSV</span>
+                </button>
+                <button class="menu-action-btn" id="menu-bulk-import" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; border: none; background: none; cursor: pointer; border-radius: 8px; transition: background 0.2s; font-family: 'Work Sans', sans-serif; font-size: 0.95rem; color: var(--navy);" onmouseover="this.style.background='var(--whisper)'" onmouseout="this.style.background='none'">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; color: var(--sage);">
+                        <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                    </svg>
+                    <span>Importer des mots</span>
+                </button>
+            </div>
         </section>
 
         <!-- Lire -->
@@ -4742,18 +5218,28 @@ const firebaseConfig = {
 
             <!-- Practice tab -->
             <div class="tab-content active" id="practice">
-                <!-- Question Input with Google Doc Link -->
-                <div class="question-section">
-                    <div class="question-header">
-                        <h3 class="question-title">Question à répondre</h3>
-                        <a href="https://docs.google.com/document/d/1VRRqrIv1ZbgeH5rBHolE_v-FRdrPXLIg9n7lz-DTX6g/edit?usp=drivesdk" target="_blank" class="doc-link">
-                            <svg class="svg-icon" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                <!-- Speaking Prompts Section with Randomizer -->
+                <div class="writing-prompts-section">
+                    <div class="prompt-header">
+                        <span class="prompt-label">Besoin d'inspiration?</span>
+                        <button class="dice-btn" id="random-speaking-prompt-btn" title="Question aléatoire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                                <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"/>
+                                <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"/>
+                                <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"/>
+                                <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
                             </svg>
-                            <span>Voir les questions</span>
-                        </a>
+                        </button>
+                        <a href="https://docs.google.com/document/d/1VRRqrIv1ZbgeH5rBHolE_v-FRdrPXLIg9n7lz-DTX6g/edit?usp=drivesdk" target="_blank" class="prompt-link">Plus de questions →</a>
                     </div>
-                    <input type="text" class="form-input question-input" id="parler-question" placeholder="Colle ou écris ta question ici...">
+                    <div class="current-prompt" id="current-speaking-prompt">Clique sur le dé pour obtenir une question</div>
+                </div>
+
+                <!-- Question Input -->
+                <div class="question-section">
+                    <input type="text" class="form-input question-input" id="parler-question" placeholder="Ou écris ta propre question...">
                 </div>
 
                 <!-- Recording Interface -->
@@ -4828,21 +5314,82 @@ const firebaseConfig = {
 
             <!-- Write tab -->
             <div class="tab-content active" id="write">
+                <!-- Writing Prompts Section -->
+                <div class="writing-prompts-section">
+                    <div class="prompt-header">
+                        <span class="prompt-label">Besoin d'inspiration?</span>
+                        <button class="dice-btn" id="random-prompt-btn" title="Prompt aléatoire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                                <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"/>
+                                <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"/>
+                                <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"/>
+                                <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                            </svg>
+                        </button>
+                        <a href="https://docs.google.com/document/d/1lDaN1EKeK0aSzX0HZgQ_k5I4Q-om3Kk6O53Dc1Fhkyo/edit?usp=drivesdk" target="_blank" class="prompt-link">Plus de prompts →</a>
+                    </div>
+                    <div class="current-prompt" id="current-prompt">Clique sur le dé pour obtenir un prompt</div>
+                </div>
+
                 <div class="writing-container">
+                    <!-- Title input without dice button now -->
+                    <input 
+                        type="text" 
+                        class="writing-title" 
+                        id="writing-title"
+                        placeholder="Titre (optionnel)"
+                        style="width: 100%; margin-bottom: 1rem;">
+                    
                     <textarea 
                         class="writing-area" 
                         id="writing-area"
                         placeholder="Commence à écrire..."></textarea>
                     
                     <div class="writing-footer">
-                        <div class="word-count" id="word-count">0 mots</div>
-                        <button class="btn btn-primary" id="save-writing">Sauvegarder</button>
+                        <div class="word-count-container">
+                            <div class="word-count" id="word-count" title="Clique 3x pour définir un objectif">0 mots</div>
+                            <div class="word-goal" id="word-goal" style="display: none;"></div>
+                        </div>
+                        <div class="writing-actions">
+                            <button class="btn btn-secondary" id="mark-mistakes-btn" title="Marquer les erreurs dans ton texte">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-right: 6px;">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                                <span id="mark-mistakes-text">Marquer erreurs</span>
+                            </button>
+                            <button class="btn btn-secondary" id="ai-analyze-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-right: 6px;">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                    <polyline points="7.5 4.21 12 6.81 16.5 4.21"/>
+                                    <polyline points="7.5 19.79 7.5 14.6 3 12"/>
+                                    <polyline points="21 12 16.5 14.6 16.5 19.79"/>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"/>
+                                </svg>
+                                Analyser avec IA
+                            </button>
+                            <button class="btn btn-primary" id="save-writing">Sauvegarder</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Archive tab -->
             <div class="tab-content" id="archive">
+                <div class="archive-header">
+                    <h3 style="margin: 0; font-size: 1.1rem;">Mes écrits</h3>
+                    <button class="btn btn-secondary btn-sm" id="export-all-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 4px;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Exporter tout
+                    </button>
+                </div>
                 <div id="writings-archive"></div>
             </div>
         </section>
@@ -5765,6 +6312,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
             <form id="edit-writing-form">
                 <input type="hidden" id="edit-writing-id">
                 <div class="form-group">
+                    <label class="form-label">Titre (optionnel)</label>
+                    <input type="text" class="form-input" id="edit-writing-title" placeholder="Titre de ton écriture...">
+                </div>
+                <div class="form-group">
                     <label class="form-label">Texte</label>
                     <textarea class="form-textarea" id="edit-writing-text" rows="10" placeholder="Modifie ton texte ici..." required></textarea>
                 </div>
@@ -5774,6 +6325,82 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     <button type="submit" class="btn btn-primary">Sauvegarder</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- AI Analysis Modal -->
+    <div class="modal" id="ai-analysis-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Analyser avec IA</h2>
+                <button class="close-btn" onclick="closeModal('ai-analysis-modal')">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Choisis ton IA</label>
+                <div class="ai-selector">
+                    <button class="ai-option active" data-ai="claude">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                        Claude
+                    </button>
+                    <button class="ai-option" data-ai="chatgpt">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                            <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.896zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
+                        </svg>
+                        ChatGPT
+                    </button>
+                    <button class="ai-option" data-ai="deepseek">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18.5c-4.42-.99-7.5-5.37-7.5-9.5V8.3l7.5-3.75L19.5 8.3V11c0 4.13-3.08 8.51-7.5 9.5z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        DeepSeek
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Question pour l'IA</label>
+                <select class="form-input" id="ai-question-select">
+                    <option value="analyze">Analyse générale de mon texte</option>
+                    <option value="grammar">Vérifie la grammaire et l'orthographe</option>
+                    <option value="improve">Comment puis-je améliorer ce texte?</option>
+                    <option value="style">Analyse le style et le ton</option>
+                    <option value="continue">Continue ce texte pour moi</option>
+                    <option value="custom">Question personnalisée</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="custom-question-group" style="display: none;">
+                <textarea class="form-textarea" id="custom-ai-question" rows="3" placeholder="Pose ta question personnalisée..."></textarea>
+            </div>
+
+            <div id="ai-result-container" style="display: none; margin-top: 1.5rem;">
+                <div class="ai-result-header">
+                    <strong>Réponse:</strong>
+                    <button class="btn btn-secondary btn-sm" id="copy-ai-result">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="ai-result-text" id="ai-result-text"></div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('ai-analysis-modal')">Fermer</button>
+                <button type="button" class="btn btn-primary" id="send-to-ai-btn">
+                    <span id="ai-btn-text">Envoyer</span>
+                    <span id="ai-loading" style="display: none;">Analyse...</span>
+                </button>
+            </div>
+
+            <div class="ai-disclaimer">
+                ⚠️ Cette fonctionnalité ouvre l'IA choisie dans un nouvel onglet avec ta question. Tu devras coller ton texte manuellement.
+            </div>
         </div>
     </div>
 
@@ -6096,6 +6723,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
             console.log('   - listeningTranscripts:', listeningTranscripts.length, 'items');
             console.log('   - readingPassages:', readingPassages.length, 'items');
             console.log('   - presenceData:', Object.keys(presenceData).length, 'days');
+            console.log('   - mistakeCorrections:', (mistakeCorrections || []).length, 'corrections');
             
             // Show sync indicator
             const syncIndicator = document.getElementById('sync-indicator');
@@ -6114,6 +6742,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     listeningTranscripts,
                     readingPassages,
                     presenceData,
+                    mistakeCorrections: mistakeCorrections || [],
                     lastUpdated: new Date().toISOString()
                 });
                 
@@ -6166,6 +6795,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 localStorage.setItem('listeningTranscripts', JSON.stringify(listeningTranscripts));
                 localStorage.setItem('readingPassages', JSON.stringify(readingPassages));
                 localStorage.setItem('presenceData', JSON.stringify(presenceData));
+                localStorage.setItem('mistakeCorrections', JSON.stringify(mistakeCorrections || []));
                 
                 console.log('✅ Data saved to localStorage successfully!');
                 
@@ -6202,6 +6832,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 const localListeningTranscripts = localStorage.getItem('listeningTranscripts');
                 const localPassages = localStorage.getItem('readingPassages');
                 const localPresence = localStorage.getItem('presenceData');
+                const localMistakes = localStorage.getItem('mistakeCorrections');
                 
                 if (localVocab) vocabulary = JSON.parse(localVocab);
                 if (localReadings) readingList = JSON.parse(localReadings);
@@ -6214,6 +6845,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 if (localListeningTranscripts) listeningTranscripts = JSON.parse(localListeningTranscripts);
                 if (localPassages) readingPassages = JSON.parse(localPassages);
                 if (localPresence) presenceData = JSON.parse(localPresence);
+                if (localMistakes) mistakeCorrections = JSON.parse(localMistakes);
                 
                 console.log('✅ Loaded from localStorage:', {
                     vocabulary: vocabulary.length,
@@ -6226,7 +6858,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     readingTranscripts: readingTranscripts.length,
                     listeningTranscripts: listeningTranscripts.length,
                     readingPassages: readingPassages.length,
-                    presenceData: Object.keys(presenceData).length
+                    presenceData: Object.keys(presenceData).length,
+                    mistakeCorrections: (mistakeCorrections || []).length
                 });
                 
                 // Rebuild presence data
@@ -6338,6 +6971,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
         let resourcesList = [];
         let notes = [];
         let readingPassages = []; // Interactive reading passages
+        let mistakeCorrections = []; // Mistake corrections for learning
 
         // IMMEDIATELY load from localStorage on page load (before Firebase is ready)
         console.log('🚀 Page loading - checking localStorage for data...');
@@ -9979,11 +10613,149 @@ Ils seront préservés lors de l'affichage !"></textarea>
         // ============================================
         const writingArea = document.getElementById('writing-area');
         const wordCountEl = document.getElementById('word-count');
+        const writingTitle = document.getElementById('writing-title');
+        const wordGoalEl = document.getElementById('word-goal');
+        
+        // Word count goal system (click 3x to set)
+        let clickCount = 0;
+        let clickTimer = null;
+        let wordGoal = null;
 
         writingArea.addEventListener('input', () => {
             const text = writingArea.value.trim();
             const words = text ? text.split(/\s+/).length : 0;
-            wordCountEl.textContent = `${words} mot${words !== 1 ? 's' : ''}`;
+            
+            if (wordGoal) {
+                const percentage = Math.min(100, Math.round((words / wordGoal) * 100));
+                wordCountEl.textContent = `${words}/${wordGoal} mots (${percentage}%)`;
+                wordCountEl.style.color = words >= wordGoal ? 'var(--gold)' : 'var(--text-soft)';
+            } else {
+                wordCountEl.textContent = `${words} mot${words !== 1 ? 's' : ''}`;
+            }
+        });
+
+        wordCountEl.addEventListener('click', () => {
+            clickCount++;
+            
+            clearTimeout(clickTimer);
+            
+            if (clickCount === 3) {
+                const goal = prompt('Objectif de mots (ex: 500):', '500');
+                if (goal && !isNaN(goal) && parseInt(goal) > 0) {
+                    wordGoal = parseInt(goal);
+                    wordGoalEl.textContent = `Objectif: ${wordGoal} mots`;
+                    wordGoalEl.style.display = 'block';
+                    
+                    // Trigger update
+                    const text = writingArea.value.trim();
+                    const words = text ? text.split(/\s+/).length : 0;
+                    const percentage = Math.min(100, Math.round((words / wordGoal) * 100));
+                    wordCountEl.textContent = `${words}/${wordGoal} mots (${percentage}%)`;
+                } else {
+                    wordGoal = null;
+                    wordGoalEl.style.display = 'none';
+                    wordCountEl.textContent = '0 mots';
+                }
+                clickCount = 0;
+            } else {
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 1000);
+            }
+        });
+
+        // Writing prompts
+        const writingPrompts = [
+            "Écris sur un moment où tu as changé d'avis sur quelque chose d'important.",
+            "Décris un endroit que tu n'oublieras jamais.",
+            "Si tu pouvais avoir une conversation avec toi-même à 80 ans, que demanderais-tu?",
+            "Raconte une histoire commençant par: 'Je ne savais pas que ce jour changerait tout...'",
+            "Qu'est-ce qui te fait te sentir le plus vivant?",
+            "Écris une lettre à quelqu'un que tu n'as jamais pu remercier.",
+            "Décris ton matin idéal dans 10 ans.",
+            "Quel est le meilleur conseil qu'on t'ait jamais donné?",
+            "Écris sur une peur que tu as surmontée.",
+            "Imagine que tu peux voyager dans le temps. Où vas-tu et pourquoi?",
+            "Qu'est-ce que tu ferais si tu savais que tu ne pouvais pas échouer?",
+            "Écris sur une personne qui t'a inspiré sans le savoir.",
+            "Décris un objet qui a une signification particulière pour toi.",
+            "Si tu devais enseigner une chose à tout le monde, ce serait quoi?",
+            "Raconte un moment où tu t'es senti vraiment fier de toi.",
+            "Qu'est-ce qui te rendait heureux quand tu étais enfant?",
+            "Écris sur quelque chose que tu veux apprendre cette année.",
+            "Imagine ta vie comme un film. Quelle scène choisirais-tu de rejouer?",
+            "Qu'est-ce qui te manquerait le plus si tu déménageais dans un autre pays?",
+            "Écris une histoire avec ces trois mots: lune, clé, lettre."
+        ];
+
+        const speakingPrompts = [
+            "Parle-moi de ton meilleur souvenir d'enfance.",
+            "Qu'est-ce qui te passionne en ce moment dans la vie?",
+            "Décris ta journée idéale du début à la fin.",
+            "Si tu pouvais dîner avec n'importe qui, vivant ou mort, qui choisirais-tu et pourquoi?",
+            "Raconte-moi un moment où tu as appris quelque chose d'important sur toi-même.",
+            "Quel est ton endroit préféré dans le monde et pourquoi?",
+            "Parle-moi d'un livre, film ou chanson qui t'a profondément touché.",
+            "Qu'est-ce qui te fait rire aux éclats?",
+            "Décris une tradition familiale ou personnelle qui compte pour toi.",
+            "Si tu pouvais maîtriser instantanément une compétence, laquelle choisirais-tu?",
+            "Raconte une histoire drôle ou embarrassante qui t'est arrivée.",
+            "Qu'est-ce qui te motive à te lever le matin?",
+            "Parle-moi d'une personne qui a eu une grande influence sur ta vie.",
+            "Quel conseil donnerais-tu à ton moi d'il y a cinq ans?",
+            "Décris ton endroit préféré pour te détendre et pourquoi.",
+            "Si tu pouvais changer une chose dans le monde, ce serait quoi?",
+            "Parle-moi d'un défi que tu as surmonté et dont tu es fier.",
+            "Qu'est-ce qui te rend unique selon toi?",
+            "Raconte un moment où tu as aidé quelqu'un ou quelqu'un t'a aidé.",
+            "Si tu avais une journée entière sans aucune obligation, comment la passerais-tu?",
+            "Parle-moi de tes rêves ou objectifs pour les années à venir.",
+            "Qu'est-ce que tu aimes le plus dans ta routine quotidienne?",
+            "Décris un moment récent où tu t'es senti vraiment vivant.",
+            "Si tu pouvais vivre dans n'importe quelle époque, laquelle choisirais-tu?",
+            "Parle-moi d'une habitude que tu veux développer ou changer."
+        ];
+
+        let currentPromptIndex = null;
+        let currentSpeakingPromptIndex = null;
+
+        document.getElementById('random-prompt-btn').addEventListener('click', () => {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * writingPrompts.length);
+            } while (randomIndex === currentPromptIndex);
+            
+            currentPromptIndex = randomIndex;
+            const promptEl = document.getElementById('current-prompt');
+            promptEl.style.opacity = '0';
+            
+            setTimeout(() => {
+                promptEl.textContent = writingPrompts[randomIndex];
+                promptEl.style.transition = 'opacity 0.3s';
+                promptEl.style.opacity = '1';
+            }, 150);
+        });
+
+        // Speaking prompt randomizer
+        document.getElementById('random-speaking-prompt-btn').addEventListener('click', () => {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * speakingPrompts.length);
+            } while (randomIndex === currentSpeakingPromptIndex);
+            
+            currentSpeakingPromptIndex = randomIndex;
+            const promptEl = document.getElementById('current-speaking-prompt');
+            const questionInput = document.getElementById('parler-question');
+            
+            promptEl.style.opacity = '0';
+            
+            setTimeout(() => {
+                const selectedPrompt = speakingPrompts[randomIndex];
+                promptEl.textContent = selectedPrompt;
+                questionInput.value = selectedPrompt; // Also put it in the input field!
+                promptEl.style.transition = 'opacity 0.3s';
+                promptEl.style.opacity = '1';
+            }, 150);
         });
 
         document.getElementById('save-writing').addEventListener('click', () => {
@@ -9995,6 +10767,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
             const writing = {
                 id: Date.now(),
+                title: writingTitle.value.trim() || null,
                 text: text,
                 created: new Date().toISOString()
             };
@@ -10006,7 +10779,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
             logAction(ACTION_TYPES.WRITING);
 
             writingArea.value = '';
+            writingTitle.value = '';
             wordCountEl.textContent = '0 mots';
+            wordGoal = null;
+            wordGoalEl.style.display = 'none';
             
             renderWritingsArchive();
             alert('Sauvegardé ✓');
@@ -10032,37 +10808,97 @@ Ils seront préservés lors de l'affichage !"></textarea>
             // Sort by most recent first
             const sortedWritings = [...writings].sort((a, b) => b.id - a.id);
 
-            archive.innerHTML = sortedWritings.map(writing => `
-                <div class="writing-card">
-                    <div class="writing-header">
-                        <div class="writing-date">${new Date(writing.created).toLocaleDateString('fr-FR', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        })}</div>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button class="icon-btn" onclick="editWriting(${writing.id})" title="Modifier">
-                                <svg class="svg-icon" viewBox="0 0 24 24">
-                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                                </svg>
-                            </button>
-                            <button class="icon-btn" onclick="deleteWriting(${writing.id})" title="Supprimer">
-                                <svg class="svg-icon" viewBox="0 0 24 24">
-                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+            archive.innerHTML = sortedWritings.map(writing => {
+                const preview = writing.text.substring(0, 150) + (writing.text.length > 150 ? '...' : '');
+                return `
+                    <div class="writing-card" data-id="${writing.id}">
+                        <div class="writing-card-header" onclick="toggleWritingCard(${writing.id})">
+                            <div class="writing-card-title-area">
+                                ${writing.title ? `<div class="writing-card-title">${writing.title}</div>` : ''}
+                                <div class="writing-card-date">${new Date(writing.created).toLocaleDateString('fr-FR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}</div>
+                                <div class="writing-card-preview">${preview}</div>
+                            </div>
+                            <button class="writing-card-toggle" onclick="event.stopPropagation(); toggleWritingCard(${writing.id})">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"/>
                                 </svg>
                             </button>
                         </div>
+                        <div class="writing-card-content">
+                            <div class="writing-card-body">
+                                <div class="writing-card-text">${writing.text}</div>
+                                <div class="writing-card-actions">
+                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyWritingText(${writing.id})" title="Copier le texte">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 4px;">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                        </svg>
+                                        Copier
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); exportWriting(${writing.id}, 'docx')">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 4px;">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                            <line x1="16" y1="13" x2="8" y2="13"/>
+                                            <line x1="16" y1="17" x2="8" y2="17"/>
+                                            <polyline points="10 9 9 9 8 9"/>
+                                        </svg>
+                                        Word
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); exportWriting(${writing.id}, 'pdf')">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 4px;">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                        </svg>
+                                        PDF
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); editWriting(${writing.id})">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 4px;">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                        </svg>
+                                        Modifier
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); deleteWriting(${writing.id})" style="color: var(--crimson);">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 4px;">
+                                            <polyline points="3 6 5 6 21 6"/>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            <line x1="10" y1="11" x2="10" y2="17"/>
+                                            <line x1="14" y1="11" x2="14" y2="17"/>
+                                        </svg>
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="writing-text">${writing.text.replace(/\n/g, '<br>')}</div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
+
+        window.toggleWritingCard = function(id) {
+            const card = document.querySelector(`.writing-card[data-id="${id}"]`);
+            if (!card) return;
+            
+            const content = card.querySelector('.writing-card-content');
+            const toggle = card.querySelector('.writing-card-toggle');
+            
+            content.classList.toggle('expanded');
+            toggle.classList.toggle('expanded');
+        };
 
         function editWriting(id) {
             const writing = writings.find(w => w.id === id);
             if (!writing) return;
 
             document.getElementById('edit-writing-id').value = id;
+            document.getElementById('edit-writing-title').value = writing.title || '';
             document.getElementById('edit-writing-text').value = writing.text;
 
             openModal('edit-writing-modal');
@@ -10079,6 +10915,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
             writings[index] = {
                 ...writings[index],
+                title: document.getElementById('edit-writing-title').value.trim() || null,
                 text: document.getElementById('edit-writing-text').value.trim()
             };
 
@@ -10091,6 +10928,24 @@ Ils seront préservés lors de l'affichage !"></textarea>
             closeModal('edit-writing-modal');
         });
 
+        function copyWritingText(id) {
+            const writing = writings.find(w => w.id === id);
+            if (!writing) return;
+            
+            navigator.clipboard.writeText(writing.text).then(() => {
+                // Show brief confirmation
+                const btn = event.target.closest('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Copié!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Impossible de copier le texte');
+            });
+        }
+
         function deleteWriting(id) {
             if (confirm('Supprimer cette écriture ?')) {
                 writings = writings.filter(w => w.id !== id);
@@ -10098,6 +10953,381 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 renderWritingsArchive();
             }
         }
+
+        // ============================================
+        // EXPORT FUNCTIONS FOR WRITING
+        // ============================================
+        window.exportWriting = function(id, format) {
+            const writing = writings.find(w => w.id === id);
+            if (!writing) {
+                alert('Écriture non trouvée');
+                return;
+            }
+
+            const title = writing.title || `Écriture_${new Date(writing.created).toLocaleDateString('fr-FR').replace(/\//g, '-')}`;
+            const content = writing.text;
+            const date = new Date(writing.created).toLocaleDateString('fr-FR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            if (format === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                if (!jsPDF) {
+                    alert('Erreur : bibliothèque PDF non chargée');
+                    return;
+                }
+
+                const doc = new jsPDF();
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const margin = 20;
+                const maxWidth = pageWidth - (margin * 2);
+
+                // Title
+                doc.setFontSize(18);
+                doc.setFont(undefined, 'bold');
+                const titleLines = doc.splitTextToSize(title, maxWidth);
+                doc.text(titleLines, margin, 20);
+
+                // Date
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(100);
+                doc.text(date, margin, 30);
+
+                // Content
+                doc.setFontSize(12);
+                doc.setTextColor(0);
+                const lines = doc.splitTextToSize(content, maxWidth);
+                doc.text(lines, margin, 45);
+
+                doc.save(`${title}.pdf`);
+            } else if (format === 'docx') {
+                // Create a simple HTML that can be opened as Word
+                const html = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="utf-8">
+                        <title>${title}</title>
+                    </head>
+                    <body style="font-family: 'Times New Roman', serif; max-width: 21cm; margin: 2cm auto; padding: 2cm;">
+                        <h1 style="font-size: 24pt; margin-bottom: 0.5cm;">${title}</h1>
+                        <p style="color: #666; font-size: 10pt; margin-bottom: 1cm;">${date}</p>
+                        <div style="font-size: 12pt; line-height: 2; white-space: pre-wrap;">${content}</div>
+                    </body>
+                    </html>
+                `;
+
+                const blob = new Blob([html], { type: 'application/msword' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${title}.doc`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        };
+
+        // Export all writings
+        document.getElementById('export-all-btn').addEventListener('click', () => {
+            if (writings.length === 0) {
+                alert('Aucune écriture à exporter');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                alert('Erreur : bibliothèque PDF non chargée');
+                return;
+            }
+
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 20;
+            const maxWidth = pageWidth - (margin * 2);
+            let yPos = margin;
+
+            const sortedWritings = [...writings].sort((a, b) => b.id - a.id);
+
+            sortedWritings.forEach((writing, index) => {
+                if (index > 0) {
+                    doc.addPage();
+                    yPos = margin;
+                }
+
+                const title = writing.title || `Écriture ${index + 1}`;
+                const date = new Date(writing.created).toLocaleDateString('fr-FR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                // Title
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                const titleLines = doc.splitTextToSize(title, maxWidth);
+                doc.text(titleLines, margin, yPos);
+                yPos += (titleLines.length * 7) + 5;
+
+                // Date
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(100);
+                doc.text(date, margin, yPos);
+                yPos += 10;
+
+                // Content
+                doc.setFontSize(11);
+                doc.setTextColor(0);
+                const lines = doc.splitTextToSize(writing.text, maxWidth);
+                doc.text(lines, margin, yPos);
+            });
+
+            doc.save('Mes_Écrits.pdf');
+        });
+
+        // ============================================
+        // AI ANALYSIS FUNCTIONS
+        // ============================================
+        let selectedAI = 'claude';
+        
+        // AI selector
+        document.querySelectorAll('.ai-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.ai-option').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedAI = btn.dataset.ai;
+            });
+        });
+
+        // Show/hide custom question field
+        document.getElementById('ai-question-select').addEventListener('change', (e) => {
+            const customGroup = document.getElementById('custom-question-group');
+            customGroup.style.display = e.target.value === 'custom' ? 'block' : 'none';
+        });
+
+        // Open AI analysis modal
+        document.getElementById('ai-analyze-btn').addEventListener('click', () => {
+            const text = document.getElementById('writing-area').value.trim();
+            if (!text) {
+                alert('Écris quelque chose d\'abord pour l\'analyser');
+                return;
+            }
+            openModal('ai-analysis-modal');
+        });
+
+        // Send to AI
+        document.getElementById('send-to-ai-btn').addEventListener('click', () => {
+            const text = document.getElementById('writing-area').value.trim();
+            const questionSelect = document.getElementById('ai-question-select').value;
+            let question = '';
+
+            if (questionSelect === 'custom') {
+                question = document.getElementById('custom-ai-question').value.trim();
+                if (!question) {
+                    alert('Entre une question personnalisée');
+                    return;
+                }
+            } else {
+                const questions = {
+                    'analyze': 'Analyse ce texte et donne-moi tes commentaires.',
+                    'grammar': 'Vérifie la grammaire et l\'orthographe de ce texte.',
+                    'improve': 'Comment puis-je améliorer ce texte?',
+                    'style': 'Analyse le style et le ton de ce texte.',
+                    'continue': 'Continue ce texte de manière créative.'
+                };
+                question = questions[questionSelect];
+            }
+
+            // Prepare the full prompt
+            const fullPrompt = `${question}\n\nTexte:\n${text}`;
+
+            // Open in new tab based on selected AI
+            let url;
+            if (selectedAI === 'claude') {
+                // Encode the prompt for URL
+                const encodedPrompt = encodeURIComponent(fullPrompt);
+                url = `https://claude.ai/new?q=${encodedPrompt}`;
+            } else if (selectedAI === 'chatgpt') {
+                url = 'https://chat.openai.com/';
+            } else if (selectedAI === 'deepseek') {
+                url = 'https://chat.deepseek.com/';
+            }
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(fullPrompt).then(() => {
+                if (selectedAI === 'claude') {
+                    window.open(url, '_blank');
+                    closeModal('ai-analysis-modal');
+                } else {
+                    alert(`Question copiée! Je vais ouvrir ${selectedAI.charAt(0).toUpperCase() + selectedAI.slice(1)}. Colle ta question (Ctrl+V / Cmd+V).`);
+                    window.open(url, '_blank');
+                    closeModal('ai-analysis-modal');
+                }
+            }).catch(() => {
+                alert('Erreur lors de la copie. Voici la question à copier:\n\n' + fullPrompt);
+            });
+        });
+
+        // ============================================
+        // MISTAKE MARKING FEATURE
+        // ============================================
+        let mistakeMarkingMode = false;
+        let markedMistakes = [];
+
+        // ============================================
+        // ENHANCED MISTAKE MARKING WITH DOUBLE-CLICK
+        // ============================================
+        
+        document.getElementById('mark-mistakes-btn').addEventListener('click', () => {
+            mistakeMarkingMode = !mistakeMarkingMode;
+            const btn = document.getElementById('mark-mistakes-btn');
+            const btnText = document.getElementById('mark-mistakes-text');
+            const writingArea = document.getElementById('writing-area');
+            
+            if (mistakeMarkingMode) {
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+                btnText.textContent = 'Terminer';
+                writingArea.style.cursor = 'crosshair';
+                alert('Mode marquage activé! Double-clique sur un mot ou sélectionne du texte et appuie sur Entrée.');
+            } else {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                btnText.textContent = 'Marquer erreurs';
+                writingArea.style.cursor = 'text';
+            }
+        });
+
+        // Handle double-click on words to mark mistakes
+        document.getElementById('writing-area').addEventListener('dblclick', (e) => {
+            if (!mistakeMarkingMode) return;
+            
+            e.preventDefault();
+            const textarea = e.target;
+            let start = textarea.selectionStart;
+            let end = textarea.selectionEnd;
+            const text = textarea.value;
+            
+            // If no selection, find word boundaries around cursor
+            if (start === end) {
+                const cursorPos = start;
+                
+                // Go back to find word start
+                while (start > 0 && /\S/.test(text[start - 1])) {
+                    start--;
+                }
+                
+                // Go forward to find word end
+                while (end < text.length && /\S/.test(text[end])) {
+                    end++;
+                }
+            }
+            
+            if (start === end) return;
+            
+            const selectedText = text.substring(start, end);
+            
+            // Create a better prompt with both correction and explanation
+            const correction = prompt(`Marquer "${selectedText}" comme erreur\n\nQuelle est la correction?`, selectedText);
+            
+            if (correction !== null && correction.trim()) {
+                const explanation = prompt(`Pourquoi "${selectedText}" est incorrect?\n\n(Optionnel - explique l'erreur)`, '');
+                
+                const mistakeData = {
+                    original: selectedText,
+                    correction: correction.trim(),
+                    explanation: explanation ? explanation.trim() : '',
+                    timestamp: Date.now(),
+                    context: text.substring(Math.max(0, start - 30), Math.min(text.length, end + 30))
+                };
+                
+                mistakeCorrections.push(mistakeData);
+                markedMistakes.push({
+                    start: start,
+                    end: end,
+                    text: selectedText,
+                    note: explanation ? explanation.trim() : `Correction: ${correction.trim()}`,
+                    id: Date.now()
+                });
+                
+                // Save after marking mistake
+                saveToLocalStorage();
+                if (window.syncToFirebase) window.syncToFirebase();
+                
+                // Visual feedback with explanation if provided
+                const beforeText = text.substring(0, start);
+                const afterText = text.substring(end);
+                const marker = explanation 
+                    ? `[❌${selectedText}→${correction.trim()}💡${explanation.trim()}]`
+                    : `[❌${selectedText}→${correction.trim()}]`;
+                textarea.value = beforeText + marker + afterText;
+                
+                // Update cursor position
+                textarea.selectionStart = textarea.selectionEnd = start;
+                
+                console.log('Correction enregistrée:', mistakeData);
+            }
+        });
+
+        // Handle text selection for mistake marking (original functionality)
+        document.getElementById('writing-area').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && mistakeMarkingMode) {
+                e.preventDefault();
+                const textarea = e.target;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                
+                if (start === end) {
+                    alert('Sélectionne d\'abord le texte à marquer comme erreur, ou double-clique sur un mot');
+                    return;
+                }
+                
+                const selectedText = textarea.value.substring(start, end);
+                const correction = prompt(`Erreur marquée: "${selectedText}"\n\nQuelle est la correction?`, selectedText);
+                
+                if (correction !== null && correction.trim()) {
+                    const explanation = prompt(`Pourquoi "${selectedText}" est incorrect?\n\n(Optionnel - explique l'erreur)`, '');
+                    
+                    const mistakeData = {
+                        original: selectedText,
+                        correction: correction.trim(),
+                        explanation: explanation ? explanation.trim() : '',
+                        timestamp: Date.now(),
+                        context: textarea.value.substring(Math.max(0, start - 30), Math.min(textarea.value.length, end + 30))
+                    };
+                    
+                    mistakeCorrections.push(mistakeData);
+                    markedMistakes.push({
+                        start: start,
+                        end: end,
+                        text: selectedText,
+                        note: explanation ? explanation.trim() : `Correction: ${correction.trim()}`,
+                        id: Date.now()
+                    });
+                    
+                    // Save after marking mistake
+                    saveToLocalStorage();
+                    if (window.syncToFirebase) window.syncToFirebase();
+                    
+                    // Visual feedback with explanation if provided
+                    const beforeText = textarea.value.substring(0, start);
+                    const afterText = textarea.value.substring(end);
+                    const marker = explanation 
+                        ? `[❌${selectedText}→${correction.trim()}💡${explanation.trim()}]`
+                        : `[❌${selectedText}→${correction.trim()}]`;
+                    textarea.value = beforeText + marker + afterText;
+                    
+                    // Update cursor position
+                    textarea.selectionStart = textarea.selectionEnd = start;
+                    
+                    console.log('Correction enregistrée:', mistakeData);
+                }
+            }
+        });
 
         // ============================================
         // TABS
@@ -10247,17 +11477,53 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
         // PDF button visibility and click handler
         function updatePDFButtonVisibility() {
-            const pdfBtn = document.getElementById('save-words-pdf');
-            const csvBtn = document.getElementById('save-words-csv');
-            const bulkBtn = document.getElementById('bulk-import-btn');
-            const hasWords = getFilteredVocabulary().length > 0;
-            
-            if (pdfBtn) pdfBtn.style.display = hasWords ? 'flex' : 'none';
-            if (csvBtn) csvBtn.style.display = hasWords ? 'flex' : 'none';
-            if (bulkBtn) bulkBtn.style.display = 'flex'; // ALWAYS show import button!
+            const menuBtn = document.getElementById('jardin-menu-btn');
+            if (menuBtn) menuBtn.style.display = 'flex'; // ALWAYS show menu button (import is useful even without words!)
         }
 
-        document.getElementById('save-words-pdf').addEventListener('click', saveWordsAsPDF);
+        // ============================================
+        // JARDIN MENU TOGGLE
+        // ============================================
+        const jardinMenuBtn = document.getElementById('jardin-menu-btn');
+        const jardinMenu = document.getElementById('jardin-actions-menu');
+        
+        if (jardinMenuBtn && jardinMenu) {
+            jardinMenuBtn.addEventListener('click', () => {
+                jardinMenu.style.display = jardinMenu.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!jardinMenuBtn.contains(e.target) && !jardinMenu.contains(e.target)) {
+                    jardinMenu.style.display = 'none';
+                }
+            });
+            
+            // Connect menu items to original functions
+            document.getElementById('menu-save-pdf').addEventListener('click', () => {
+                jardinMenu.style.display = 'none';
+                saveWordsAsPDF();
+            });
+            
+            document.getElementById('menu-save-csv').addEventListener('click', () => {
+                jardinMenu.style.display = 'none';
+                saveWordsAsCSV();
+            });
+            
+            document.getElementById('menu-bulk-import').addEventListener('click', () => {
+                jardinMenu.style.display = 'none';
+                openModal('bulk-import-modal');
+            });
+        }
+
+        // Keep old event listeners for backward compatibility (in case referenced elsewhere)
+        const oldPdfBtn = document.getElementById('save-words-pdf');
+        const oldCsvBtn = document.getElementById('save-words-csv');
+        const oldImportBtn = document.getElementById('bulk-import-btn');
+        
+        if (oldPdfBtn) oldPdfBtn.addEventListener('click', saveWordsAsPDF);
+        if (oldCsvBtn) oldCsvBtn.addEventListener('click', saveWordsAsCSV);
+        if (oldImportBtn) oldImportBtn.addEventListener('click', () => openModal('bulk-import-modal'));
 
         // ============================================
         // CSV EXPORT FOR ANKI/QUIZLET
@@ -10303,14 +11569,12 @@ Ils seront préservés lors de l'affichage !"></textarea>
             document.body.removeChild(link);
         }
 
-        document.getElementById('save-words-csv').addEventListener('click', saveWordsAsCSV);
+        // CSV export button listener handled above in jardin menu section
 
         // ============================================
         // BULK IMPORT
         // ============================================
-        document.getElementById('bulk-import-btn').addEventListener('click', () => {
-            openModal('bulk-import-modal');
-        });
+        // Bulk import button listener handled above in jardin menu section
 
         document.getElementById('bulk-import-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -11658,7 +12922,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         readingTranscripts: data.readingTranscripts?.length || 0,
                         listeningTranscripts: data.listeningTranscripts?.length || 0,
                         readingPassages: data.readingPassages?.length || 0,
-                        presenceData: Object.keys(data.presenceData || {}).length || 0
+                        presenceData: Object.keys(data.presenceData || {}).length || 0,
+                        mistakeCorrections: data.mistakeCorrections?.length || 0
                     });
                     
                     // Load all data directly into memory
@@ -11707,6 +12972,11 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     if (data.presenceData) {
                         presenceData = data.presenceData;
                         console.log('✅ Loaded', Object.keys(presenceData).length, 'days of presence data');
+                    }
+                    
+                    if (data.mistakeCorrections) {
+                        mistakeCorrections = data.mistakeCorrections;
+                        console.log('✅ Loaded', mistakeCorrections.length, 'mistake corrections');
                     }
                     
                     // CRITICAL: Rebuild presence data from ALL existing entries
