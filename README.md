@@ -6691,7 +6691,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
             const today = new Date();
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(viewingYear, viewingMonth, day);
-                const dateStr = date.toISOString().split('T')[0];
+                const dateStr = `${viewingYear}-${String(viewingMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const dayData = presenceData[dateStr];
                 const isToday = date.getFullYear() === today.getFullYear() && 
                                date.getMonth() === today.getMonth() && 
