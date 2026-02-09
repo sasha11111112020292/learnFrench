@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ma-maison-v2';
+const CACHE_NAME = 'ma-maison-v2-FIXED-SAVES'; // <-- UPDATED VERSION - FORCES REFRESH!
 const urlsToCache = [
   './',
   './index.html',
@@ -10,36 +10,48 @@ const urlsToCache = [
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing...');
+  console.log('🔧 Service Worker: Installing NEW VERSION with save fixes...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Service Worker: Caching files');
+        console.log('📦 Service Worker: Caching files');
         return cache.addAll(urlsToCache);
       })
-      .then(() => self.skipWaiting())
+      .then(() => {
+        console.log('✅ Service Worker: Cache complete, activating immediately...');
+        return self.skipWaiting();
+      })
   );
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activating...');
+  console.log('🚀 Service Worker: Activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Deleting old cache:', cacheName);
+            console.log('🗑️ Service Worker: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => {
+      console.log('✅ Service Worker: Old caches deleted, taking control...');
+      return self.clients.claim();
+    })
   );
 });
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+  // Skip Firebase API calls - let them go directly to network
+  if (event.request.url.includes('firestore.googleapis.com') || 
+      event.request.url.includes('identitytoolkit.googleapis.com')) {
+    return event.respondWith(fetch(event.request));
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
