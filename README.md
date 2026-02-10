@@ -1299,6 +1299,134 @@ const firebaseConfig = {
             line-height: 1.8;
         }
 
+        /* Resource Dropdown Button */
+        .resources-dropdown-container {
+            margin: 1.5rem 0 2rem;
+            text-align: center;
+        }
+
+        .resources-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--whisper) 100%);
+            border: 1px solid rgba(139, 70, 84, 0.15);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            font-family: 'Work Sans', sans-serif;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .resources-toggle-btn:hover {
+            background: linear-gradient(135deg, var(--whisper) 0%, white 100%);
+            border-color: var(--crimson);
+            color: var(--crimson);
+            box-shadow: 0 4px 12px rgba(139, 70, 84, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .resources-toggle-btn svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .resources-toggle-btn.active svg {
+            transform: rotate(180deg);
+        }
+
+        .resources-dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+            margin-top: 0;
+        }
+
+        .resources-dropdown-content.active {
+            max-height: 2000px;
+            opacity: 1;
+            margin-top: 1.5rem;
+        }
+
+        .section-resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .resource-mini-card {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(139, 70, 84, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .resource-mini-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            border-color: var(--crimson);
+        }
+
+        .resource-mini-card-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--rosy) 0%, var(--gold-pale) 100%);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .resource-mini-card-icon svg {
+            width: 22px;
+            height: 22px;
+            color: white;
+        }
+
+        .resource-mini-card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .resource-mini-card-desc {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .resource-mini-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: var(--crimson);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .resource-mini-card-link:hover {
+            color: var(--navy);
+        }
+
+        .resource-mini-card-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
         /* Cards */
         .entrance-card {
             background: var(--cream);
@@ -5302,6 +5430,22 @@ const firebaseConfig = {
                 </p>
             </div>
 
+            <!-- Resources Dropdown -->
+            <div class="resources-dropdown-container">
+                <button class="resources-toggle-btn" data-section="lire">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <span>Mes ressources</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="resources-dropdown-content" id="lire-resources">
+                    <div class="section-resources-grid"></div>
+                </div>
+            </div>
+
             <!-- Reading List Section -->
             <div style="margin-bottom: 3rem;">
                 <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 0.5rem;">Ma Liste de Lecture</h3>
@@ -5360,6 +5504,22 @@ const firebaseConfig = {
                 </p>
             </div>
 
+            <!-- Resources Dropdown -->
+            <div class="resources-dropdown-container">
+                <button class="resources-toggle-btn" data-section="ecouter">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                    </svg>
+                    <span>Mes ressources</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="resources-dropdown-content" id="ecouter-resources">
+                    <div class="section-resources-grid"></div>
+                </div>
+            </div>
+
             <div style="margin-bottom: 2rem; text-align: center;">
                 <button class="btn btn-primary" id="add-listening-btn">+ Ajouter une chanson/vidéo/film</button>
                 <button class="btn btn-secondary" id="add-listening-transcript-btn">+ Ajouter une transcription</button>
@@ -5381,6 +5541,22 @@ const firebaseConfig = {
                 <p class="room-description">
                     Réponds aux questions. Enregistre ta voix. Personne ne juge.
                 </p>
+            </div>
+
+            <!-- Resources Dropdown -->
+            <div class="resources-dropdown-container">
+                <button class="resources-toggle-btn" data-section="parler">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                    </svg>
+                    <span>Mes ressources</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="resources-dropdown-content" id="parler-resources">
+                    <div class="section-resources-grid"></div>
+                </div>
             </div>
 
             <!-- Tabs -->
@@ -5477,6 +5653,22 @@ const firebaseConfig = {
                 <p class="room-description">
                     Écris ce que tu veux. Tout est sauvegardé.
                 </p>
+            </div>
+
+            <!-- Resources Dropdown -->
+            <div class="resources-dropdown-container">
+                <button class="resources-toggle-btn" data-section="ecrire">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    <span>Mes ressources</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="resources-dropdown-content" id="ecrire-resources">
+                    <div class="section-resources-grid"></div>
+                </div>
             </div>
 
             <!-- Tabs -->
@@ -6296,6 +6488,29 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     <textarea class="form-textarea" id="resources-note" placeholder="Pourquoi tu aimes cette ressource ? Comment tu l'utilises ?"></textarea>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Afficher dans les sections (optionnel)</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 0.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--whisper); border-radius: 8px; transition: all 0.2s ease;">
+                            <input type="checkbox" class="resources-section-checkbox" value="lire" style="cursor: pointer;">
+                            <span style="font-size: 0.9rem; color: var(--text);">📚 Le Coin Lecture</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--whisper); border-radius: 8px; transition: all 0.2s ease;">
+                            <input type="checkbox" class="resources-section-checkbox" value="ecouter" style="cursor: pointer;">
+                            <span style="font-size: 0.9rem; color: var(--text);">🎵 Le Studio d'Écoute</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--whisper); border-radius: 8px; transition: all 0.2s ease;">
+                            <input type="checkbox" class="resources-section-checkbox" value="parler" style="cursor: pointer;">
+                            <span style="font-size: 0.9rem; color: var(--text);">🗣️ Le Parloir</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--whisper); border-radius: 8px; transition: all 0.2s ease;">
+                            <input type="checkbox" class="resources-section-checkbox" value="ecrire" style="cursor: pointer;">
+                            <span style="font-size: 0.9rem; color: var(--text);">✍️ Le Salon d'Écriture</span>
+                        </label>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-soft); margin-top: 0.5rem; font-style: italic;">Cette ressource apparaîtra dans les sections sélectionnées</p>
+                </div>
+
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('resources-modal')">Annuler</button>
                     <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -6345,6 +6560,29 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 <div class="form-group">
                     <label class="form-label">Notes personnelles</label>
                     <textarea class="form-textarea" id="edit-resources-note" placeholder="Pourquoi tu aimes cette ressource ? Comment tu l'utilises ?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Afficher dans les sections (optionnel)</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 0.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--whisper); border-radius: 8px; transition: all 0.2s ease;">
+                            <input type="checkbox" class="edit-resources-section-checkbox" value="lire" style="cursor: pointer;">
+                            <span style="font-size: 0.9rem; color: var(--text);">📚 Le Coin Lecture</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--whisper); border-radius: 8px; transition: all 0.2s ease;">
+                            <input type="checkbox" class="edit-resources-section-checkbox" value="ecouter" style="cursor: pointer;">
+                            <span style="font-size: 0.9rem; color: var(--text);">🎵 Le Studio d'Écoute</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--whisper); border-radius: 8px; transition: all 0.2s ease;">
+                            <input type="checkbox" class="edit-resources-section-checkbox" value="parler" style="cursor: pointer;">
+                            <span style="font-size: 0.9rem; color: var(--text);">🗣️ Le Parloir</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--whisper); border-radius: 8px; transition: all 0.2s ease;">
+                            <input type="checkbox" class="edit-resources-section-checkbox" value="ecrire" style="cursor: pointer;">
+                            <span style="font-size: 0.9rem; color: var(--text);">✍️ Le Salon d'Écriture</span>
+                        </label>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-soft); margin-top: 0.5rem; font-style: italic;">Cette ressource apparaîtra dans les sections sélectionnées</p>
                 </div>
 
                 <div class="form-actions">
@@ -8930,6 +9168,13 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     const input = document.getElementById(inputId);
                     if (input) input.value = '';
                 });
+                
+                // Reset section checkboxes in resources modal
+                if (id === 'resources-modal') {
+                    document.querySelectorAll('.resources-section-checkbox').forEach(cb => {
+                        cb.checked = false;
+                    });
+                }
             } catch (e) {
                 console.error('closeModal error:', e);
             }
@@ -9863,6 +10108,79 @@ Ils seront préservés lors de l'affichage !"></textarea>
             `).join('');
         }
 
+        // Render resources in each section's dropdown
+        function renderSectionResources() {
+            const sections = ['lire', 'ecouter', 'parler', 'ecrire'];
+            const typeIcons = {
+                website: 'M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 18H5V6h2v12zm4 0H9V6h2v12zm4 0h-2V6h2v12zm4 0h-2V6h2v12z',
+                youtube: 'M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81z',
+                app: 'M4 6h16v12H4V6m16-2H4c-1.11 0-2 .89-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2z',
+                podcast: 'M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z',
+                book: 'M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z',
+                tool: 'M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z',
+                course: 'M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z',
+                other: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'
+            };
+
+            sections.forEach(sectionId => {
+                const container = document.getElementById(`${sectionId}-resources`);
+                if (!container) return;
+
+                const grid = container.querySelector('.section-resources-grid');
+                if (!grid) return;
+
+                const sectionResources = resourcesList.filter(r => 
+                    r.sections && r.sections.includes(sectionId)
+                );
+
+                if (sectionResources.length === 0) {
+                    grid.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--text-soft); font-size: 0.9rem;">
+                            <p>Aucune ressource pour cette section.</p>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem;">Ajoute des ressources dans <em>La Réserve</em> et sélectionne cette section.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = sectionResources.map(item => `
+                    <div class="resource-mini-card">
+                        <div class="resource-mini-card-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="${typeIcons[item.type] || typeIcons.other}"/>
+                            </svg>
+                        </div>
+                        <div class="resource-mini-card-title">${item.name}</div>
+                        ${item.description ? `<div class="resource-mini-card-desc">${item.description}</div>` : ''}
+                        ${item.link ? `
+                            <a href="${item.link}" class="resource-mini-card-link" target="_blank" rel="noopener noreferrer">
+                                Ouvrir
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+                        ` : ''}
+                    </div>
+                `).join('');
+            });
+        }
+
+        // Setup dropdown toggle functionality
+        function setupResourceDropdowns() {
+            document.querySelectorAll('.resources-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = btn.getAttribute('data-section');
+                    const content = document.getElementById(`${section}-resources`);
+                    
+                    if (content) {
+                        const isActive = content.classList.contains('active');
+                        content.classList.toggle('active');
+                        btn.classList.toggle('active');
+                    }
+                });
+            });
+        }
+
         function editResource(id) {
             const item = resourcesList.find(r => r.id === id);
             if (!item) return;
@@ -9874,6 +10192,12 @@ Ils seront préservés lors de l'affichage !"></textarea>
             document.getElementById('edit-resources-link').value = item.link || '';
             document.getElementById('edit-resources-note').value = item.note || '';
 
+            // Populate section checkboxes
+            const sections = item.sections || [];
+            document.querySelectorAll('.edit-resources-section-checkbox').forEach(cb => {
+                cb.checked = sections.includes(cb.value);
+            });
+
             openModal('edit-resources-modal');
         }
 
@@ -9882,6 +10206,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 resourcesList = resourcesList.filter(r => r.id !== id);
                 syncToFirebase(); // Auto-save resourcesList to Firebase
                 renderResourcesList();
+                renderSectionResources(); // Update section resources
             }
         }
 
@@ -9893,6 +10218,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
             document.getElementById('resources-form').addEventListener('submit', (e) => {
             e.preventDefault();
             
+            // Get selected sections
+            const selectedSections = Array.from(document.querySelectorAll('.resources-section-checkbox:checked'))
+                .map(cb => cb.value);
+            
             const item = {
                 id: Date.now(),
                 type: document.getElementById('resources-type').value,
@@ -9900,6 +10229,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 description: document.getElementById('resources-description').value.trim() || '',
                 link: document.getElementById('resources-link').value.trim(),
                 note: document.getElementById('resources-note').value.trim() || '',
+                sections: selectedSections, // Store selected sections
                 created: new Date().toISOString()
             };
 
@@ -9912,6 +10242,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
             resourcesList.push(item);
                 syncToFirebase(); // Auto-save resourcesList to Firebase
             renderResourcesList();
+            renderSectionResources(); // Render resources in sections
             closeModal('resources-modal');
         });
 
@@ -9924,13 +10255,18 @@ Ils seront préservés lors de l'affichage !"></textarea>
             
             if (index === -1) return;
 
+            // Get selected sections
+            const selectedSections = Array.from(document.querySelectorAll('.edit-resources-section-checkbox:checked'))
+                .map(cb => cb.value);
+
             resourcesList[index] = {
                 ...resourcesList[index],
                 type: document.getElementById('edit-resources-type').value,
                 name: document.getElementById('edit-resources-name').value.trim(),
                 description: document.getElementById('edit-resources-description').value.trim() || '',
                 link: document.getElementById('edit-resources-link').value.trim(),
-                note: document.getElementById('edit-resources-note').value.trim() || ''
+                note: document.getElementById('edit-resources-note').value.trim() || '',
+                sections: selectedSections // Update sections
             };
 
             // Validate required field
@@ -9939,6 +10275,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 return;
             }            syncToFirebase(); // Auto-save resourcesList to Firebase
             renderResourcesList();
+            renderSectionResources(); // Render resources in sections
             closeModal('edit-resources-modal');
         });
         }
@@ -12300,6 +12637,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
             setupReadingListeners();
             setupListeningListeners();
             setupResourcesListeners();
+            
+            // Setup resource dropdowns and render section resources
+            setupResourceDropdowns();
+            renderSectionResources();
 
             // ============================================
             // DARK MODE TOGGLE
