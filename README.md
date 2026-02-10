@@ -13555,6 +13555,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         console.log('  ✅ renderNotes() complete');
                         renderResourcesList();
                         console.log('  ✅ renderResourcesList() complete');
+                        renderSectionResources();
+                        console.log('  ✅ renderSectionResources() complete');
                         renderTranscripts('reading');
                         console.log('  ✅ renderTranscripts(reading) complete');
                         renderTranscripts('listening');
