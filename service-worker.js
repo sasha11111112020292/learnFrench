@@ -1,6 +1,8 @@
-const CACHE_NAME = 'ma-maison-v3-network-first';
+const CACHE_NAME = 'ma-maison-v2-fixed';
 const urlsToCache = [
   './',
+  './index.html',
+  './index-63.html',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Work+Sans:wght@300;400;500&family=Allura&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
@@ -53,30 +55,6 @@ self.addEventListener('fetch', (event) => {
 
   // ⚠️ CRITICAL: Only cache GET requests
   if (request.method !== 'GET') {
-    return;
-  }
-
-  // 🔥 HTML files: ALWAYS fetch from network first (so updates show immediately!)
-  if (url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname === '') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Cache the new version for offline use
-          if (response && response.ok) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseToCache);
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          // Only use cache if network fails (offline)
-          return caches.match(request).then((cached) => {
-            return cached || caches.match('./index.html');
-          });
-        })
-    );
     return;
   }
 
