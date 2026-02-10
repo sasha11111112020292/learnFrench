@@ -11008,6 +11008,9 @@ Ils seront préservés lors de l'affichage !"></textarea>
         }
 
         function editListening(id) {
+            // Convert to number (in case it comes as string from HTML onclick)
+            id = parseInt(id);
+            
             const item = listeningList.find(l => l.id === id);
             if (!item) return;
 
@@ -11023,6 +11026,9 @@ Ils seront préservés lors de l'affichage !"></textarea>
         }
 
         function deleteListening(id) {
+            // Convert to number (in case it comes as string from HTML onclick)
+            id = parseInt(id);
+            
             if (confirm('Supprimer ce média ?')) {
                 listeningList = listeningList.filter(l => l.id !== id);
                 
@@ -15532,6 +15538,9 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
         // Open listening player
         window.openListeningPlayer = function(itemId) {
+            // Convert to number (in case it comes as string from HTML onclick)
+            itemId = parseInt(itemId);
+            
             console.log('🎵 openListeningPlayer called for itemId:', itemId);
             
             // FORCE reload from localStorage to ensure fresh data
@@ -15549,6 +15558,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
             const item = listeningList.find(l => l.id === itemId);
             if (!item) {
                 console.error('❌ Item not found!');
+                console.error('   Looking for ID:', itemId, typeof itemId);
+                console.error('   Available IDs:', listeningList.map(l => `${l.id} (${typeof l.id})`));
                 alert('ERROR: Item not found! ID: ' + itemId);
                 return;
             }
@@ -16593,3 +16604,4 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
 </body>
 </html>
+
