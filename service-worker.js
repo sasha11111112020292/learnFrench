@@ -1,5 +1,4 @@
-// 🚨 UPDATED: Cache version bumped to force refresh after race condition bug fix
-const CACHE_NAME = 'ma-maison-v2'; // Changed from v1 to v2 to clear old buggy cache
+const CACHE_NAME = 'ma-maison-v1';
 const urlsToCache = [
   './',
   './index.html',
@@ -11,23 +10,20 @@ const urlsToCache = [
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing v2 (race condition fix)...');
+  console.log('Service Worker: Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Service Worker: Caching files with new version');
+        console.log('Service Worker: Caching files');
         return cache.addAll(urlsToCache);
       })
-      .then(() => {
-        console.log('Service Worker: Skip waiting - activate immediately');
-        return self.skipWaiting();
-      })
+      .then(() => self.skipWaiting())
   );
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activating v2...');
+  console.log('Service Worker: Activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -38,37 +34,12 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    }).then(() => {
-      console.log('Service Worker: Claiming clients');
-      return self.clients.claim();
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
-  // For index.html, always try network first to get latest version
-  // This helps ensure users get bug fixes quickly
-  if (event.request.url.includes('index.html') || event.request.url.endsWith('/')) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          // Cache the new version
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-          return response;
-        })
-        .catch(() => {
-          // Fallback to cache if offline
-          return caches.match(event.request);
-        })
-    );
-    return;
-  }
-
-  // For other resources, use cache-first strategy
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
