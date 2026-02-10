@@ -24,6 +24,24 @@
     
     <!-- Firebase REST API - No CDN needed! -->
     <script>
+// ============================================
+// GLOBAL ERROR HANDLER - Catch null reference errors
+// ============================================
+window.addEventListener('error', function(e) {
+    console.error('❌ Global error caught:', e.message, e.filename, e.lineno, e.colno);
+    // Don't prevent the error from showing in console, but prevent page crash
+    e.preventDefault();
+    return true;
+});
+
+window.addEventListener('unhandledrejection', function(e) {
+    console.error('❌ Unhandled promise rejection:', e.reason);
+    e.preventDefault();
+});
+
+console.log('🏡 Ma Maison - French Sanctuary');
+console.log('✅ Error handlers installed');
+
 // Firebase REST API Implementation - Embedded directly in HTML
 const FirebaseREST = {
     config: null,
@@ -1481,7 +1499,7 @@ const firebaseConfig = {
             transition: transform 0.3s ease;
         }
 
-        .resources-toggle-btn.active svg {
+        .resources-toggle-btn.active .resources-chevron {
             transform: rotate(180deg);
         }
 
@@ -4683,6 +4701,479 @@ const firebaseConfig = {
             50% { opacity: 0.7; transform: scale(1.2); }
         }
 
+        /* ============================================
+           ENHANCED LISTENING PLAYER STYLES
+           ============================================ */
+        .listening-player-container {
+            padding: 1rem 0;
+        }
+
+        #youtube-player-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin-bottom: 1.5rem;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        #youtube-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .player-controls {
+            background: var(--cream-dark);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        body.dark-mode .player-controls {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .player-controls-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .player-btn {
+            background: white;
+            border: 2px solid var(--whisper);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--navy);
+            transition: all 0.2s ease;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        body.dark-mode .player-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--dark-text);
+        }
+
+        .player-btn:hover {
+            background: var(--cream);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .player-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .player-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .player-btn-play {
+            background: var(--crimson);
+            color: white;
+            border-color: var(--crimson);
+            padding: 1rem 1.5rem;
+        }
+
+        .player-btn-play:hover {
+            background: #b71c1c;
+            border-color: #b71c1c;
+        }
+
+        .player-btn-play svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .player-btn.active {
+            background: var(--crimson);
+            color: white;
+            border-color: var(--crimson);
+        }
+
+        .player-speed-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 0 0.5rem;
+            border-top: 1px solid var(--whisper);
+        }
+
+        body.dark-mode .player-speed-controls {
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .speed-btn {
+            background: white;
+            border: 1px solid var(--whisper);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--navy);
+            transition: all 0.2s ease;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        body.dark-mode .speed-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: var(--dark-text);
+        }
+
+        .speed-btn:hover {
+            background: var(--cream);
+            border-color: var(--gold);
+        }
+
+        body.dark-mode .speed-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .speed-btn.active {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+
+        body.dark-mode .speed-btn.active {
+            background: var(--crimson);
+            border-color: var(--crimson);
+        }
+
+        .ab-repeat-indicator {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background: rgba(190, 31, 46, 0.1);
+            border: 1px solid var(--crimson);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--crimson);
+        }
+
+        .interactive-transcript {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--whisper);
+        }
+
+        body.dark-mode .interactive-transcript {
+            background: var(--dark-card);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .interactive-transcript h3 {
+            color: var(--dark-text);
+        }
+
+        .transcript-lines {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .transcript-line {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .transcript-line:hover {
+            background: var(--cream-dark);
+            border-left-color: var(--gold);
+        }
+
+        body.dark-mode .transcript-line:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .transcript-line.active {
+            background: rgba(190, 31, 46, 0.1);
+            border-left-color: var(--crimson);
+        }
+
+        body.dark-mode .transcript-line.active {
+            background: rgba(190, 31, 46, 0.2);
+        }
+
+        .transcript-timestamp {
+            display: inline-block;
+            font-weight: 600;
+            color: var(--crimson);
+            margin-right: 0.75rem;
+            font-size: 0.9rem;
+            min-width: 60px;
+        }
+
+        body.dark-mode .transcript-timestamp {
+            color: var(--gold);
+        }
+
+        .transcript-text {
+            color: var(--text);
+        }
+
+        body.dark-mode .transcript-text {
+            color: var(--dark-text);
+        }
+        
+        /* Clickable words in transcript */
+        .clickable-transcript-word {
+            cursor: pointer;
+            padding: 0.1rem 0.2rem;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+        
+        .clickable-transcript-word:hover {
+            background: rgba(190, 31, 46, 0.1);
+        }
+        
+        .clickable-transcript-word.word-selected {
+            background: rgba(190, 31, 46, 0.25);
+            border-bottom: 2px solid var(--crimson);
+        }
+        
+        .clickable-transcript-word.word-unknown {
+            background: rgba(255, 165, 0, 0.25);
+            color: #d97706;
+            font-weight: 500;
+        }
+        
+        .clickable-transcript-word.word-known {
+            background: rgba(34, 197, 94, 0.2);
+            color: #16a34a;
+            font-weight: 500;
+        }
+        
+        /* Word analysis popup */
+        .word-analysis-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--cream);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 10001;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        body.dark-mode .word-analysis-popup {
+            background: var(--dark-bg);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+        }
+        
+        .word-analysis-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+        }
+
+        .player-progress-section {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--cream-dark);
+            border-radius: 16px;
+        }
+
+        body.dark-mode .player-progress-section {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-stars {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0.25rem;
+        }
+
+        .progress-stars .star {
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .progress-stars .star:hover {
+            transform: scale(1.2);
+        }
+
+        .progress-stars .star.inactive {
+            opacity: 0.3;
+        }
+
+        /* Listening Category Tabs */
+        .listening-category-tabs {
+            padding: 0.5rem;
+            background: var(--cream-dark);
+            border-radius: 12px;
+            display: inline-flex;
+        }
+
+        body.dark-mode .listening-category-tabs {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .listening-category-tab {
+            background: transparent;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-soft);
+            transition: all 0.2s ease;
+            font-family: 'Work Sans', sans-serif;
+            white-space: nowrap;
+        }
+
+        .listening-category-tab:hover {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--navy);
+        }
+
+        body.dark-mode .listening-category-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--dark-text);
+        }
+
+        .listening-category-tab.active {
+            background: white;
+            color: var(--crimson);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .listening-category-tab.active {
+            background: var(--crimson);
+            color: white;
+        }
+
+        .listening-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--whisper);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        body.dark-mode .listening-card {
+            background: var(--dark-card);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .listening-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .listening-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .listening-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-play-interactive {
+            background: var(--crimson);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        .btn-play-interactive:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(190, 31, 46, 0.3);
+        }
+
+        .btn-play-interactive svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .player-controls-main {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .player-btn {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .player-btn-play {
+                padding: 0.8rem 1.2rem;
+            }
+
+            .player-speed-controls {
+                flex-wrap: wrap;
+            }
+
+            .speed-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .transcript-line {
+                font-size: 0.95rem;
+                padding: 0.6rem 0.8rem;
+            }
+
+            .transcript-timestamp {
+                font-size: 0.85rem;
+                min-width: 50px;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .affirmation {
@@ -5668,7 +6159,12 @@ const firebaseConfig = {
             
             <!-- Transcripts Section -->
             <div id="reading-transcripts-section" style="margin-top: 3rem; display: none;">
-                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 1.5rem;">Transcriptions</h3>
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 1.5rem;">
+                    Transcriptions
+                    <button class="btn btn-primary" id="add-reading-transcript-btn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+                        + Ajouter une transcription
+                    </button>
+                </h3>
                 <div id="reading-transcripts-container"></div>
             </div>
         </section>
@@ -5698,16 +6194,44 @@ const firebaseConfig = {
                 </div>
             </div>
 
-            <div style="margin-bottom: 2rem; text-align: center;">
-                <button class="btn btn-primary" id="add-listening-btn">+ Ajouter une chanson/vidéo/film</button>
-                <button class="btn btn-secondary" id="add-listening-transcript-btn">+ Ajouter une transcription</button>
+            <!-- Category Filter Tabs -->
+            <div style="margin-bottom: 2rem;">
+                <div class="listening-category-tabs" style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    <button class="listening-category-tab active" data-category="all" onclick="filterListeningByCategory('all')">
+                        Tout
+                    </button>
+                    <button class="listening-category-tab" data-category="video" onclick="filterListeningByCategory('video')">
+                        Vidéos
+                    </button>
+                    <button class="listening-category-tab" data-category="song" onclick="filterListeningByCategory('song')">
+                        Musique
+                    </button>
+                    <button class="listening-category-tab" data-category="movie" onclick="filterListeningByCategory('movie')">
+                        Films
+                    </button>
+                    <button class="listening-category-tab" data-category="series" onclick="filterListeningByCategory('series')">
+                        Séries
+                    </button>
+                    <button class="listening-category-tab" data-category="podcast" onclick="filterListeningByCategory('podcast')">
+                        Podcasts
+                    </button>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn btn-primary" id="add-listening-btn">Ajouter du contenu</button>
+                </div>
             </div>
 
             <div class="resource-grid" id="listening-grid"></div>
             
             <!-- Transcripts Section -->
             <div id="listening-transcripts-section" style="margin-top: 3rem; display: none;">
-                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 1.5rem;">Transcriptions</h3>
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 1.5rem;">
+                    Transcriptions
+                    <button class="btn btn-primary" id="add-listening-transcript-btn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+                        + Ajouter une transcription
+                    </button>
+                </h3>
                 <div id="listening-transcripts-container"></div>
             </div>
         </section>
@@ -6517,53 +7041,80 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
     <!-- Listening Modal -->
     <div class="modal" id="listening-modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 700px;">
             <div class="modal-header">
-                <h2 class="modal-title">Ajouter à écouter</h2>
+                <h2 class="modal-title">Ajouter du contenu</h2>
                 <button class="close-btn" onclick="closeModal('listening-modal')">&times;</button>
             </div>
             
             <form id="listening-form">
                 <div class="form-group">
-                    <label class="form-label">Type</label>
+                    <label class="form-label">Type de contenu</label>
                     <select class="form-select" id="listening-type" required>
-                        <option value="song">Chanson</option>
-                        <option value="video">Vidéo YouTube</option>
+                        <option value="video">Vidéo</option>
+                        <option value="song">Musique</option>
+                        <option value="podcast">Podcast</option>
                         <option value="movie">Film</option>
                         <option value="series">Série</option>
-                        <option value="podcast">Podcast</option>
-                        <option value="audio">Audio/MP3</option>
                         <option value="other">Autre</option>
                     </select>
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label">URL YouTube</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="url" class="form-input" id="listening-media-url" placeholder="https://youtube.com/watch?v=..." style="flex: 1;">
+                        <button type="button" class="btn btn-secondary" onclick="fetchYouTubeTitle()" id="fetch-yt-title-btn" style="white-space: nowrap; padding: 0 1.25rem;">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; margin-right: 0.4rem; vertical-align: middle;">
+                                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                            </svg>
+                            Récupérer le titre
+                        </button>
+                    </div>
+                    <small style="color: var(--text-soft); font-size: 0.85rem;">Colle l'URL et clique sur le bouton pour remplir automatiquement le titre</small>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">Titre</label>
-                    <input type="text" class="form-input" id="listening-title" required>
+                    <input type="text" class="form-input" id="listening-title" required placeholder="Le titre du contenu">
+                </div>
+
+                <div class="form-group" style="background: var(--cream-dark); padding: 1.25rem; border-radius: 12px; border: 2px dashed var(--whisper);">
+                    <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; color: var(--crimson);">
+                            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                        </svg>
+                        Transcription (recommandé)
+                        <a href="https://downsub.com" target="_blank" rel="noopener noreferrer" 
+                           title="Obtenir les sous-titres YouTube"
+                           style="display:inline-flex; align-items:center; gap:0.3rem; padding:0.25rem 0.65rem; background:var(--crimson); color:white; border-radius:20px; font-size:0.78rem; font-weight:500; text-decoration:none; letter-spacing:0.02em; transition:background 0.2s, transform 0.2s; white-space:nowrap; margin-left:auto;"
+                           onmouseover="this.style.background='#a03040';this.style.transform='translateY(-1px)'"
+                           onmouseout="this.style.background='var(--crimson)';this.style.transform='none'">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+                                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/>
+                            </svg>
+                            DownSub
+                        </a>
+                    </label>
+                    <textarea class="form-textarea" id="listening-transcript-text" placeholder="Colle ici les sous-titres de DownSub ou autre source...&#10;&#10;Formats acceptés automatiquement:&#10;00:15 Bonjour, je m'appelle Marie.&#10;[00:23] J'habite à Paris depuis cinq ans.&#10;&#10;Ou format SRT complet avec →" style="min-height: 180px; font-family: 'Courier New', monospace; font-size: 0.9rem; background: white;"></textarea>
+                    <small style="color: var(--text-soft); font-size: 0.85rem; display: block; margin-top: 0.5rem;">
+                        Les timestamps seront détectés automatiquement et transformés en transcription cliquable
+                    </small>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">🎵 Media URL (YouTube, MP3, etc.)</label>
-                    <input type="url" class="form-input" id="listening-media-url" placeholder="https://youtube.com/watch?v=... ou .mp3">
-                    <small style="color: var(--text-soft); font-size: 0.85rem;">Pour YouTube, copie l'URL complète. Pour audio, utilise un lien direct .mp3 ou .wav</small>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Lien info/source (optionnel)</label>
-                    <input type="url" class="form-input" id="listening-link" placeholder="https://...">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">📝 Transcription liée (optionnel)</label>
-                    <select class="form-select" id="listening-linked-transcript">
-                        <option value="">Aucune transcription</option>
+                    <label class="form-label">Niveau de maîtrise</label>
+                    <select class="form-select" id="listening-progress">
+                        <option value="not-started">Pas encore commencé</option>
+                        <option value="working">En cours d'apprentissage</option>
+                        <option value="reviewing">En révision</option>
+                        <option value="mastered">Maîtrisé</option>
                     </select>
-                    <small style="color: var(--text-soft); font-size: 0.85rem;">Lie une transcription existante ou crée-en une nouvelle après</small>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Notes</label>
-                    <textarea class="form-textarea" id="listening-note" placeholder="Qu'est-ce que tu apprends ? Expressions intéressantes ?"></textarea>
+                    <label class="form-label">Notes personnelles (optionnel)</label>
+                    <textarea class="form-textarea" id="listening-note" placeholder="Expressions utiles, vocabulaire intéressant, contexte..."></textarea>
                 </div>
 
                 <div class="form-actions">
@@ -6576,24 +7127,38 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
     <!-- Edit Listening Modal -->
     <div class="modal" id="edit-listening-modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 700px;">
             <div class="modal-header">
-                <h2 class="modal-title">Modifier l'écoute</h2>
+                <h2 class="modal-title">Modifier le contenu</h2>
                 <button class="close-btn" onclick="closeModal('edit-listening-modal')">&times;</button>
             </div>
             
             <form id="edit-listening-form">
                 <input type="hidden" id="edit-listening-id">
+                
                 <div class="form-group">
-                    <label class="form-label">Type</label>
+                    <label class="form-label">Type de contenu</label>
                     <select class="form-select" id="edit-listening-type" required>
-                        <option value="song">Chanson</option>
-                        <option value="video">Vidéo YouTube</option>
+                        <option value="video">Vidéo</option>
+                        <option value="song">Musique</option>
+                        <option value="podcast">Podcast</option>
                         <option value="movie">Film</option>
                         <option value="series">Série</option>
-                        <option value="podcast">Podcast</option>
                         <option value="other">Autre</option>
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">URL YouTube</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="url" class="form-input" id="edit-listening-media-url" placeholder="https://youtube.com/watch?v=..." style="flex: 1;">
+                        <button type="button" class="btn btn-secondary" onclick="fetchYouTubeTitleEdit()" style="white-space: nowrap; padding: 0 1.25rem;">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; margin-right: 0.4rem; vertical-align: middle;">
+                                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                            </svg>
+                            Récupérer le titre
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -6601,19 +7166,39 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     <input type="text" class="form-input" id="edit-listening-title" required>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Lien (optionnel)</label>
-                    <input type="url" class="form-input" id="edit-listening-link" placeholder="https://...">
+                <div class="form-group" style="background: var(--cream-dark); padding: 1.25rem; border-radius: 12px; border: 2px dashed var(--whisper);">
+                    <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; color: var(--crimson);">
+                            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                        </svg>
+                        Transcription
+                        <a href="https://downsub.com" target="_blank" rel="noopener noreferrer"
+                           title="Obtenir les sous-titres YouTube"
+                           style="display:inline-flex; align-items:center; gap:0.3rem; padding:0.25rem 0.65rem; background:var(--crimson); color:white; border-radius:20px; font-size:0.78rem; font-weight:500; text-decoration:none; letter-spacing:0.02em; transition:background 0.2s, transform 0.2s; white-space:nowrap; margin-left:auto;"
+                           onmouseover="this.style.background='#a03040';this.style.transform='translateY(-1px)'"
+                           onmouseout="this.style.background='var(--crimson)';this.style.transform='none'">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+                                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/>
+                            </svg>
+                            DownSub
+                        </a>
+                    </label>
+                    <textarea class="form-textarea" id="edit-listening-transcript-text" placeholder="Colle ici les sous-titres..." style="min-height: 180px; font-family: 'Courier New', monospace; font-size: 0.9rem; background: white;"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Lien paroles/transcription (optionnel)</label>
-                    <input type="url" class="form-input" id="edit-listening-transcript" placeholder="https://...">
+                    <label class="form-label">Niveau de maîtrise</label>
+                    <select class="form-select" id="edit-listening-progress">
+                        <option value="not-started">Pas encore commencé</option>
+                        <option value="working">En cours d'apprentissage</option>
+                        <option value="reviewing">En révision</option>
+                        <option value="mastered">Maîtrisé</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Notes</label>
-                    <textarea class="form-textarea" id="edit-listening-note" placeholder="Qu'est-ce que tu apprends ? Expressions intéressantes ?"></textarea>
+                    <label class="form-label">Notes personnelles</label>
+                    <textarea class="form-textarea" id="edit-listening-note"></textarea>
                 </div>
 
                 <div class="form-actions">
@@ -6621,6 +7206,115 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     <button type="submit" class="btn btn-primary">Sauvegarder</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Enhanced Listening Player Modal -->
+    <div class="modal" id="listening-player-modal">
+        <div class="modal-content" style="max-width: 1000px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="player-title">Lecteur interactif</h2>
+                <button class="close-btn" onclick="closeListeningPlayer()">&times;</button>
+            </div>
+            
+            <div class="listening-player-container">
+                <!-- YouTube Player -->
+                <div id="youtube-player-wrapper" style="display: none;">
+                    <div id="youtube-player"></div>
+                </div>
+
+                <!-- Enhanced Controls -->
+                <div class="player-controls">
+                    <div class="player-controls-main">
+                        <button class="player-btn" onclick="skipBackward()" title="Retour 5 secondes">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/>
+                            </svg>
+                            -5s
+                        </button>
+                        
+                        <button class="player-btn player-btn-play" id="play-pause-btn" onclick="togglePlayPause()">
+                            <svg viewBox="0 0 24 24" fill="currentColor" id="play-icon">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg viewBox="0 0 24 24" fill="currentColor" id="pause-icon" style="display: none;">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="player-btn" onclick="skipForward()" title="Avance 5 secondes">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
+                            </svg>
+                            +5s
+                        </button>
+                        
+                        <button class="player-btn" onclick="toggleLoop()" id="loop-btn" title="Boucle section">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="player-btn" onclick="toggleABRepeat()" id="ab-repeat-btn" title="Répétition A-B">
+                            <span style="font-weight: bold; font-size: 0.9rem;">A-B</span>
+                        </button>
+                    </div>
+
+                    <div class="player-speed-controls">
+                        <span style="font-size: 0.85rem; color: var(--text-soft); margin-right: 0.5rem;">Vitesse:</span>
+                        <button class="speed-btn" onclick="setSpeed(0.75)" data-speed="0.75">0.75x</button>
+                        <button class="speed-btn active" onclick="setSpeed(1.0)" data-speed="1.0">1.0x</button>
+                        <button class="speed-btn" onclick="setSpeed(1.25)" data-speed="1.25">1.25x</button>
+                        <button class="speed-btn" onclick="setSpeed(1.5)" data-speed="1.5">1.5x</button>
+                    </div>
+
+                    <div class="ab-repeat-indicator" id="ab-indicator" style="display: none;">
+                        <span id="ab-text">Répétition A-B: <strong id="ab-range"></strong></span>
+                        <button onclick="clearABRepeat()" style="background: transparent; border: none; color: var(--crimson); cursor: pointer; margin-left: 0.5rem; font-weight: bold;">✕</button>
+                    </div>
+                </div>
+
+                <!-- Interactive Transcript -->
+                <div class="interactive-transcript">
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--navy);">
+                        Transcription interactive
+                    </h3>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <p style="font-size: 0.85rem; color: var(--text-soft); margin: 0;">
+                            💡 Clique un mot pour l'analyser
+                        </p>
+                        <button id="multi-select-toggle" class="multi-select-inline-btn" onclick="toggleMultiSelectMode()" title="Mode sélection multiple">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4"></path>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                        </button>
+                        <span id="multi-select-hint" style="font-size: 0.8rem; color: var(--rose); font-weight: 500; display: none;">
+                            📝 Sélectionne plusieurs mots
+                        </span>
+                    </div>
+                    <div id="transcript-content" class="transcript-lines">
+                        <p style="color: var(--text-soft); text-align: center; padding: 2rem;">Aucune transcription disponible</p>
+                    </div>
+                </div>
+
+                <!-- Progress & Notes -->
+                <div class="player-progress-section">
+                    <div class="progress-stars" id="progress-stars">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star inactive">☆</span>
+                        <span class="star inactive">☆</span>
+                    </div>
+                    <select class="form-select" id="player-progress-select" onchange="updatePlayerProgress()" style="max-width: 300px; margin: 1rem auto;">
+                        <option value="not-started">Pas encore commencé</option>
+                        <option value="working">En cours ⭐⭐⭐☆☆</option>
+                        <option value="reviewing">En révision ⭐⭐⭐⭐☆</option>
+                        <option value="mastered">Maîtrisé ⭐⭐⭐⭐⭐</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -7454,23 +8148,22 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 // Rebuild presence data
                 rebuildPresenceDataFromEntries();
                 
-                // Render everything
+                // Render everything - wrapped in try-catch to prevent crashes
                 if (typeof renderGarden !== 'undefined') {
-                    renderGarden();
-                    renderReadingList();
-                    renderReadingPassages();
-                    renderListeningList();
-                    renderRecordings();
-                    renderWritingsArchive();
-                    renderNotes();
-                    renderResourcesList();
-                    renderSectionResources();
-                    renderTranscripts('reading');
-                    renderTranscripts('listening');
-                    initializeSRSData();
-                    updateSRSStatsDisplay();
-                    updatePresenceUI();
-                    updateDebugPanel();
+                    try { renderGarden(); } catch (e) { console.warn('renderGarden error:', e); }
+                    try { renderReadingList(); } catch (e) { console.warn('renderReadingList error:', e); }
+                    try { renderReadingPassages(); } catch (e) { console.warn('renderReadingPassages error:', e); }
+                    try { renderListeningList(); } catch (e) { console.warn('renderListeningList error:', e); }
+                    try { renderRecordings(); } catch (e) { console.warn('renderRecordings error:', e); }
+                    try { renderWritingsArchive(); } catch (e) { console.warn('renderWritingsArchive error:', e); }
+                    try { renderNotes(); } catch (e) { console.warn('renderNotes error:', e); }
+                    try { renderResourcesList(); } catch (e) { console.warn('renderResourcesList error:', e); }
+                    try { renderTranscripts('reading'); } catch (e) { console.warn('renderTranscripts(reading) error:', e); }
+                    try { renderTranscripts('listening'); } catch (e) { console.warn('renderTranscripts(listening) error:', e); }
+                    try { initializeSRSData(); } catch (e) { console.warn('initializeSRSData error:', e); }
+                    try { updateSRSStatsDisplay(); } catch (e) { console.warn('updateSRSStatsDisplay error:', e); }
+                    try { updatePresenceUI(); } catch (e) { console.warn('updatePresenceUI error:', e); }
+                    try { updateDebugPanel(); } catch (e) { console.warn('updateDebugPanel error:', e); }
                 }
             } catch (error) {
                 console.error('❌ Error loading from localStorage:', error);
@@ -7561,6 +8254,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
         let resourcesList = [];
         let notes = [];
         let readingPassages = []; // Interactive reading passages
+        let readingTranscripts = []; // Reading transcripts
+        let listeningTranscripts = []; // Listening transcripts
         let mistakeCorrections = []; // Mistake corrections for learning
 
         // IMMEDIATELY load from localStorage on page load (before Firebase is ready)
@@ -7584,10 +8279,14 @@ Ils seront préservés lors de l'affichage !"></textarea>
             if (localWritings) writings = JSON.parse(localWritings);
             if (localNotes) notes = JSON.parse(localNotes);
             if (localResources) resourcesList = JSON.parse(localResources);
+            if (localReadingTranscripts) readingTranscripts = JSON.parse(localReadingTranscripts);
+            if (localListeningTranscripts) listeningTranscripts = JSON.parse(localListeningTranscripts);
             if (localPassages) readingPassages = JSON.parse(localPassages);
             
             console.log('✅ Pre-loaded from localStorage:', {
                 vocabulary: vocabulary.length,
+                readingTranscripts: readingTranscripts.length,
+                listeningTranscripts: listeningTranscripts.length,
                 readingPassages: readingPassages.length
             });
         } catch (e) {
@@ -8175,7 +8874,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 <div class="srs-progress-text">${currentSRSIndex + 1} / ${currentSRSSession.length} cartes</div>
                 <div class="srs-card-container" id="srs-card">
                     <div class="srs-card-word">${word.french}</div>
-                    <button class="btn btn-primary" onclick="revealSRSAnswer()" style="margin: 1.5rem 0;">Voir la réponse</button>
+                    <button class="btn btn-primary" onclick="revealSRSAnswer(event)" style="margin: 1.5rem 0;">Voir la réponse</button>
                     <div class="srs-card-translation">${word.english}</div>
                     ${word.example ? `<div class="srs-card-example">${word.example}</div>` : ''}
                     <div class="srs-difficulty-buttons">
@@ -8215,9 +8914,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
             return Math.max(1, interval);
         }
 
-        function revealSRSAnswer() {
-            document.getElementById('srs-card').classList.add('revealed');
-            event.target.style.display = 'none';
+        function revealSRSAnswer(event) {
+            const card = document.getElementById('srs-card');
+            if (card) card.classList.add('revealed');
+            if (event && event.target) event.target.style.display = 'none';
         }
 
         function rateSRSCard(quality) {
@@ -8341,7 +9041,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                             renderRecordings();
                             renderWritingsArchive();
                             renderResourcesList();
-                            renderSectionResources();
                             renderNotes();
                             
                             alert('Données importées avec succès ✓');
@@ -8393,7 +9092,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     renderRecordings();
                     renderWritingsArchive();
                     renderResourcesList();
-                    renderSectionResources();
                     alert('Tout a été effacé. Tu peux recommencer.');
                 }
             }
@@ -8420,7 +9118,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
             const resetBtn = document.getElementById('timer-reset');
             const presetBtns = document.querySelectorAll('.timer-preset');
 
-            if (!timerDisplay || !startBtn) return;
+            if (!timerDisplay || !startBtn || !resetBtn) return;
 
             // Preset buttons
             presetBtns.forEach(btn => {
@@ -8608,7 +9306,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
             const quickStartTimer = document.getElementById('quick-start-timer');
             const quickFlipCards = document.getElementById('quick-flip-cards');
 
-            if (!floatingActions || !mainBtn) return;
+            if (!floatingActions || !mainBtn || !quickAddWord || !quickStartTimer || !quickFlipCards) return;
 
             // Toggle menu
             mainBtn.addEventListener('click', () => {
@@ -9341,7 +10039,17 @@ Ils seront préservés lors de l'affichage !"></textarea>
         }
 
         function openModal(id) {
-            document.getElementById(id).classList.add('active');
+            console.log(`📂 Opening modal: ${id}`);
+            const modal = document.getElementById(id);
+            
+            if (!modal) {
+                console.error(`❌ Modal "${id}" not found in DOM!`);
+                alert(`Error: Modal "${id}" not found. Please check the console.`);
+                return;
+            }
+            
+            modal.classList.add('active');
+            console.log(`✅ Modal "${id}" opened successfully`);
             
             // AUTO-FILL FILTERS WHEN ADDING A WORD - NEW
             if (id === 'word-modal') {
@@ -9580,7 +10288,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 document.querySelectorAll('.game-container').forEach(c => c.style.display = 'none');
                 
                 // Show selected game
-                document.getElementById(`game-${gameMode}`).style.display = 'block';
+                const selectedGame = document.getElementById(`game-${gameMode}`);
+                if (selectedGame) selectedGame.style.display = 'block';
             });
         });
 
@@ -9591,8 +10300,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
         let selectedCards = [];
         let matchedCount = 0;
 
-        document.getElementById('start-matching').addEventListener('click', startMatchingGame);
-        document.getElementById('reset-matching').addEventListener('click', startMatchingGame);
+        const startMatchingBtn = document.getElementById('start-matching');
+        const resetMatchingBtn = document.getElementById('reset-matching');
+        if (startMatchingBtn) startMatchingBtn.addEventListener('click', startMatchingGame);
+        if (resetMatchingBtn) resetMatchingBtn.addEventListener('click', startMatchingGame);
 
         function startMatchingGame() {
             const filteredVocabulary = getFilteredVocabulary();
@@ -9629,9 +10340,13 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 card.addEventListener('click', handleMatchingClick);
             });
 
-            document.getElementById('start-matching').style.display = 'none';
-            document.getElementById('reset-matching').style.display = 'inline-block';
-            document.getElementById('matching-score').textContent = '';
+            const startBtn = document.getElementById('start-matching');
+            const resetBtn = document.getElementById('reset-matching');
+            const scoreElem = document.getElementById('matching-score');
+            
+            if (startBtn) startBtn.style.display = 'none';
+            if (resetBtn) resetBtn.style.display = 'inline-block';
+            if (scoreElem) scoreElem.textContent = '';
         }
 
         function handleMatchingClick(e) {
@@ -9680,8 +10395,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
         let fillBlankTotal = 0;
         let currentFillBlankWord = null;
 
-        document.getElementById('start-fillblank').addEventListener('click', nextFillBlank);
-        document.getElementById('next-fillblank').addEventListener('click', nextFillBlank);
+        const startFillBlankBtn = document.getElementById('start-fillblank');
+        const nextFillBlankBtn = document.getElementById('next-fillblank');
+        if (startFillBlankBtn) startFillBlankBtn.addEventListener('click', nextFillBlank);
+        if (nextFillBlankBtn) nextFillBlankBtn.addEventListener('click', nextFillBlank);
 
         function nextFillBlank() {
             const filteredVocabulary = getFilteredVocabulary();
@@ -9712,8 +10429,11 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
             const allOptions = [currentFillBlankWord.french, ...wrongOptions].sort(() => Math.random() - 0.5);
 
-            document.getElementById('fillblank-sentence').textContent = blankSentence;
-            document.getElementById('fillblank-options').innerHTML = allOptions.map(opt => `
+            const sentenceElem = document.getElementById('fillblank-sentence');
+            const optionsElem = document.getElementById('fillblank-options');
+            
+            if (sentenceElem) sentenceElem.textContent = blankSentence;
+            if (optionsElem) optionsElem.innerHTML = allOptions.map(opt => `
                 <button class="fillblank-option" data-word="${opt}">${opt}</button>
             `).join('');
 
@@ -9721,10 +10441,15 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 btn.addEventListener('click', handleFillBlankChoice);
             });
 
-            document.getElementById('fillblank-feedback').textContent = '';
-            document.getElementById('start-fillblank').style.display = 'none';
-            document.getElementById('next-fillblank').style.display = 'none';
-            document.getElementById('fillblank-score').textContent = `Score: ${fillBlankScore}/${fillBlankTotal}`;
+            const feedbackElem = document.getElementById('fillblank-feedback');
+            const startBtn = document.getElementById('start-fillblank');
+            const nextBtn = document.getElementById('next-fillblank');
+            const scoreElem = document.getElementById('fillblank-score');
+            
+            if (feedbackElem) feedbackElem.textContent = '';
+            if (startBtn) startBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (scoreElem) scoreElem.textContent = `Score: ${fillBlankScore}/${fillBlankTotal}`;
         }
 
         function handleFillBlankChoice(e) {
@@ -9735,19 +10460,28 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 btn.style.pointerEvents = 'none';
             });
 
+            const feedbackElem = document.getElementById('fillblank-feedback');
+            
             if (chosen === currentFillBlankWord.french) {
                 e.currentTarget.classList.add('correct');
-                document.getElementById('fillblank-feedback').innerHTML = '✓ Correct !';
-                document.getElementById('fillblank-feedback').style.color = '#7fa87f';
+                if (feedbackElem) {
+                    feedbackElem.innerHTML = '✓ Correct !';
+                    feedbackElem.style.color = '#7fa87f';
+                }
                 fillBlankScore++;
             } else {
                 e.currentTarget.classList.add('incorrect');
-                document.getElementById('fillblank-feedback').innerHTML = `✗ C'était: <strong>${currentFillBlankWord.french}</strong>`;
-                document.getElementById('fillblank-feedback').style.color = 'var(--crimson)';
+                if (feedbackElem) {
+                    feedbackElem.innerHTML = `✗ C'était: <strong>${currentFillBlankWord.french}</strong>`;
+                    feedbackElem.style.color = 'var(--crimson)';
+                }
             }
 
-            document.getElementById('next-fillblank').style.display = 'inline-block';
-            document.getElementById('fillblank-score').textContent = `Score: ${fillBlankScore}/${fillBlankTotal}`;
+            const nextBtn = document.getElementById('next-fillblank');
+            const scoreElem = document.getElementById('fillblank-score');
+            
+            if (nextBtn) nextBtn.style.display = 'inline-block';
+            if (scoreElem) scoreElem.textContent = `Score: ${fillBlankScore}/${fillBlankTotal}`;
         }
 
         // ============================================
@@ -9760,9 +10494,12 @@ Ils seront préservés lors de l'affichage !"></textarea>
         let speedWords = [];
         let speedIndex = 0;
 
-        document.getElementById('start-speed').addEventListener('click', startSpeedRound);
-        document.getElementById('speed-know').addEventListener('click', () => handleSpeedAnswer(true));
-        document.getElementById('speed-skip').addEventListener('click', () => handleSpeedAnswer(false));
+        const startSpeedBtn = document.getElementById('start-speed');
+        const speedKnowBtn = document.getElementById('speed-know');
+        const speedSkipBtn = document.getElementById('speed-skip');
+        if (startSpeedBtn) startSpeedBtn.addEventListener('click', startSpeedRound);
+        if (speedKnowBtn) speedKnowBtn.addEventListener('click', () => handleSpeedAnswer(true));
+        if (speedSkipBtn) speedSkipBtn.addEventListener('click', () => handleSpeedAnswer(false));
 
         function startSpeedRound() {
             const filteredVocabulary = getFilteredVocabulary();
@@ -9777,15 +10514,20 @@ Ils seront préservés lors de l'affichage !"></textarea>
             speedIndex = 0;
             speedWords = [...filteredVocabulary].sort(() => Math.random() - 0.5);
 
-            document.getElementById('start-speed').style.display = 'none';
-            document.getElementById('speed-know').style.display = 'inline-block';
-            document.getElementById('speed-skip').style.display = 'inline-block';
+            const startBtn = document.getElementById('start-speed');
+            const knowBtn = document.getElementById('speed-know');
+            const skipBtn = document.getElementById('speed-skip');
+            
+            if (startBtn) startBtn.style.display = 'none';
+            if (knowBtn) knowBtn.style.display = 'inline-block';
+            if (skipBtn) skipBtn.style.display = 'inline-block';
 
             showSpeedWord();
 
             speedInterval = setInterval(() => {
                 speedTimer--;
-                document.getElementById('speed-timer').textContent = speedTimer;
+                const timerElem = document.getElementById('speed-timer');
+                if (timerElem) timerElem.textContent = speedTimer;
 
                 if (speedTimer <= 0) {
                     endSpeedRound();
@@ -9798,7 +10540,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 speedWords = [...speedWords].sort(() => Math.random() - 0.5);
                 speedIndex = 0;
             }
-            document.getElementById('speed-word').textContent = speedWords[speedIndex].french;
+            const wordElem = document.getElementById('speed-word');
+            if (wordElem) wordElem.textContent = speedWords[speedIndex].french;
         }
 
         function handleSpeedAnswer(correct) {
@@ -9810,12 +10553,19 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
         function endSpeedRound() {
             clearInterval(speedInterval);
-            document.getElementById('speed-know').style.display = 'none';
-            document.getElementById('speed-skip').style.display = 'none';
-            document.getElementById('start-speed').style.display = 'inline-block';
-            document.getElementById('speed-word').textContent = '';
-            document.getElementById('speed-timer').textContent = '60';
-            document.getElementById('speed-score').innerHTML = `
+            const knowBtn = document.getElementById('speed-know');
+            const skipBtn = document.getElementById('speed-skip');
+            const startBtn = document.getElementById('start-speed');
+            const wordElem = document.getElementById('speed-word');
+            const timerElem = document.getElementById('speed-timer');
+            const scoreElem = document.getElementById('speed-score');
+            
+            if (knowBtn) knowBtn.style.display = 'none';
+            if (skipBtn) skipBtn.style.display = 'none';
+            if (startBtn) startBtn.style.display = 'inline-block';
+            if (wordElem) wordElem.textContent = '';
+            if (timerElem) timerElem.textContent = '60';
+            if (scoreElem) scoreElem.innerHTML = `
                 Terminé ! 🎉<br>
                 Tu as reconnu <strong>${speedCorrect}</strong> mots sur <strong>${speedTotal}</strong>
             `;
@@ -9828,11 +10578,16 @@ Ils seront préservés lors de l'affichage !"></textarea>
         let quizTotal = 0;
         let currentQuizWord = null;
 
-        document.getElementById('start-quiz').addEventListener('click', nextQuiz);
-        document.getElementById('submit-quiz').addEventListener('click', checkQuizAnswer);
-        document.getElementById('next-quiz').addEventListener('click', nextQuiz);
+        const startQuizBtn = document.getElementById('start-quiz');
+        const submitQuizBtn = document.getElementById('submit-quiz');
+        const nextQuizBtn = document.getElementById('next-quiz');
+        const quizInput = document.getElementById('quiz-input');
+        
+        if (startQuizBtn) startQuizBtn.addEventListener('click', nextQuiz);
+        if (submitQuizBtn) submitQuizBtn.addEventListener('click', checkQuizAnswer);
+        if (nextQuizBtn) nextQuizBtn.addEventListener('click', nextQuiz);
 
-        document.getElementById('quiz-input').addEventListener('keypress', (e) => {
+        if (quizInput) quizInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 checkQuizAnswer();
             }
@@ -9847,35 +10602,56 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
             currentQuizWord = filteredVocabulary[Math.floor(Math.random() * filteredVocabulary.length)];
 
-            document.getElementById('quiz-word').textContent = currentQuizWord.french;
-            document.getElementById('quiz-input').value = '';
-            document.getElementById('quiz-input').style.display = 'block';
-            document.getElementById('quiz-feedback').textContent = '';
-            document.getElementById('start-quiz').style.display = 'none';
-            document.getElementById('submit-quiz').style.display = 'inline-block';
-            document.getElementById('next-quiz').style.display = 'none';
-            document.getElementById('quiz-score').textContent = `Score: ${quizScore}/${quizTotal}`;
-            document.getElementById('quiz-input').focus();
+            const wordElem = document.getElementById('quiz-word');
+            const inputElem = document.getElementById('quiz-input');
+            const feedbackElem = document.getElementById('quiz-feedback');
+            const startBtn = document.getElementById('start-quiz');
+            const submitBtn = document.getElementById('submit-quiz');
+            const nextBtn = document.getElementById('next-quiz');
+            const scoreElem = document.getElementById('quiz-score');
+            
+            if (wordElem) wordElem.textContent = currentQuizWord.french;
+            if (inputElem) {
+                inputElem.value = '';
+                inputElem.style.display = 'block';
+                inputElem.focus();
+            }
+            if (feedbackElem) feedbackElem.textContent = '';
+            if (startBtn) startBtn.style.display = 'none';
+            if (submitBtn) submitBtn.style.display = 'inline-block';
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (scoreElem) scoreElem.textContent = `Score: ${quizScore}/${quizTotal}`;
         }
 
         function checkQuizAnswer() {
-            const answer = document.getElementById('quiz-input').value.trim().toLowerCase();
+            const inputElem = document.getElementById('quiz-input');
+            const answer = inputElem ? inputElem.value.trim().toLowerCase() : '';
             const correct = (currentQuizWord.meaning || '').toLowerCase();
 
             quizTotal++;
 
+            const feedbackElem = document.getElementById('quiz-feedback');
+            
             if (answer === correct || correct.includes(answer)) {
-                document.getElementById('quiz-feedback').innerHTML = '✓ Correct !';
-                document.getElementById('quiz-feedback').style.color = '#7fa87f';
+                if (feedbackElem) {
+                    feedbackElem.innerHTML = '✓ Correct !';
+                    feedbackElem.style.color = '#7fa87f';
+                }
                 quizScore++;
             } else {
-                document.getElementById('quiz-feedback').innerHTML = `✗ C'était: <strong>${currentQuizWord.meaning}</strong>`;
-                document.getElementById('quiz-feedback').style.color = 'var(--crimson)';
+                if (feedbackElem) {
+                    feedbackElem.innerHTML = `✗ C'était: <strong>${currentQuizWord.meaning}</strong>`;
+                    feedbackElem.style.color = 'var(--crimson)';
+                }
             }
 
-            document.getElementById('submit-quiz').style.display = 'none';
-            document.getElementById('next-quiz').style.display = 'inline-block';
-            document.getElementById('quiz-score').textContent = `Score: ${quizScore}/${quizTotal}`;
+            const submitBtn = document.getElementById('submit-quiz');
+            const nextBtn = document.getElementById('next-quiz');
+            const scoreElem = document.getElementById('quiz-score');
+            
+            if (submitBtn) submitBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'inline-block';
+            if (scoreElem) scoreElem.textContent = `Score: ${quizScore}/${quizTotal}`;
         }
 
         // ============================================
@@ -10042,12 +10818,20 @@ Ils seront préservés lors de l'affichage !"></textarea>
         }
 
         function setupReadingListeners() {
-            document.getElementById('add-reading-btn').addEventListener('click', () => {
+            const addReadingBtn = document.getElementById('add-reading-btn');
+            const readingForm = document.getElementById('reading-form');
+            
+            if (!addReadingBtn || !readingForm) {
+                console.warn('⚠️ Reading elements not found');
+                return;
+            }
+            
+            addReadingBtn.addEventListener('click', () => {
                 populatePassagesDropdown();
                 openModal('reading-modal');
             });
 
-            document.getElementById('reading-form').addEventListener('submit', (e) => {
+            readingForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
             const linkedPassageId = document.getElementById('reading-linked-passage').value;
@@ -10112,12 +10896,38 @@ Ils seront préservés lors de l'affichage !"></textarea>
         }
 
         // ============================================
-        // LISTENING LIST - FIXED WITH EDIT
+        // LISTENING LIST - ENHANCED WITH INTERACTIVE PLAYER
         // ============================================
+        let currentListeningCategory = 'all';
+
+        window.filterListeningByCategory = function(category) {
+            currentListeningCategory = category;
+            
+            // Update active tab
+            document.querySelectorAll('.listening-category-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.category === category) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            renderListeningList();
+        };
+
         function renderListeningList() {
             const grid = document.getElementById('listening-grid');
             
-            if (listeningList.length === 0) {
+            // Filter by category
+            let filteredList = listeningList;
+            if (currentListeningCategory !== 'all') {
+                filteredList = listeningList.filter(item => item.type === currentListeningCategory);
+            }
+            
+            if (filteredList.length === 0) {
+                const emptyMessage = currentListeningCategory === 'all' 
+                    ? 'Rien ici encore...' 
+                    : 'Aucun contenu dans cette catégorie';
+                    
                 grid.innerHTML = `
                     <div class="empty">
                         <div class="empty-icon">
@@ -10125,45 +10935,73 @@ Ils seront préservés lors de l'affichage !"></textarea>
                                 <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
                             </svg>
                         </div>
-                        <div class="empty-text">Rien ici encore...</div>
+                        <div class="empty-text">${emptyMessage}</div>
                     </div>
                 `;
                 return;
             }
 
             // Sort by most recent first
-            const sortedListeningList = [...listeningList].sort((a, b) => b.id - a.id);
+            const sortedListeningList = [...filteredList].sort((a, b) => b.id - a.id);
+
+            const progressLabels = {
+                'not-started': 'Pas commencé',
+                'working': 'En cours',
+                'reviewing': 'En révision',
+                'mastered': 'Maîtrisé'
+            };
+
+            const typeLabels = {
+                'video': 'Vidéo',
+                'song': 'Musique',
+                'movie': 'Film',
+                'series': 'Série',
+                'podcast': 'Podcast',
+                'other': 'Autre'
+            };
+
+            const progressStars = {
+                'not-started': '☆☆☆☆☆',
+                'working': '⭐⭐⭐☆☆',
+                'reviewing': '⭐⭐⭐⭐☆',
+                'mastered': '⭐⭐⭐⭐⭐'
+            };
 
             grid.innerHTML = sortedListeningList.map(item => `
                 <div class="listening-card">
                     <div class="resource-info">
-                        <div class="resource-type">${item.type}</div>
+                        <div class="resource-type">${typeLabels[item.type] || item.type}</div>
                         <div class="resource-title">${item.title}</div>
-                        ${item.mediaUrl ? getEmbeddedPlayer(item.mediaUrl) : ''}
-                        ${item.link ? `<a href="${item.link}" class="resource-link" target="_blank" rel="noopener noreferrer">${item.link}</a>` : ''}
-                        ${item.note ? `<div class="resource-note">${item.note}</div>` : ''}
-                        ${item.linkedTranscript ? `<div style="margin-top: 1rem;"><button class="btn btn-secondary" onclick="viewTranscript(${item.linkedTranscript}, 'listening')" style="font-size: 0.85rem; padding: 0.5rem 1rem;">📝 Voir la transcription</button></div>` : ''}
-                    </div>
-                    <div class="resource-actions">
-                        ${item.transcriptLink ? `
-                            <a href="${item.transcriptLink}" class="transcript-btn" target="_blank" rel="noopener noreferrer" title="Voir les paroles/transcription">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                                </svg>
-                            </a>
-                        ` : ''}
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button class="icon-btn" onclick="editListening(${item.id})" title="Modifier">
-                                <svg class="svg-icon" viewBox="0 0 24 24">
-                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                                </svg>
-                            </button>
-                            <button class="icon-btn" onclick="deleteListening(${item.id})" title="Supprimer">
-                                <svg class="svg-icon" viewBox="0 0 24 24">
-                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                </svg>
-                            </button>
+                        ${item.note ? `<div class="resource-note" style="margin-top: 0.5rem;">${item.note}</div>` : ''}
+                        <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.1rem;">${progressStars[item.progress || 'not-started']}</span>
+                            <span style="color: var(--text-soft); font-size: 0.9rem;">${progressLabels[item.progress || 'not-started']}</span>
                         </div>
+                        ${item.transcript && item.transcript.length > 0 ? `
+                            <div style="margin-top: 0.5rem; color: var(--sage); font-size: 0.85rem;">
+                                Transcription disponible
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="listening-card-actions">
+                        ${item.mediaUrl ? `
+                            <button class="btn-play-interactive" onclick="openListeningPlayer(${item.id})">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Écouter
+                            </button>
+                        ` : ''}
+                        <button class="icon-btn" onclick="editListening(${item.id})" title="Modifier">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </button>
+                        <button class="icon-btn" onclick="deleteListening(${item.id})" title="Supprimer">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -10176,8 +11014,9 @@ Ils seront préservés lors de l'affichage !"></textarea>
             document.getElementById('edit-listening-id').value = id;
             document.getElementById('edit-listening-type').value = item.type;
             document.getElementById('edit-listening-title').value = item.title;
-            document.getElementById('edit-listening-link').value = item.link || '';
-            document.getElementById('edit-listening-transcript').value = item.transcriptLink || '';
+            document.getElementById('edit-listening-media-url').value = item.mediaUrl || '';
+            document.getElementById('edit-listening-transcript-text').value = item.transcriptText || '';
+            document.getElementById('edit-listening-progress').value = item.progress || 'not-started';
             document.getElementById('edit-listening-note').value = item.note || '';
 
             openModal('edit-listening-modal');
@@ -10192,21 +11031,32 @@ Ils seront préservés lors de l'affichage !"></textarea>
         }
 
         function setupListeningListeners() {
-            document.getElementById('add-listening-btn').addEventListener('click', () => {
+            const addListeningBtn = document.getElementById('add-listening-btn');
+            const listeningForm = document.getElementById('listening-form');
+            
+            if (!addListeningBtn || !listeningForm) {
+                console.warn('⚠️ Listening elements not found');
+                return;
+            }
+            
+            addListeningBtn.addEventListener('click', () => {
                 openModal('listening-modal');
             });
 
-            document.getElementById('listening-form').addEventListener('submit', (e) => {
+            listeningForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            const transcriptText = document.getElementById('listening-transcript-text').value.trim();
+            const parsedTranscript = transcriptText ? parseTranscript(transcriptText) : null;
             
             const item = {
                 id: Date.now(),
                 type: document.getElementById('listening-type').value,
                 title: document.getElementById('listening-title').value.trim(),
                 mediaUrl: document.getElementById('listening-media-url').value.trim(),
-                link: document.getElementById('listening-link').value.trim(),
-                transcriptLink: document.getElementById('listening-transcript')?.value.trim() || '',
-                linkedTranscript: document.getElementById('listening-linked-transcript')?.value || '',
+                transcriptText: transcriptText,
+                transcript: parsedTranscript,
+                progress: document.getElementById('listening-progress').value,
                 note: document.getElementById('listening-note').value.trim() || '',
                 created: new Date().toISOString()
             };
@@ -10238,12 +11088,17 @@ Ils seront préservés lors de l'affichage !"></textarea>
             
             if (index === -1) return;
 
+            const transcriptText = document.getElementById('edit-listening-transcript-text').value.trim();
+            const parsedTranscript = transcriptText ? parseTranscript(transcriptText) : null;
+
             listeningList[index] = {
                 ...listeningList[index],
                 type: document.getElementById('edit-listening-type').value,
                 title: document.getElementById('edit-listening-title').value.trim(),
-                link: document.getElementById('edit-listening-link').value.trim(),
-                transcriptLink: document.getElementById('edit-listening-transcript').value.trim(),
+                mediaUrl: document.getElementById('edit-listening-media-url').value.trim(),
+                transcriptText: transcriptText,
+                transcript: parsedTranscript,
+                progress: document.getElementById('edit-listening-progress').value,
                 note: document.getElementById('edit-listening-note').value.trim() || ''
             };
 
@@ -10383,6 +11238,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
         // Setup dropdown toggle functionality
         function setupResourceDropdowns() {
             document.querySelectorAll('.resources-toggle-btn').forEach(btn => {
+                // Mark the last SVG as the chevron for rotation
+                const svgs = btn.querySelectorAll('svg');
+                if (svgs.length > 0) svgs[svgs.length - 1].classList.add('resources-chevron');
+                
                 btn.addEventListener('click', () => {
                     const section = btn.getAttribute('data-section');
                     const content = document.getElementById(`${section}-resources`);
@@ -10426,15 +11285,30 @@ Ils seront préservés lors de l'affichage !"></textarea>
         }
 
         function setupResourcesListeners() {
-            document.getElementById('add-resource-btn').addEventListener('click', () => {
+            console.log('🔧 Setting up resources listeners...');
+            const addResourceBtn = document.getElementById('add-resource-btn');
+            const resourcesForm = document.getElementById('resources-form');
+            
+            console.log('  - Add resource button:', addResourceBtn ? '✅ Found' : '❌ NOT FOUND');
+            console.log('  - Resources form:', resourcesForm ? '✅ Found' : '❌ NOT FOUND');
+            
+            if (!addResourceBtn || !resourcesForm) {
+                console.warn('⚠️ Resources elements not found');
+                return;
+            }
+            
+            addResourceBtn.addEventListener('click', () => {
+                console.log('🎯 Add resource button clicked!');
                 // Check all section checkboxes by default when adding new resource
                 document.querySelectorAll('.resources-section-checkbox').forEach(cb => {
                     cb.checked = true;
                 });
                 openModal('resources-modal');
             });
+            
+            console.log('✅ Resources listeners attached!');
 
-            document.getElementById('resources-form').addEventListener('submit', (e) => {
+            resourcesForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
             // Get selected sections
@@ -11226,7 +12100,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
             document.getElementById('spoken-text').textContent = '';
             document.getElementById('recording-note').value = '';
             document.getElementById('parler-question').value = '';
-            document.getElementById('recording-controls').style.display = 'none';
+            const recordingControls = document.getElementById('recording-controls');
+            if (recordingControls) recordingControls.style.display = 'none';
             currentRecording = null;
 
             renderRecordings();
@@ -12712,6 +13587,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
         // INITIALIZE - FIXED
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🏡 DOM Content Loaded - Starting initialization...');
+            
+            // CRITICAL: Wrap everything in try-catch so buttons always work
+            try {
             // EASTER EGGS
             const logoSub = document.getElementById('logo-sub');
             if (logoSub) {
@@ -12806,7 +13685,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
             renderRecordings();
             renderWritingsArchive();
             renderResourcesList();
-            renderSectionResources();
             renderNotes();
             setupTranscriptSystem(); // Initialize transcript system
             
@@ -12919,7 +13797,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 };
                 syncToFirebase(); // Auto-save resourcesList to Firebase
                 renderResourcesList();
-                renderSectionResources();
                 closeModal('edit-resources-modal');
             });
 
@@ -12977,14 +13854,31 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 renderWritingsArchive();
                 closeModal('edit-writing-modal');
             });
+            
+            console.log('✅ All button listeners attached successfully!');
+            
+            } catch (error) {
+                console.error('❌ CRITICAL ERROR during initialization:', error);
+                console.error('Stack trace:', error.stack);
+                alert('⚠️ Some features may not work. Error: ' + error.message + '\n\nCheck console for details.');
+                
+                // Try to at least set up the critical button listeners even if other stuff failed
+                try {
+                    console.log('🔧 Attempting emergency button setup...');
+                    setupReadingListeners();
+                    setupListeningListeners();
+                    setupResourcesListeners();
+                    console.log('✅ Emergency setup complete!');
+                } catch (e2) {
+                    console.error('❌ Emergency setup also failed:', e2);
+                }
+            }
         });
         // ============================================
         // TRANSCRIPT SYSTEM WITH AI LOOKUP
         // ============================================
         
-        // Storage
-        let readingTranscripts = [];
-        let listeningTranscripts = [];
+        // Storage (transcripts already declared at top with other data arrays)
         let wordLookupCache = JSON.parse(localStorage.getItem('wordLookupCache') || '{}');
         
         // Current lookup state
@@ -13023,18 +13917,37 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
         // Render transcripts
         function renderTranscripts(type) {
-            const transcripts = type === 'reading' ? readingTranscripts : listeningTranscripts;
-            const container = document.getElementById(`${type}-transcripts-container`);
-            const section = document.getElementById(`${type}-transcripts-section`);
-            
-            if (transcripts.length === 0) {
-                section.style.display = 'none';
-                return;
-            }
-            
-            section.style.display = 'block';
-            
-            container.innerHTML = transcripts.map(t => `
+            try {
+                const transcripts = type === 'reading' ? readingTranscripts : listeningTranscripts;
+                const container = document.getElementById(`${type}-transcripts-container`);
+                const section = document.getElementById(`${type}-transcripts-section`);
+                
+                // Check if elements exist before using them
+                if (!container || !section) {
+                    console.warn(`⚠️ renderTranscripts(${type}): Missing DOM elements - skipping`);
+                    return; // Exit immediately if elements don't exist
+                }
+                
+                // Double-check transcripts array exists
+                if (!transcripts) {
+                    console.warn(`⚠️ renderTranscripts(${type}): Transcripts array is undefined - skipping`);
+                    return;
+                }
+                
+                if (transcripts.length === 0) {
+                    if (section && section.style) {
+                        section.style.display = 'none';
+                    }
+                    return;
+                }
+                
+                if (section && section.style) {
+                    section.style.display = 'block';
+                }
+                
+                if (!container) return; // Extra safety check
+                
+                container.innerHTML = transcripts.map(t => `
                 <div class="transcript-card" data-transcript-id="${t.id}">
                     <div class="transcript-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <h3 class="transcript-title">${t.title}</h3>
@@ -13075,6 +13988,11 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     handleWordClick(this);
                 });
             });
+            
+            } catch (error) {
+                console.error(`❌ renderTranscripts(${type}) failed:`, error.message);
+                // Silently continue - transcript system is optional
+            }
         }
 
         // Handle word click
@@ -13112,9 +14030,13 @@ Ils seront préservés lors de l'affichage !"></textarea>
             
             // Open popup immediately
             openModal('word-lookup-modal');
-            document.getElementById('lookup-word-input').value = word;
-            document.getElementById('lookup-content').innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-soft);">Chargement...</div>';
-            document.getElementById('lookup-actions').style.display = 'none';
+            const lookupInput = document.getElementById('lookup-word-input');
+            const lookupContent = document.getElementById('lookup-content');
+            const lookupActions = document.getElementById('lookup-actions');
+            
+            if (lookupInput) lookupInput.value = word;
+            if (lookupContent) lookupContent.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-soft);">Chargement...</div>';
+            if (lookupActions) lookupActions.style.display = 'none';
             
             // Check cache first
             if (wordLookupCache[word]) {
@@ -13225,7 +14147,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 </div>
             `;
             
-            document.getElementById('lookup-actions').style.display = 'flex';
+            const lookupActions = document.getElementById('lookup-actions');
+            if (lookupActions) lookupActions.style.display = 'flex';
         }
 
         // Save word to vocabulary
@@ -13266,13 +14189,15 @@ Ils seront préservés lors de l'affichage !"></textarea>
             updateSRSStatsDisplay();
             
             // Show confirmation
-            document.getElementById('lookup-content').innerHTML = `
+            const lookupContent = document.getElementById('lookup-content');
+            if (lookupContent) lookupContent.innerHTML = `
                 <div style="text-align: center; padding: 2rem; color: var(--gold);">
                     ✅ Mot ajouté au jardin !
                 </div>
             `;
             
-            document.getElementById('lookup-actions').style.display = 'none';
+            const lookupActions = document.getElementById('lookup-actions');
+            if (lookupActions) lookupActions.style.display = 'none';
             
             // Trigger hearts
             for (let i = 0; i < 3; i++) {
@@ -13303,6 +14228,11 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
         // Copy transcript to clipboard
         function copyTranscript(text, button) {
+            if (!button) {
+                console.warn('⚠️ copyTranscript called with null button');
+                return;
+            }
+            
             navigator.clipboard.writeText(text).then(() => {
                 const originalHTML = button.innerHTML;
                 button.innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
@@ -13364,6 +14294,22 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
         // Setup transcript buttons and forms
         function setupTranscriptSystem() {
+            try {
+                console.log('🔧 Setting up transcript system...');
+            
+            // Reading transcript button
+            document.getElementById('add-reading-transcript-btn')?.addEventListener('click', () => {
+                // Reset form and modal title for new transcript
+                const form = document.getElementById('add-reading-transcript-form');
+                const modalTitle = document.querySelector('#add-reading-transcript-modal .modal-title');
+                if (form) {
+                    form.reset();
+                    delete form.dataset.editingId;
+                }
+                if (modalTitle) modalTitle.textContent = 'Ajouter une transcription';
+                openModal('add-reading-transcript-modal');
+            });
+            
             // Listening transcript button
             document.getElementById('add-listening-transcript-btn')?.addEventListener('click', () => {
                 // Reset form and modal title for new transcript
@@ -13470,6 +14416,13 @@ Ils seront préservés lors de l'affichage !"></textarea>
             // Initial render
             renderTranscripts('reading');
             renderTranscripts('listening');
+            
+            console.log('✅ Transcript system setup complete');
+            
+            } catch (error) {
+                console.error('❌ setupTranscriptSystem error:', error);
+                console.warn('Transcript system failed to initialize, but continuing...');
+            }
         }
 
         // ============================================
@@ -13660,9 +14613,13 @@ Ils seront préservés lors de l'affichage !"></textarea>
             if (showSignupBtn) {
                 showSignupBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.getElementById('auth-login-view').style.display = 'none';
-                document.getElementById('auth-signup-view').style.display = 'block';
-                document.getElementById('auth-modal-title').textContent = 'Créer un compte';
+                const loginView = document.getElementById('auth-login-view');
+                const signupView = document.getElementById('auth-signup-view');
+                const modalTitle = document.getElementById('auth-modal-title');
+                
+                if (loginView) loginView.style.display = 'none';
+                if (signupView) signupView.style.display = 'block';
+                if (modalTitle) modalTitle.textContent = 'Créer un compte';
             });
             }
             
@@ -13670,9 +14627,13 @@ Ils seront préservés lors de l'affichage !"></textarea>
             if (showLoginBtn) {
                 showLoginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.getElementById('auth-signup-view').style.display = 'none';
-                document.getElementById('auth-login-view').style.display = 'block';
-                document.getElementById('auth-modal-title').textContent = 'Connexion';
+                const loginView = document.getElementById('auth-login-view');
+                const signupView = document.getElementById('auth-signup-view');
+                const modalTitle = document.getElementById('auth-modal-title');
+                
+                if (signupView) signupView.style.display = 'none';
+                if (loginView) loginView.style.display = 'block';
+                if (modalTitle) modalTitle.textContent = 'Connexion';
             });
             }
         }
@@ -13792,12 +14753,12 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         console.log('  ✅ renderNotes() complete');
                         renderResourcesList();
                         console.log('  ✅ renderResourcesList() complete');
-                        renderSectionResources();
-                        console.log('  ✅ renderSectionResources() complete');
                         renderTranscripts('reading');
                         console.log('  ✅ renderTranscripts(reading) complete');
                         renderTranscripts('listening');
                         console.log('  ✅ renderTranscripts(listening) complete');
+                        renderSectionResources();
+                        console.log('  ✅ renderSectionResources() complete');
                         initializeSRSData();
                         updateSRSStatsDisplay();
                         updatePresenceUI();
@@ -13860,7 +14821,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         renderWritingsArchive();
                         renderNotes();
                         renderResourcesList();
-                        renderSectionResources();
                         
                         // Initialize SRS data now that vocabulary is loaded
                         initializeSRSData();
@@ -14121,7 +15081,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
             btn.addEventListener('click', populateTranscriptLinkingDropdowns);
         });
         
-        document.getElementById('add-listening-btn')?.addEventListener('click', populateListeningTranscriptDropdown);
+        // Populate transcript dropdown when opening add-listening modal
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('add-listening-btn')?.addEventListener('click', populateListeningTranscriptDropdown);
+        });
 
         // Initialize Firebase Auth (Firebase module will call this when ready)
         console.log('📋 initFirebaseAuth function defined and ready');
@@ -14138,9 +15101,11 @@ Ils seront préservés lors de l'affichage !"></textarea>
         });
         
         function makeListeningTranscriptClickable() {
-            const text = document.getElementById('listening-transcript-text').value.trim();
+            const text = document.getElementById('listening-transcript-text')?.value.trim();
+            const transcriptArea = document.getElementById('listening-clickable-transcript-area');
+            
             if (!text) {
-                document.getElementById('listening-clickable-transcript-area').style.display = 'none';
+                if (transcriptArea) transcriptArea.style.display = 'none';
                 return;
             }
             
@@ -14156,8 +15121,9 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 return word;
             }).join('');
             
-            document.getElementById('listening-clickable-transcript').innerHTML = clickableHTML;
-            document.getElementById('listening-clickable-transcript-area').style.display = 'block';
+            const clickableTranscript = document.getElementById('listening-clickable-transcript');
+            if (clickableTranscript) clickableTranscript.innerHTML = clickableHTML;
+            if (transcriptArea) transcriptArea.style.display = 'block';
             
             // Add event listeners to all clickable words
             document.querySelectorAll('#listening-clickable-transcript .clickable-word').forEach(span => {
@@ -14383,6 +15349,557 @@ Ils seront préservés lors de l'affichage !"></textarea>
             listeningTranscriptModal.addEventListener('click', function() {
                 setTimeout(makeListeningTranscriptClickable, 100);
             });
+        }
+
+        // ============================================
+        // ENHANCED LISTENING PLAYER FUNCTIONALITY
+        // ============================================
+        
+        let youtubePlayer = null;
+        let currentListeningItem = null;
+        let playerUpdateInterval = null;
+        let isLooping = false;
+        let abRepeatMode = false;
+        let abRepeatStart = null;
+        let abRepeatEnd = null;
+
+        // Load YouTube IFrame API
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // YouTube API ready callback
+        window.onYouTubeIframeAPIReady = function() {
+            console.log('✅ YouTube IFrame API ready!');
+        };
+
+        // Parse transcript from various formats
+        window.parseTranscript = function(text) {
+            if (!text || !text.trim()) return null;
+
+            const lines = text.split('\n').filter(l => l.trim());
+            const parsed = [];
+            let currentTime = null;
+            let currentText = '';
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // Skip empty lines
+                if (!line) continue;
+
+                // Try to match various timestamp formats
+                // Format 1: [00:15] or [0:15]
+                let match = line.match(/^\[?(\d{1,2}):(\d{2})(?::(\d{2}))?\]?\s*(.*)$/);
+                
+                // Format 2: 00:15:00 --> 00:18:00 (SRT format)
+                if (!match) {
+                    match = line.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*-->\s*/);
+                    if (match && i + 1 < lines.length) {
+                        const nextLine = lines[i + 1].trim();
+                        currentTime = parseInt(match[1]) * 60 + parseInt(match[2]) + (match[3] ? parseInt(match[3]) : 0);
+                        currentText = nextLine;
+                        i++; // Skip the text line since we just read it
+                        parsed.push({ time: currentTime, text: currentText });
+                        continue;
+                    }
+                }
+
+                // Format 3: Plain timestamp at start
+                if (!match) {
+                    match = line.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s+(.+)$/);
+                }
+
+                if (match) {
+                    const minutes = parseInt(match[1]);
+                    const seconds = parseInt(match[2]);
+                    const milliseconds = match[3] ? parseInt(match[3]) : 0;
+                    currentTime = minutes * 60 + seconds + milliseconds;
+                    currentText = match[4] || '';
+                    
+                    if (currentText) {
+                        parsed.push({ time: currentTime, text: currentText });
+                    }
+                } else if (currentTime !== null && line && !line.match(/^\d+$/)) {
+                    // If we have a time but no new timestamp, this is continuation text
+                    currentText += ' ' + line;
+                    if (parsed.length > 0) {
+                        parsed[parsed.length - 1].text = currentText;
+                    }
+                }
+            }
+
+            return parsed.length > 0 ? parsed : null;
+        };
+
+        // Fetch YouTube title
+        window.fetchYouTubeTitle = async function() {
+            const url = document.getElementById('listening-media-url').value.trim();
+            const videoId = extractYouTubeID(url);
+            
+            if (!videoId) {
+                alert('URL YouTube invalide. Exemple: https://youtube.com/watch?v=VIDEO_ID');
+                return;
+            }
+
+            const btn = document.getElementById('fetch-yt-title-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span style="opacity: 0.6;">Chargement...</span>';
+
+            try {
+                // Using oEmbed API (no API key needed!)
+                const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+                const data = await response.json();
+                
+                if (data.title) {
+                    document.getElementById('listening-title').value = data.title;
+                    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; margin-right: 0.4rem; vertical-align: middle;"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>Fait !';
+                    setTimeout(() => {
+                        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; margin-right: 0.4rem; vertical-align: middle;"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>Auto-remplir';
+                        btn.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error('Titre non trouvé');
+                }
+            } catch (error) {
+                console.error('Error fetching YouTube title:', error);
+                alert('Impossible de récupérer le titre. Vérifiez l\'URL.');
+                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; margin-right: 0.4rem; vertical-align: middle;"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>Auto-remplir';
+                btn.disabled = false;
+            }
+        };
+
+        // Fetch YouTube title for edit form
+        window.fetchYouTubeTitleEdit = async function() {
+            const url = document.getElementById('edit-listening-media-url').value.trim();
+            const videoId = extractYouTubeID(url);
+            
+            if (!videoId) {
+                alert('URL YouTube invalide');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+                const data = await response.json();
+                
+                if (data.title) {
+                    document.getElementById('edit-listening-title').value = data.title;
+                }
+            } catch (error) {
+                console.error('Error fetching title:', error);
+                alert('Impossible de récupérer le titre');
+            }
+        };
+
+        // Extract YouTube video ID from URL
+        function extractYouTubeID(url) {
+            if (!url) return null;
+            
+            // Standard watch URL
+            let match = url.match(/[?&]v=([^&]+)/);
+            if (match) return match[1];
+            
+            // Short URL
+            match = url.match(/youtu\.be\/([^?&]+)/);
+            if (match) return match[1];
+            
+            // Embed URL
+            match = url.match(/youtube\.com\/embed\/([^?&]+)/);
+            if (match) return match[1];
+            
+            return null;
+        }
+
+        // Open listening player
+        window.openListeningPlayer = function(itemId) {
+            console.log('🎵 openListeningPlayer called for itemId:', itemId);
+            
+            // FORCE reload from localStorage to ensure fresh data
+            try {
+                const freshData = localStorage.getItem('listeningList');
+                if (freshData) {
+                    const freshList = JSON.parse(freshData);
+                    console.log('🔄 Force-reloaded listeningList from localStorage');
+                    listeningList = freshList;
+                }
+            } catch (e) {
+                console.error('Failed to reload from localStorage:', e);
+            }
+            
+            const item = listeningList.find(l => l.id === itemId);
+            if (!item) {
+                console.error('❌ Item not found!');
+                alert('ERROR: Item not found! ID: ' + itemId);
+                return;
+            }
+
+            console.log('📦 Found item:', item.title);
+            console.log('📝 Item.transcript exists?', !!item.transcript);
+            console.log('📝 Item.transcript type:', typeof item.transcript);
+            console.log('📝 Item.transcript length:', item.transcript ? item.transcript.length : 'N/A');
+            console.log('📝 Item.transcript value:', item.transcript);
+            console.log('📝 Item.transcriptText exists?', !!item.transcriptText);
+            console.log('📝 Item.transcriptText:', item.transcriptText);
+            
+            // If transcript is missing but transcriptText exists, re-parse it
+            if (!item.transcript && item.transcriptText) {
+                console.log('⚠️ Transcript missing but text exists - reparsing...');
+                item.transcript = window.parseTranscript(item.transcriptText);
+                console.log('✅ Reparsed transcript:', item.transcript);
+            }
+            
+            currentListeningItem = item;
+            
+            // Set title
+            const playerTitle = document.getElementById('player-title');
+            if (playerTitle) playerTitle.textContent = item.title;
+
+            // Show modal
+            const playerModal = document.getElementById('listening-player-modal');
+            if (playerModal) playerModal.style.display = 'flex';
+
+            // Set progress select
+            const progressSelect = document.getElementById('player-progress-select');
+            if (progressSelect) {
+                progressSelect.value = item.progress || 'not-started';
+                updateProgressStars(item.progress || 'not-started');
+            }
+
+            // Load YouTube player
+            const videoId = extractYouTubeID(item.mediaUrl);
+            if (videoId) {
+                const youtubeWrapper = document.getElementById('youtube-player-wrapper');
+                if (youtubeWrapper) youtubeWrapper.style.display = 'block';
+                
+                if (youtubePlayer) {
+                    youtubePlayer.loadVideoById(videoId);
+                } else {
+                    youtubePlayer = new YT.Player('youtube-player', {
+                        height: '100%',
+                        width: '100%',
+                        videoId: videoId,
+                        playerVars: {
+                            'playsinline': 1
+                        },
+                        events: {
+                            'onReady': onPlayerReady,
+                            'onStateChange': onPlayerStateChange
+                        }
+                    });
+                }
+            }
+
+            // Load transcript
+            console.log('🔄 Calling loadTranscript with:', item.transcript);
+            loadTranscript(item.transcript);
+
+            // Start tracking time for highlighting
+            startPlayerTracking();
+        };
+
+        // Close listening player
+        window.closeListeningPlayer = function() {
+            const playerModal = document.getElementById('listening-player-modal');
+            if (playerModal) playerModal.style.display = 'none';
+            
+            if (youtubePlayer) {
+                youtubePlayer.pauseVideo();
+            }
+            
+            stopPlayerTracking();
+            currentListeningItem = null;
+            abRepeatMode = false;
+            isLooping = false;
+        };
+
+        function onPlayerReady(event) {
+            console.log('Player ready!');
+        }
+
+        function onPlayerStateChange(event) {
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            
+            if (event.data === YT.PlayerState.PLAYING) {
+                if (playIcon) playIcon.style.display = 'none';
+                if (pauseIcon) pauseIcon.style.display = 'block';
+            } else {
+                if (playIcon) playIcon.style.display = 'block';
+                if (pauseIcon) pauseIcon.style.display = 'none';
+            }
+        }
+
+        // Player controls
+        window.togglePlayPause = function() {
+            if (!youtubePlayer) return;
+            
+            const state = youtubePlayer.getPlayerState();
+            if (state === YT.PlayerState.PLAYING) {
+                youtubePlayer.pauseVideo();
+            } else {
+                youtubePlayer.playVideo();
+            }
+        };
+
+        window.skipBackward = function() {
+            if (!youtubePlayer) return;
+            const currentTime = youtubePlayer.getCurrentTime();
+            youtubePlayer.seekTo(Math.max(0, currentTime - 5), true);
+        };
+
+        window.skipForward = function() {
+            if (!youtubePlayer) return;
+            const currentTime = youtubePlayer.getCurrentTime();
+            youtubePlayer.seekTo(currentTime + 5, true);
+        };
+
+        window.setSpeed = function(speed) {
+            if (!youtubePlayer) return;
+            youtubePlayer.setPlaybackRate(speed);
+            
+            // Update active button
+            document.querySelectorAll('.speed-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseFloat(btn.dataset.speed) === speed) {
+                    btn.classList.add('active');
+                }
+            });
+        };
+
+        window.toggleLoop = function() {
+            isLooping = !isLooping;
+            const btn = document.getElementById('loop-btn');
+            if (isLooping) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        };
+
+        window.toggleABRepeat = function() {
+            if (!youtubePlayer) return;
+
+            if (!abRepeatMode) {
+                // Set point A
+                abRepeatStart = youtubePlayer.getCurrentTime();
+                abRepeatEnd = null;
+                abRepeatMode = true;
+                const abBtn = document.getElementById('ab-repeat-btn');
+                const abIndicator = document.getElementById('ab-indicator');
+                const abRange = document.getElementById('ab-range');
+                
+                if (abBtn) abBtn.classList.add('active');
+                if (abIndicator) abIndicator.style.display = 'block';
+                if (abRange) abRange.textContent = formatTime(abRepeatStart) + ' - ?';
+            } else if (abRepeatStart !== null && abRepeatEnd === null) {
+                // Set point B
+                abRepeatEnd = youtubePlayer.getCurrentTime();
+                if (abRepeatEnd <= abRepeatStart) {
+                    alert('Le point B doit être après le point A !');
+                    return;
+                }
+                const abRange = document.getElementById('ab-range');
+                if (abRange) abRange.textContent = formatTime(abRepeatStart) + ' - ' + formatTime(abRepeatEnd);
+            }
+        };
+
+        window.clearABRepeat = function() {
+            abRepeatMode = false;
+            abRepeatStart = null;
+            abRepeatEnd = null;
+            const abBtn = document.getElementById('ab-repeat-btn');
+            const abIndicator = document.getElementById('ab-indicator');
+            
+            if (abBtn) abBtn.classList.remove('active');
+            if (abIndicator) abIndicator.style.display = 'none';
+        };
+
+        // Update progress
+        window.updatePlayerProgress = function() {
+            if (!currentListeningItem) return;
+            
+            const newProgress = document.getElementById('player-progress-select').value;
+            updateProgressStars(newProgress);
+            
+            // Update in listeningList
+            const index = listeningList.findIndex(l => l.id === currentListeningItem.id);
+            if (index !== -1) {
+                listeningList[index].progress = newProgress;
+                currentListeningItem.progress = newProgress;
+                syncToFirebase();
+                renderListeningList();
+            }
+        };
+
+        function updateProgressStars(progress) {
+            const starsContainer = document.getElementById('progress-stars');
+            const starCounts = {
+                'not-started': 0,
+                'working': 3,
+                'reviewing': 4,
+                'mastered': 5
+            };
+            
+            const activeCount = starCounts[progress] || 0;
+            const stars = [];
+            
+            for (let i = 0; i < 5; i++) {
+                if (i < activeCount) {
+                    stars.push('<span class="star">⭐</span>');
+                } else {
+                    stars.push('<span class="star inactive">☆</span>');
+                }
+            }
+            
+            starsContainer.innerHTML = stars.join('');
+        }
+
+        // Load and render transcript
+        function loadTranscript(transcript) {
+            console.log('📝 loadTranscript called with:', transcript);
+            console.log('📝 Transcript type:', typeof transcript);
+            console.log('📝 Transcript length:', transcript ? transcript.length : 'null');
+            
+            // VISIBLE DEBUG FOR PHONE
+            if (!transcript) {
+                alert('DEBUG: transcript is null or undefined');
+            } else if (transcript.length === 0) {
+                alert('DEBUG: transcript exists but length is 0');
+            } else {
+                alert('DEBUG: transcript has ' + transcript.length + ' lines! First line: ' + JSON.stringify(transcript[0]));
+            }
+            
+            const container = document.getElementById('transcript-content');
+            
+            if (!transcript || transcript.length === 0) {
+                console.log('⚠️ No transcript available - showing placeholder');
+                container.innerHTML = '<p style="color: var(--text-soft); text-align: center; padding: 2rem;">Aucune transcription disponible</p>';
+                return;
+            }
+
+            console.log('✅ Loading transcript with', transcript.length, 'lines');
+            
+            // Store known/unknown words status
+            if (!window.transcriptWordStatus) {
+                window.transcriptWordStatus = {};
+            }
+            
+            container.innerHTML = transcript.map((line, index) => {
+                // Split line into words and make each clickable
+                const words = line.text.split(/(\s+|[.,!?;:—])/);
+                const clickableText = words.map(token => {
+                    // Skip whitespace and punctuation
+                    if (!token.trim() || /^[.,!?;:—\s]+$/.test(token)) {
+                        return token;
+                    }
+                    
+                    const normalizedWord = token.toLowerCase().replace(/[.,!?;:—]/g, '');
+                    const status = window.transcriptWordStatus[normalizedWord] || '';
+                    const colorClass = status === 'unknown' ? 'word-unknown' : status === 'known' ? 'word-known' : '';
+                    
+                    return `<span class="clickable-transcript-word ${colorClass}" data-word="${normalizedWord}" data-original="${token}">${token}</span>`;
+                }).join('');
+                
+                return `
+                    <div class="transcript-line" data-time="${line.time}">
+                        <span class="transcript-timestamp" onclick="jumpToTime(${line.time})">${formatTime(line.time)}</span>
+                        <span class="transcript-text">${clickableText}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            // Attach click listeners to words
+            container.querySelectorAll('.clickable-transcript-word').forEach(wordEl => {
+                wordEl.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const word = wordEl.dataset.word;
+                    const original = wordEl.dataset.original;
+                    handleWordClick(word, original, wordEl);
+                });
+            });
+        }
+
+        window.jumpToTime = function(time) {
+            if (!youtubePlayer) return;
+            youtubePlayer.seekTo(time, true);
+            youtubePlayer.playVideo();
+        };
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Player tracking for transcript highlighting and A-B repeat
+        function startPlayerTracking() {
+            stopPlayerTracking();
+            
+            playerUpdateInterval = setInterval(() => {
+                if (!youtubePlayer || !currentListeningItem) return;
+                
+                try {
+                    const currentTime = youtubePlayer.getCurrentTime();
+                    
+                    // Highlight current transcript line
+                    if (currentListeningItem.transcript) {
+                        highlightCurrentLine(currentTime);
+                    }
+                    
+                    // Handle A-B repeat
+                    if (abRepeatMode && abRepeatStart !== null && abRepeatEnd !== null) {
+                        if (currentTime >= abRepeatEnd) {
+                            youtubePlayer.seekTo(abRepeatStart, true);
+                        }
+                    }
+                    
+                    // Handle simple loop
+                    if (isLooping && youtubePlayer.getPlayerState() === YT.PlayerState.ENDED) {
+                        youtubePlayer.seekTo(0, true);
+                        youtubePlayer.playVideo();
+                    }
+                } catch (e) {
+                    // Player might not be ready yet
+                }
+            }, 200);
+        }
+
+        function stopPlayerTracking() {
+            if (playerUpdateInterval) {
+                clearInterval(playerUpdateInterval);
+                playerUpdateInterval = null;
+            }
+        }
+
+        function highlightCurrentLine(currentTime) {
+            const lines = document.querySelectorAll('.transcript-line');
+            let activeIndex = -1;
+            
+            // Find the current line
+            for (let i = 0; i < lines.length; i++) {
+                const lineTime = parseFloat(lines[i].dataset.time);
+                if (currentTime >= lineTime) {
+                    activeIndex = i;
+                } else {
+                    break;
+                }
+            }
+            
+            // Update highlights
+            lines.forEach((line, index) => {
+                if (index === activeIndex) {
+                    line.classList.add('active');
+                } else {
+                    line.classList.remove('active');
+                }
+            });
+            
+            // Auto-scroll to active line
+            if (activeIndex >= 0 && lines[activeIndex]) {
+                lines[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
 
     </script>
@@ -14699,6 +16216,362 @@ Ils seront préservés lors de l'affichage !"></textarea>
             }
         });
     </script>
+
+    <!-- Word Analysis Popup -->
+    <div id="word-analysis-overlay" class="word-analysis-overlay" style="display: none;" onclick="closeWordAnalysisPopup()"></div>
+    <div id="word-analysis-popup" class="word-analysis-popup" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin: 0;">Analyser le mot</h3>
+            <button onclick="closeWordAnalysisPopup()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-soft);">&times;</button>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Le mot</label>
+            <input type="text" class="form-input" id="word-analysis-word" style="font-size: 1.2rem; font-weight: 500;">
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Ma signification</label>
+            <textarea class="form-textarea" id="word-analysis-meaning" placeholder="Écris ce que ce mot signifie pour toi..." rows="3"></textarea>
+        </div>
+        
+        <div style="margin: 1rem 0; padding: 1rem; background: var(--whisper); border-radius: 8px;">
+            <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-soft);">📚 Dictionnaires:</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <a id="link-wordreference" href="#" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; text-decoration: none;">
+                    WordReference
+                </a>
+                <a id="link-reverso" href="#" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; text-decoration: none;">
+                    Reverso
+                </a>
+                <a id="link-collins" href="#" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; text-decoration: none;">
+                    Collins
+                </a>
+                <a id="link-larousse" href="#" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; text-decoration: none;">
+                    Larousse
+                </a>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem;">
+            <button class="btn btn-secondary" onclick="markWordUnknown()" style="flex: 1; min-width: 150px; background: #ff a500; color: white; border: none;">
+                🟠 Je ne connais pas
+            </button>
+            <button class="btn btn-primary" onclick="addWordToJardin()" style="flex: 1; min-width: 150px; background: var(--sage); border: none;">
+                🟢 Ajouter au Jardin
+            </button>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="closeWordAnalysisPopup()" style="width: 100%; margin-top: 1rem;">
+            Fermer
+        </button>
+    </div>
+
+    <style>
+        /* Multi-select inline button */
+        .multi-select-inline-btn {
+            background: white;
+            border: 2px solid var(--rose);
+            color: var(--rose);
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+        
+        .multi-select-inline-btn:hover {
+            background: var(--rose);
+            color: white;
+        }
+        
+        .multi-select-inline-btn.active {
+            background: var(--rose);
+            color: white;
+        }
+        
+        .multi-select-inline-btn:active {
+            transform: scale(0.9);
+        }
+        
+        /* Multi-select mode styles */
+        .multi-select-active .clickable-transcript-word {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .clickable-transcript-word.selected {
+            background: rgba(139, 70, 84, 0.3);
+            border-radius: 3px;
+            padding: 2px 4px;
+            margin: 0 -4px;
+            box-shadow: 0 0 0 2px var(--rose);
+        }
+        
+        #multi-select-toolbar {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--rose);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 30px;
+            box-shadow: 0 8px 24px rgba(139, 70, 84, 0.4);
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            flex-wrap: wrap;
+            max-width: 90%;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        #multi-select-toolbar.show {
+            display: flex;
+        }
+        
+        .toolbar-btn {
+            background: white;
+            color: var(--rose);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .toolbar-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .toolbar-count {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+    </style>
+
+    <script>
+        let currentAnalyzingWord = null;
+        let currentAnalyzingOriginal = null;
+        let multiSelectMode = false;
+        let selectedWords = new Set();
+        let selectedWordElements = new Map(); // Track word -> elements
+        
+        function toggleMultiSelectMode() {
+            multiSelectMode = !multiSelectMode;
+            const toggleBtn = document.getElementById('multi-select-toggle');
+            const hint = document.getElementById('multi-select-hint');
+            const transcriptDiv = document.getElementById('transcript-content');
+            
+            if (multiSelectMode) {
+                toggleBtn.classList.add('active');
+                hint.style.display = 'inline';
+                if (transcriptDiv) transcriptDiv.classList.add('multi-select-active');
+            } else {
+                toggleBtn.classList.remove('active');
+                hint.style.display = 'none';
+                if (transcriptDiv) transcriptDiv.classList.remove('multi-select-active');
+                clearSelection();
+            }
+        }
+        
+        function clearSelection() {
+            selectedWords.clear();
+            selectedWordElements.clear();
+            document.querySelectorAll('.clickable-transcript-word.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            updateToolbar();
+        }
+        
+        function updateToolbar() {
+            const toolbar = document.getElementById('multi-select-toolbar');
+            const count = document.getElementById('selected-count');
+            
+            if (selectedWords.size > 0) {
+                toolbar.classList.add('show');
+                count.textContent = selectedWords.size;
+            } else {
+                toolbar.classList.remove('show');
+            }
+        }
+        
+        function handleWordClick(word, original, element) {
+            if (multiSelectMode) {
+                // Toggle selection
+                if (selectedWords.has(word)) {
+                    selectedWords.delete(word);
+                    element.classList.remove('selected');
+                    if (selectedWordElements.has(word)) {
+                        selectedWordElements.get(word).forEach(el => el.classList.remove('selected'));
+                        selectedWordElements.delete(word);
+                    }
+                } else {
+                    selectedWords.add(word);
+                    element.classList.add('selected');
+                    // Mark all instances of this word
+                    const allInstances = document.querySelectorAll(`.clickable-transcript-word[data-word="${word}"]`);
+                    allInstances.forEach(el => el.classList.add('selected'));
+                    selectedWordElements.set(word, Array.from(allInstances));
+                }
+                updateToolbar();
+            } else {
+                // Single word analysis (original behavior)
+                openWordAnalysisPopup(word, original);
+            }
+        }
+        
+        function analyzeSelectedWords() {
+            if (selectedWords.size === 0) return;
+            
+            const words = Array.from(selectedWords);
+            const wordText = Array.from(selectedWordElements.keys())
+                .map(word => {
+                    const el = document.querySelector(`.clickable-transcript-word[data-word="${word}"]`);
+                    return el ? el.textContent : word;
+                })
+                .join(', ');
+            
+            // Store selected words for batch operations
+            window._batchSelectedWords = words;
+            
+            // Open the analysis popup
+            openWordAnalysisPopup(words[0], wordText);
+        }
+        
+        function openWordAnalysisPopup(word, original) {
+            currentAnalyzingWord = word;
+            currentAnalyzingOriginal = original;
+            
+            document.getElementById('word-analysis-overlay').style.display = 'block';
+            document.getElementById('word-analysis-popup').style.display = 'block';
+            document.getElementById('word-analysis-word').value = original;
+            document.getElementById('word-analysis-meaning').value = '';
+            document.getElementById('word-analysis-meaning').focus();
+            
+            // Update dictionary links
+            const cleanWord = word.toLowerCase();
+            document.getElementById('link-wordreference').href = `https://www.wordreference.com/fren/${encodeURIComponent(cleanWord)}`;
+            document.getElementById('link-reverso').href = `https://context.reverso.net/translation/french-english/${encodeURIComponent(cleanWord)}`;
+            document.getElementById('link-collins').href = `https://www.collinsdictionary.com/dictionary/french-english/${encodeURIComponent(cleanWord)}`;
+            document.getElementById('link-larousse').href = `https://www.larousse.fr/dictionnaires/francais/${encodeURIComponent(cleanWord)}`;
+        }
+        
+        function closeWordAnalysisPopup() {
+            document.getElementById('word-analysis-overlay').style.display = 'none';
+            document.getElementById('word-analysis-popup').style.display = 'none';
+            currentAnalyzingWord = null;
+            currentAnalyzingOriginal = null;
+            window._batchSelectedWords = null;
+            if (multiSelectMode) {
+                clearSelection();
+            }
+        }
+        
+        function markWordUnknown() {
+            if (!currentAnalyzingWord) return;
+            
+            // Check if this is a batch operation
+            const batchWords = window._batchSelectedWords || [currentAnalyzingWord];
+            
+            // Mark word(s) as unknown (orange)
+            if (!window.transcriptWordStatus) window.transcriptWordStatus = {};
+            
+            batchWords.forEach(word => {
+                window.transcriptWordStatus[word] = 'unknown';
+                
+                // Update all instances of this word in transcript
+                document.querySelectorAll(`.clickable-transcript-word[data-word="${word}"]`).forEach(el => {
+                    el.classList.remove('word-known', 'selected');
+                    el.classList.add('word-unknown');
+                });
+            });
+            
+            const count = batchWords.length;
+            alert(`✅ ${count} mot${count > 1 ? 's' : ''} marqué${count > 1 ? 's' : ''} comme inconnu${count > 1 ? 's' : ''} (orange)`);
+            closeWordAnalysisPopup();
+        }
+        
+        function addWordToJardin() {
+            if (!currentAnalyzingWord) return;
+            
+            const wordText = document.getElementById('word-analysis-word').value.trim();
+            const meaning = document.getElementById('word-analysis-meaning').value.trim();
+            
+            if (!meaning) {
+                alert('Ajoute une signification pour ce mot!');
+                return;
+            }
+            
+            // Check if this is a batch operation
+            const batchWords = window._batchSelectedWords || [currentAnalyzingWord];
+            
+            // Add to vocabulary (Le Jardin)
+            const newWord = {
+                id: Date.now(),
+                word: wordText,
+                meaning: meaning,
+                article: '',
+                gender: '',
+                theme: 'transcription',
+                week: '',
+                quarter: '',
+                year: new Date().getFullYear().toString(),
+                image: '',
+                favorite: false,
+                created: new Date().toISOString()
+            };
+            
+            vocabulary.push(newWord);
+            syncToFirebase();
+            
+            // Mark word(s) as known (green)
+            if (!window.transcriptWordStatus) window.transcriptWordStatus = {};
+            
+            batchWords.forEach(word => {
+                window.transcriptWordStatus[word] = 'known';
+                
+                // Update all instances of this word in transcript
+                document.querySelectorAll(`.clickable-transcript-word[data-word="${word}"]`).forEach(el => {
+                    el.classList.remove('word-unknown', 'selected');
+                    el.classList.add('word-known');
+                });
+            });
+            
+            // Clear batch words
+            window._batchSelectedWords = null;
+            clearSelection();
+            
+            const count = batchWords.length;
+            alert(`✅ ${count} mot${count > 1 ? 's' : ''} ajouté${count > 1 ? 's' : ''} au Jardin! (vert)`);
+            closeWordAnalysisPopup();
+        }
+    </script>
+
+    <!-- Multi-select toolbar -->
+    <div id="multi-select-toolbar">
+        <span class="toolbar-count"><span id="selected-count">0</span> mot(s) sélectionné(s)</span>
+        <button class="toolbar-btn" onclick="analyzeSelectedWords()">✨ Analyser</button>
+    </div>
 
 </body>
 </html>
