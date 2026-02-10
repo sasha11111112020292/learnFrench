@@ -112,7 +112,6 @@ const FirebaseREST = {
     setDocument: async function(collection, docId, data) {
         if (!this.currentUser) {
             console.error('❌ setDocument failed: Not authenticated');
-            console.error('❌ currentUser is:', this.currentUser);
             throw new Error('Not authenticated');
         }
         await this.refreshTokenIfNeeded();
@@ -124,16 +123,7 @@ const FirebaseREST = {
             url,
             collection,
             docId,
-            dataKeys: Object.keys(data),
-            dataPreview: {
-                vocabulary: data.vocabulary?.length || 0,
-                writings: data.writings?.length || 0,
-                readingList: data.readingList?.length || 0,
-                listeningList: data.listeningList?.length || 0,
-                recordings: data.recordings?.length || 0,
-                notes: data.notes?.length || 0,
-                resourcesList: data.resourcesList?.length || 0
-            }
+            dataKeys: Object.keys(data)
         });
         
         const response = await fetch(url, {
@@ -150,11 +140,8 @@ const FirebaseREST = {
         
         if (result.error) {
             console.error('❌ Firestore error:', result.error);
-            console.error('❌ Full error object:', JSON.stringify(result.error, null, 2));
             throw new Error(result.error.message || JSON.stringify(result.error));
         }
-        
-        console.log('✅ Firestore save successful!');
         return result;
     },
     
@@ -4963,13 +4950,6 @@ const firebaseConfig = {
                                 <span id="sync-indicator" style="font-size: 0.8rem; color: var(--gold); opacity: 0; transition: opacity 0.3s;">☁️ Sync...</span>
                             </div>
                             <div id="entrance-user-email" style="color: var(--text-soft); font-size: 0.9rem;"></div>
-                            <!-- DEBUG STATUS INDICATOR -->
-                            <div id="debug-status" style="margin-top: 0.5rem; padding: 0.5rem; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; font-size: 0.75rem;">
-                                <div>🔐 <span id="auth-status" style="font-weight: 600;">Checking...</span></div>
-                                <div>🔥 <span id="firebase-status" style="font-weight: 600;">Checking...</span></div>
-                                <div>💾 Last save attempt: <span id="last-save-attempt">Never</span></div>
-                                <div>✅ Last successful save: <span id="last-save-success">Never</span></div>
-                            </div>
                         </div>
                         <button class="btn btn-secondary" id="entrance-logout-btn" style="margin-left: 1rem;">Déconnexion</button>
                     </div>
@@ -6866,32 +6846,9 @@ Ils seront préservés lors de l'affichage !"></textarea>
         window.currentUser = null;
         let saveTimeout;
         
-        // 🚨 CRITICAL: Prevent saves during initial data load (RACE CONDITION FIX)
-        let isLoadingData = true; // Start as true to block saves until Firebase data loads
-        let hasLoadedFromFirebase = false; // Track if we've completed initial Firebase load
-        
-        console.log('🛡️ RACE CONDITION PROTECTION: Saves blocked until Firebase data loads');
-        
-        // Safety timeout: If data hasn't loaded after 10 seconds, enable saves anyway
-        setTimeout(() => {
-            if (isLoadingData) {
-                console.warn('⏰ SAFETY TIMEOUT: 10 seconds elapsed, forcing saves enabled');
-                console.warn('   This prevents infinite blocking if Firebase load hangs');
-                isLoadingData = false;
-            }
-        }, 10000);
-        
         // Safe sync function that can be called even before Firebase is ready
         window.syncToFirebase = function() {
             console.log('🔔 syncToFirebase called!');
-            
-            // 🚨 CRITICAL: Don't save if we're still loading data!
-            if (isLoadingData) {
-                console.warn('⏸️ SAVE BLOCKED - Still loading data from Firebase!');
-                console.warn('   This prevents race condition where old data overwrites new data');
-                return;
-            }
-            
             console.log('   currentUser:', window.currentUser ? window.currentUser.email : 'null');
             console.log('   firebaseReady:', window.firebaseReady);
             console.log('   vocabulary length:', vocabulary.length);
@@ -6915,38 +6872,13 @@ Ils seront préservés lors de l'affichage !"></textarea>
         async function saveDataToFirebase() {
             console.log('💾 saveDataToFirebase called!');
             
-            // 🚨 CRITICAL: Don't save if we're still loading data!
-            if (isLoadingData) {
-                console.error('⏸️ SAVE BLOCKED - Still loading data from Firebase!');
-                console.error('   Prevented race condition that could overwrite your data!');
-                return;
-            }
-            
-            // Update debug status
-            const lastSaveAttempt = document.getElementById('last-save-attempt');
-            if (lastSaveAttempt) lastSaveAttempt.textContent = new Date().toLocaleTimeString();
-            
             if (!window.currentUser) {
                 console.error('❌ Save failed - not logged in');
-                console.error('❌ CRITICAL: USER NOT LOGGED IN - DATA WILL NOT SAVE!');
-                alert('⚠️ NOT LOGGED IN! Your data is NOT being saved to cloud. Please log in!');
-                const authStatus = document.getElementById('auth-status');
-                if (authStatus) {
-                    authStatus.textContent = 'NOT LOGGED IN ❌';
-                    authStatus.style.color = 'red';
-                }
                 return;
             }
             
             if (!window.firebaseModules) {
                 console.error('❌ Save failed - Firebase modules not loaded');
-                console.error('❌ CRITICAL: FIREBASE NOT READY - DATA WILL NOT SAVE!');
-                alert('⚠️ FIREBASE NOT READY! Your data is NOT being saved. Please refresh the page!');
-                const firebaseStatus = document.getElementById('firebase-status');
-                if (firebaseStatus) {
-                    firebaseStatus.textContent = 'NOT READY ❌';
-                    firebaseStatus.style.color = 'red';
-                }
                 return;
             }
             
@@ -6989,10 +6921,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 
                 console.log('✅ Data saved to Firebase successfully!');
                 
-                // Update debug status
-                const lastSaveSuccess = document.getElementById('last-save-success');
-                if (lastSaveSuccess) lastSaveSuccess.textContent = new Date().toLocaleTimeString();
-                
                 // Hide sync indicator after a moment
                 setTimeout(() => {
                     if (syncIndicator) {
@@ -7008,11 +6936,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
             } catch (error) {
                 console.error('❌ Error saving to Firebase:', error);
                 console.error('   Error details:', error.code, error.message);
-                console.error('❌ CRITICAL ERROR DETAILS:', JSON.stringify(error, null, 2));
-                
-                // ALERT THE USER SO THEY KNOW DATA ISN'T SAVING
-                alert(`⚠️ SAVE FAILED! Your data is NOT being saved!\n\nError: ${error.message}\n\nPlease screenshot this and refresh the page.`);
-                
                 // Show error in indicator
                 if (syncIndicator) {
                     syncIndicator.textContent = '✗ Erreur';
@@ -7132,16 +7055,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     updatePresenceUI();
                     updateDebugPanel();
                 }
-                
-                // 🚨 CRITICAL: localStorage loading complete - ENABLE saves now
-                isLoadingData = false;
-                console.log('🔓 localStorage loading COMPLETE - saves now ENABLED (localStorage mode)');
             } catch (error) {
                 console.error('❌ Error loading from localStorage:', error);
-                
-                // 🚨 Even on error, enable saves
-                isLoadingData = false;
-                console.log('🔓 localStorage load FAILED - saves enabled anyway');
             }
         }
         
@@ -13004,22 +12919,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
             onAuthStateChanged(window.firebaseAuth, async (user) => {
                 console.log('👤 Auth state changed:', user ? user.email : 'Not logged in');
                 
-                // Update debug status indicators
-                const authStatus = document.getElementById('auth-status');
-                const firebaseStatus = document.getElementById('firebase-status');
-                
                 if (user) {
                     window.currentUser = user;
-                    
-                    // Update debug status
-                    if (authStatus) {
-                        authStatus.textContent = `Logged in as ${user.email} ✅`;
-                        authStatus.style.color = 'green';
-                    }
-                    if (firebaseStatus && window.firebaseReady) {
-                        firebaseStatus.textContent = 'Ready ✅';
-                        firebaseStatus.style.color = 'green';
-                    }
                     
                     // Show entrance user profile
                     const userProfile = document.getElementById('entrance-user-profile');
@@ -13057,18 +12958,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     setupRealtimeSync(user.uid);
                 } else {
                     window.currentUser = null;
-                    
-                    // Update debug status
-                    const authStatus = document.getElementById('auth-status');
-                    const firebaseStatus = document.getElementById('firebase-status');
-                    if (authStatus) {
-                        authStatus.textContent = 'NOT LOGGED IN ❌';
-                        authStatus.style.color = 'red';
-                    }
-                    if (firebaseStatus) {
-                        firebaseStatus.textContent = window.firebaseReady ? 'Ready (not saving)' : 'Not ready ❌';
-                        firebaseStatus.style.color = window.firebaseReady ? 'orange' : 'red';
-                    }
                     
                     // Hide entrance user profile
                     const userProfile = document.getElementById('entrance-user-profile');
@@ -13337,11 +13226,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     } else {
                         console.log('⏳ Render functions not ready - data will render when page loads');
                     }
-                    
-                    // 🚨 CRITICAL: Data loading complete - ENABLE saves now
-                    isLoadingData = false;
-                    hasLoadedFromFirebase = true;
-                    console.log('🔓 Data loading COMPLETE - saves now ENABLED');
                 } else {
                     console.log('ℹ️ No existing data found - new user');
                     // First time user - try to migrate from localStorage if it exists
@@ -13367,10 +13251,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         if (localResources) resourcesList = JSON.parse(localResources);
                         if (localReadingTranscripts) readingTranscripts = JSON.parse(localReadingTranscripts);
                         if (localListeningTranscripts) listeningTranscripts = JSON.parse(localListeningTranscripts);
-                        
-                        // 🚨 Temporarily allow save for migration
-                        console.log('⏸️ Temporarily enabling save for localStorage migration...');
-                        isLoadingData = false;
                         
                         // Save migrated data to Firebase
                         await saveDataToFirebase();
@@ -13404,19 +13284,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         // Initialize SRS data now that vocabulary is loaded
                         initializeSRSData();
                         updateSRSStatsDisplay();
-                        
-                        // 🚨 CRITICAL: Migration complete - saves stay ENABLED
-                        hasLoadedFromFirebase = true;
-                        console.log('✅ localStorage migration COMPLETE - saves ENABLED');
                     } else {
                         // Brand new user with no data - just initialize empty SRS
                         initializeSRSData();
                         updateSRSStatsDisplay();
-                        
-                        // 🚨 CRITICAL: No data to load - ENABLE saves now
-                        isLoadingData = false;
-                        hasLoadedFromFirebase = true;
-                        console.log('🔓 New user (no data) - saves now ENABLED');
                     }
                 }
             } catch (error) {
@@ -13424,11 +13295,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 console.error('   Error type:', error.constructor.name);
                 console.error('   Error message:', error.message);
                 console.error('   Error stack:', error.stack);
-                
-                // 🚨 CRITICAL: Even on error, enable saves (fallback to localStorage)
-                isLoadingData = false;
-                console.log('🔓 Firebase load FAILED - saves enabled (will use localStorage)');
-                
                 alert('Failed to load data: ' + error.message);
             }
         }
