@@ -528,6 +528,19 @@ const firebaseConfig = {
             stroke: #c9b8a0;
         }
         
+
+        /* House lights - random surprise in night mode */
+        body.dark-mode .house-icon .house-window {
+            fill: #2a2535;
+            transition: fill 0.6s ease;
+        }
+        body.dark-mode .house-lights-on .house-icon .house-window {
+            fill: #FFE08A;
+            filter: drop-shadow(0 0 6px rgba(255, 210, 80, 0.9));
+        }
+        body.dark-mode .house-lights-on .house-icon {
+            filter: drop-shadow(0 0 18px rgba(255, 210, 80, 0.25));
+        }
         body.dark-mode .house-icon line {
             stroke: #c9b8a0;
         }
@@ -1024,6 +1037,139 @@ const firebaseConfig = {
             display: none;
         }
 
+        /* Celestial Body (Sun/Moon) - Atmospheric Feature */
+        .celestial-body {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 45px;
+            height: 45px;
+            z-index: 10;
+            pointer-events: none;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Sun SVG */
+        .celestial-body .sun {
+            opacity: 1;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .celestial-body .moon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        /* Dark mode transitions */
+        body.dark-mode .celestial-body .sun {
+            opacity: 0;
+            transform: rotate(180deg) scale(0.8);
+        }
+
+        body.dark-mode .celestial-body .moon {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* Glow effects */
+        .celestial-body .sun {
+            filter: drop-shadow(0 0 15px rgba(255, 200, 87, 0.7));
+        }
+
+        body.dark-mode .celestial-body .moon {
+            filter: drop-shadow(0 0 12px rgba(232, 232, 232, 0.8));
+        }
+
+        /* Stars container */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        body.dark-mode .stars-container {
+            opacity: 1;
+        }
+
+        /* Individual star */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Twinkling animation */
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Different animation delays for stars */
+        .star:nth-child(2n) {
+            animation-delay: 0.5s;
+            animation-duration: 2.5s;
+        }
+
+        .star:nth-child(3n) {
+            animation-delay: 1s;
+            animation-duration: 3.5s;
+        }
+
+        .star:nth-child(4n) {
+            animation-delay: 1.5s;
+            animation-duration: 2.8s;
+        }
+
+        .star:nth-child(5n) {
+            animation-delay: 0.8s;
+            animation-duration: 3.2s;
+        }
+
+        /* Larger stars */
+        .star.large {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.9);
+        }
+
+        /* Mobile responsiveness for celestial body */
+        @media (max-width: 768px) {
+            .celestial-body {
+                width: 38px;
+                height: 38px;
+                top: -12px;
+                right: -12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .celestial-body {
+                width: 35px;
+                height: 35px;
+                top: -10px;
+                right: -10px;
+            }
+        }
+
         /* Floating Quick Actions */
         .floating-actions {
             position: fixed;
@@ -1190,8 +1336,8 @@ const firebaseConfig = {
         }
 
         .logo-main {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.75rem;
+            font-family: 'Allura', cursive;
+            font-size: 2.2rem;
             font-weight: 400;
             color: var(--crimson);
             letter-spacing: 0.02em;
@@ -4816,6 +4962,9 @@ const firebaseConfig = {
     </style>
 </head>
 <body>
+    <!-- Twinkling Stars -->
+    <div class="stars-container" id="starsContainer"></div>
+
     <!-- Animation Container for SVG effects -->
     <div class="animation-container" id="animationContainer"></div>
 
@@ -4869,12 +5018,12 @@ const firebaseConfig = {
                     <rect x="120" y="240" width="272" height="220" rx="4" fill="#F5E6D3" stroke="#8B2635" stroke-width="3"/>
                     
                     <!-- Window left -->
-                    <rect x="150" y="280" width="45" height="50" rx="8" fill="#E8DCC8" stroke="#8B2635" stroke-width="2.5"/>
+                    <rect class="house-window" x="150" y="280" width="45" height="50" rx="8" fill="#E8DCC8" stroke="#8B2635" stroke-width="2.5"/>
                     <line x1="172.5" y1="280" x2="172.5" y2="330" stroke="#8B2635" stroke-width="2"/>
                     <line x1="150" y1="305" x2="195" y2="305" stroke="#8B2635" stroke-width="2"/>
                     
                     <!-- Window right -->
-                    <rect x="317" y="280" width="45" height="50" rx="8" fill="#E8DCC8" stroke="#8B2635" stroke-width="2.5"/>
+                    <rect class="house-window" x="317" y="280" width="45" height="50" rx="8" fill="#E8DCC8" stroke="#8B2635" stroke-width="2.5"/>
                     <line x1="339.5" y1="280" x2="339.5" y2="330" stroke="#8B2635" stroke-width="2"/>
                     <line x1="317" y1="305" x2="362" y2="305" stroke="#8B2635" stroke-width="2"/>
                     
@@ -4899,6 +5048,35 @@ const firebaseConfig = {
                     <!-- Base/Ground -->
                     <rect x="100" y="460" width="312" height="12" fill="#E5D4A6" stroke="#8B2635" stroke-width="2"/>
                 </svg>
+                
+                <!-- Celestial Body (Sun/Moon) next to house -->
+                <div class="celestial-body" id="celestialBody">
+                    <!-- Sun SVG -->
+                    <svg class="sun" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="20" fill="#FFC857"/>
+                        <g stroke="#FFC857" stroke-width="3" stroke-linecap="round">
+                            <line x1="50" y1="10" x2="50" y2="20"/>
+                            <line x1="50" y1="80" x2="50" y2="90"/>
+                            <line x1="10" y1="50" x2="20" y2="50"/>
+                            <line x1="80" y1="50" x2="90" y2="50"/>
+                            <line x1="21.7" y1="21.7" x2="28.3" y2="28.3"/>
+                            <line x1="71.7" y1="71.7" x2="78.3" y2="78.3"/>
+                            <line x1="21.7" y1="78.3" x2="28.3" y2="71.7"/>
+                            <line x1="71.7" y1="28.3" x2="78.3" y2="21.7"/>
+                        </g>
+                    </svg>
+                    
+                    <!-- Moon SVG -->
+                    <svg class="moon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <mask id="moon-crescent-mask">
+                                <circle cx="50" cy="50" r="30" fill="white"/>
+                                <circle cx="63" cy="44" r="26" fill="black"/>
+                            </mask>
+                        </defs>
+                        <circle cx="50" cy="50" r="30" fill="#E8E0C8" mask="url(#moon-crescent-mask)"/>
+                    </svg>
+                </div>
             </div>
         </div>
     </header>
@@ -7809,6 +7987,44 @@ Ils seront préservés lors de l'affichage !"></textarea>
             `;
             
             container.innerHTML = html;
+        }
+
+        // ============================================
+        // CELESTIAL ATMOSPHERE - STARS CREATION
+        // ============================================
+        function createTwinklingStars() {
+            const starsContainer = document.getElementById('starsContainer');
+            if (!starsContainer) return;
+            
+            // Clear any existing stars
+            starsContainer.innerHTML = '';
+            
+            // Create 60 stars scattered across the page
+            const starCount = 60;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Randomly make some stars larger
+                if (Math.random() > 0.8) {
+                    star.classList.add('large');
+                }
+                
+                // Random position across the viewport
+                const top = Math.random() * 100;
+                const left = Math.random() * 100;
+                
+                star.style.top = `${top}%`;
+                star.style.left = `${left}%`;
+                
+                // Random animation delay for natural twinkling
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                
+                starsContainer.appendChild(star);
+            }
+            
+            console.log('✨ Twinkling stars initialized');
         }
 
         // Month navigation
@@ -12516,7 +12732,9 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     if (logoMainClicks === 2) {
                         logoMainClicks = 0;
                         document.body.classList.toggle('dark-mode');
-                        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+                        const _isDark = document.body.classList.contains('dark-mode');
+                        localStorage.setItem('darkMode', _isDark);
+                        if (_isDark) { randomizeLights(); } else { document.getElementById('houseContainer')?.classList.remove('house-lights-on'); }
                     }
                 });
             }
@@ -12555,6 +12773,9 @@ Ils seront préservés lors de l'affichage !"></textarea>
             // NOTE: initializeSRSData() is now called AFTER Firebase loads user data
             // See loadDataFromFirebase() function
             updateSRSStatsDisplay();
+
+            // Initialize celestial atmosphere (stars)
+            createTwinklingStars();
 
             // Initialize presence tracking UI
             updatePresenceUI();
@@ -12642,6 +12863,16 @@ Ils seront préservés lors de l'affichage !"></textarea>
             setupResourceDropdowns();
             renderSectionResources();
 
+
+            // Random house lights when going dark
+            function randomizeLights() {
+                const container = document.getElementById('houseContainer');
+                if (!container) return;
+                container.classList.remove('house-lights-on');
+                if (Math.random() < 0.5) {
+                    container.classList.add('house-lights-on');
+                }
+            }
             // ============================================
             // DARK MODE TOGGLE
             // ============================================
@@ -12650,7 +12881,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
             if (isDarkMode) {
                 document.body.classList.add('dark-mode');
-                // Start firefly animations if dark mode is enabled
+                randomizeLights();
             }
 
             if (darkModeToggle) {
@@ -12659,8 +12890,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     const isDark = document.body.classList.contains('dark-mode');
                     localStorage.setItem('darkMode', isDark);
                     
-                    // Toggle firefly animations based on dark mode
-                    if (isDark) {
+                    if (isDark) { randomizeLights(); } else {
+                        document.getElementById('houseContainer')?.classList.remove('house-lights-on');
                     }
                 });
             }
@@ -13555,8 +13786,6 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         console.log('  ✅ renderNotes() complete');
                         renderResourcesList();
                         console.log('  ✅ renderResourcesList() complete');
-                        renderSectionResources();
-                        console.log('  ✅ renderSectionResources() complete');
                         renderTranscripts('reading');
                         console.log('  ✅ renderTranscripts(reading) complete');
                         renderTranscripts('listening');
