@@ -2,6 +2,7 @@ const CACHE_NAME = 'ma-maison-v2-fixed';
 const urlsToCache = [
   './',
   './index.html',
+  './index-63.html',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Work+Sans:wght@300;400;500&family=Allura&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
