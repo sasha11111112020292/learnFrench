@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ma-maison-v1';
+const CACHE_NAME = 'ma-maison-v2-fixed';
 const urlsToCache = [
   './',
   './index.html',
@@ -40,8 +40,25 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // ⚠️ CRITICAL: Skip ALL Firebase API requests - don't cache them!
+  if (url.hostname.includes('googleapis.com') || 
+      url.hostname.includes('firebaseio.com') ||
+      url.hostname.includes('firestore.googleapis.com') ||
+      url.hostname.includes('identitytoolkit.googleapis.com')) {
+    // Let Firebase requests pass through directly - DO NOT CACHE
+    return;
+  }
+
+  // ⚠️ CRITICAL: Only cache GET requests
+  if (request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
+    caches.match(request)
       .then((response) => {
         // Cache hit - return cached response
         if (response) {
@@ -49,7 +66,7 @@ self.addEventListener('fetch', (event) => {
         }
 
         // Clone the request
-        const fetchRequest = event.request.clone();
+        const fetchRequest = request.clone();
 
         return fetch(fetchRequest).then((response) => {
           // Check if valid response - accept both basic and cors types
@@ -68,7 +85,7 @@ self.addEventListener('fetch', (event) => {
           // Cache the fetched resource
           caches.open(CACHE_NAME)
             .then((cache) => {
-              cache.put(event.request, responseToCache);
+              cache.put(request, responseToCache);
             });
 
           return response;
