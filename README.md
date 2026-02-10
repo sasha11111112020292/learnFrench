@@ -9169,12 +9169,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     if (input) input.value = '';
                 });
                 
-                // Reset section checkboxes in resources modal
-                if (id === 'resources-modal') {
-                    document.querySelectorAll('.resources-section-checkbox').forEach(cb => {
-                        cb.checked = false;
-                    });
-                }
+                // DON'T reset section checkboxes - let them stay as they were saved!
+                // Resources will keep their assigned sections
             } catch (e) {
                 console.error('closeModal error:', e);
             }
@@ -10212,6 +10208,10 @@ Ils seront préservés lors de l'affichage !"></textarea>
 
         function setupResourcesListeners() {
             document.getElementById('add-resource-btn').addEventListener('click', () => {
+                // Check all section checkboxes by default when adding new resource
+                document.querySelectorAll('.resources-section-checkbox').forEach(cb => {
+                    cb.checked = true;
+                });
                 openModal('resources-modal');
             });
 
