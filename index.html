@@ -11025,7 +11025,13 @@ Ils seront préservés lors de l'affichage !"></textarea>
         function deleteListening(id) {
             if (confirm('Supprimer ce média ?')) {
                 listeningList = listeningList.filter(l => l.id !== id);
-                syncToFirebase(); // Auto-save listeningList to Firebase
+                
+                // IMMEDIATE save to localStorage (don't wait for Firebase sync)
+                localStorage.setItem('listeningList', JSON.stringify(listeningList));
+                
+                // Then sync to Firebase in background
+                syncToFirebase();
+                
                 renderListeningList();
             }
         }
@@ -11068,7 +11074,12 @@ Ils seront préservés lors de l'affichage !"></textarea>
             }
 
             listeningList.push(item);
-                syncToFirebase(); // Auto-save listeningList to Firebase
+            
+            // IMMEDIATE save to localStorage (don't wait for Firebase sync)
+            localStorage.setItem('listeningList', JSON.stringify(listeningList));
+            
+            // Then sync to Firebase in background
+            syncToFirebase();
             
             // Log action for presence tracking
             logAction(ACTION_TYPES.LISTENING);
@@ -11106,7 +11117,14 @@ Ils seront préservés lors de l'affichage !"></textarea>
             if (!listeningList[index].title) {
                 alert('Veuillez entrer un titre');
                 return;
-            }            syncToFirebase(); // Auto-save listeningList to Firebase
+            }
+            
+            // IMMEDIATE save to localStorage (don't wait for Firebase sync)
+            localStorage.setItem('listeningList', JSON.stringify(listeningList));
+            
+            // Then sync to Firebase in background
+            syncToFirebase();
+            
             renderListeningList();
             closeModal('edit-listening-modal');
         });
