@@ -7464,6 +7464,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     renderWritingsArchive();
                     renderNotes();
                     renderResourcesList();
+                    renderSectionResources();
                     renderTranscripts('reading');
                     renderTranscripts('listening');
                     initializeSRSData();
@@ -8340,6 +8341,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                             renderRecordings();
                             renderWritingsArchive();
                             renderResourcesList();
+                            renderSectionResources();
                             renderNotes();
                             
                             alert('Données importées avec succès ✓');
@@ -8391,6 +8393,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                     renderRecordings();
                     renderWritingsArchive();
                     renderResourcesList();
+                    renderSectionResources();
                     alert('Tout a été effacé. Tu peux recommencer.');
                 }
             }
@@ -12803,6 +12806,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
             renderRecordings();
             renderWritingsArchive();
             renderResourcesList();
+            renderSectionResources();
             renderNotes();
             setupTranscriptSystem(); // Initialize transcript system
             
@@ -12825,6 +12829,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                             renderWritingsArchive();
                             renderNotes();
                             renderResourcesList();
+                            renderSectionResources();
                             renderGarden();
                             renderGardenVisual();
                             console.log('✅ Force re-render complete!');
@@ -12914,6 +12919,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                 };
                 syncToFirebase(); // Auto-save resourcesList to Firebase
                 renderResourcesList();
+                renderSectionResources();
                 closeModal('edit-resources-modal');
             });
 
@@ -13786,6 +13792,8 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         console.log('  ✅ renderNotes() complete');
                         renderResourcesList();
                         console.log('  ✅ renderResourcesList() complete');
+                        renderSectionResources();
+                        console.log('  ✅ renderSectionResources() complete');
                         renderTranscripts('reading');
                         console.log('  ✅ renderTranscripts(reading) complete');
                         renderTranscripts('listening');
@@ -13852,6 +13860,7 @@ Ils seront préservés lors de l'affichage !"></textarea>
                         renderWritingsArchive();
                         renderNotes();
                         renderResourcesList();
+                        renderSectionResources();
                         
                         // Initialize SRS data now that vocabulary is loaded
                         initializeSRSData();
